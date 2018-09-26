@@ -60,7 +60,7 @@ export default {
     }
   },
   methods: {
-    getPin (params) {
+    getPin (params) { 
       // TODO 获取验证码
       if (this.oneMin === 0) {
         this.$http.get(myAPI.getPin(params)).then((response) => {
