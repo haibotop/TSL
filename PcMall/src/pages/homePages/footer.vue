@@ -84,8 +84,7 @@
          ul:nth-of-type(1)
             margin-left 40px   
         .footer-down
-            margin-top 40px
-            margin-left 40px
+            margin 40px 0 20px 40px
             font-size 12px
             color #aeaeae
             span:nth-of-type(2)

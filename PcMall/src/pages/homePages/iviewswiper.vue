@@ -1,9 +1,11 @@
 <template>
   <div id="iviewSwiper">
-    <Carousel loop autoplay :height=500 >
+    <Carousel loop  :height=500 >
       <CarouselItem v-for="(item, index) in list" :key='index'>
         <div class="swiper-img">
-            <a :href="item.url"><img :src="item.img" alt=""></a>
+            <router-link tag="a" :to="item.url">
+              <img :src="item.img" alt="">
+            </router-link>
         </div>
       </CarouselItem>
     </Carousel>

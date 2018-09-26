@@ -2,10 +2,12 @@ import Vue from 'vue'
 import iView from 'iview'
 import VueRouter from 'vue-router'
 import Routers from './router'
-import store from './store/store'
+// import store from './store/store'
 import Util from './libs/util'
 import * as Ajax from './services/ajax.es6'
 import App from './App'
+
+import store from '@/store/index.js'
 
 // config custom iconfonts
 Vue.use(VueRouter)

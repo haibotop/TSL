@@ -8,6 +8,8 @@ const activity= () => import('./pages/homePages/activity')
 import search from '@/pages/search/searchPage'
 import pl from '@/pages/search/pl'
 
+//商品详情
+import pd from '@/pages/pd/pd'
 
 
 var routers = [];
@@ -49,6 +51,40 @@ let searchModel = [
   // }
 ]
 
+// 商品详情
+let pdModel = [
+  {
+    path: '/pd',
+    name: 'pd',
+    component: pd,
+    children: [
+      {
+        path: ':skuId',
+        component: pd
+      }
+    ]
+  },
+  // {
+  //   path: '/previewPd',
+  //   name: 'previewPd',
+  //   component: previewPd,
+  //   children: [
+  //     {
+  //       path: ':skuId',
+  //       component: previewPd
+  //     }
+  //   ]
+  // }
+]
+
+//活动页
+let activityPage = [
+  {
+    path: '/page/:calssify/:pageName/:pageId',
+    name: 'page',
+    component: activity
+  }
+]
 
 var host = [
   {
@@ -60,14 +96,14 @@ var host = [
       title: '首页'
     }
   },
-  {
-    path: '/home2',
-    name: 'home2',
-    component: activity,
-    meta: {
-      intercept: true,
-    }
-  },
+  // {
+  //   path: '/home2',
+  //   name: 'home2',
+  //   component: activity,
+  //   meta: {
+  //     intercept: true,
+  //   }
+  // },
   {
     path: '/login',
     name: 'login',
@@ -86,5 +122,5 @@ var host = [
   }
 ]
 
-routers = routers.concat(host,searchModel)
+routers = routers.concat(host,searchModel,activityPage,pdModel)
 export default routers

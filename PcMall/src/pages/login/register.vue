@@ -172,7 +172,7 @@
     </flow>
     <div>
       <group class="phone-group">
-        <x-input v-model="phone" type="text" placeholder="请输入您的手机号码" show-clear ref="numInput" @on-change="handlePhone">
+        <x-input v-model="phone"  type="text" placeholder="请输入您的手机号码" show-clear ref="numInput" @on-change="handlePhone">
         </x-input>
         <div class="agreementBar">
           <check-icon :value.sync="agree"></check-icon>
