@@ -1,0 +1,52 @@
+@import "compass";
+@import "variables";
+
+body {
+  //background-color: $page-bg-color;
+  //font-size: $font-size-default;
+  //font-family: $font-family;
+  font-weight: $font-weight-default;
+}
+
+b, strong,
+h1, h2, h3 {
+  font-weight: $font-weight-bold;
+}
+
+a, [onclick], .clickable {
+  -webkit-tap-highlight-color: rgba(#ddd, 0.5);
+}
+
+input, textarea {
+  font-size: $font-size-small;
+}
+
+//.clearfix {
+//  @include clearfix();
+//}
+
+.icon {
+  display: inline-block;
+  transform: scale(2);
+}
+.pop-loading .ivu-spin-fix {
+  z-index: 2000;
+  top: 50px;
+  bottom: 10px;
+  height: inherit;
+}
+.btn-w {
+  width: 80px;
+}
+
+// 查询重置按钮
+.searchAndResetBtn {
+  width: 100px;
+}
+.margin-right-10 {
+  margin-right: 10px;
+}
+
+ul,li{
+  list-style: none;
+}

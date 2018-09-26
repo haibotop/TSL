@@ -1,0 +1,16 @@
+/*vux-loader的style-parser中需要引入variables.scss所以这里的@import都需要scss文件的全名*/
+@import "_color.scss";
+
+$path-assets: './../assets';
+$path-images: './../assets/images';
+
+$font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Source Han Sans CN", "Noto Sans CJK SC", "KaiGen Gothic CN", "KaiGen Gothic CN face", "Microsoft YaHei", "Microsoft YaHei UI", "PingFang SC", "Hiragino Sans GB", "Helvetica Neue", Helvetica, STHeiTi, sans-serif;
+
+$font-weight-default: 400;
+$font-weight-bold: 600;
+
+$base-font-size: 16px;
+
+$font-size-small: $base-font-size - 2;
+$font-size-default: $base-font-size;
+$font-size-large: $base-font-size + 2;
