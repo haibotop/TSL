@@ -1,5 +1,6 @@
 <style lang="scss" rel="stylesheet/scss">
 #login {
+  padding-bottom: 40px;
   background: #fafafa;
   ::-moz-placeholder { /* Mozilla Firefox 19+ */
     color: #9c9c9c;
@@ -88,7 +89,7 @@
 }
 </style>
 <template>
-  <div id="login" style="padding-bottom: 40px;">
+  <div id="login">
       <header1></header1>
       <header2></header2>
       <div class="login-title">
@@ -102,7 +103,7 @@
               </div>
               <div class="password">
                   <span>密码</span>
-                  <Input v-model="password" style="width: 300px;" placeholder="请输入您的密码" />
+                  <Input v-model="password" type="password" style="width: 300px;" placeholder="请输入您的密码" />
               </div>
               <div class="forget-password">
                   <a href="/#/fgpsw" class="newPw-btn">忘记密码？</a>
@@ -112,7 +113,6 @@
                   <Button class="login" id="login" @click.native="loginBtn" :show-loading="loading" >登录</Button>
               </div>
         </div>
-
       </div>
 
 
@@ -231,7 +231,7 @@ export default {
       }
     },
     toSignup () {
-      this.$router.push({path: '/singup'})
+      this.$router.push({path: '/signup'})
     },
     loginBtn () {
       if (this.userId.length === 0) {

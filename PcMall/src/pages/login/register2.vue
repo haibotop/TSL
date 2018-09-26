@@ -1,15 +1,80 @@
+<style lang="scss" rel="stylesheet/scss">
+    #register2 {
+        padding-bottom: 40px;
+        background: #fafafa;
+        ::-moz-placeholder { /* Mozilla Firefox 19+ */
+            color: #9c9c9c;
+        }
+        input:-ms-input-placeholder{
+            color: #9c9c9c;
+        }
+        input::-webkit-input-placeholder{
+            color: #9c9c9c;
+        }
+        .login-title{
+            margin-top: 50px;
+            height: 80px;
+            text-align: center;
+            .login-t{
+                position: relative;
+                display: inline-block;
+                text-align: center;
+                font-size: 20px;
+                color: #0F0F0F;
+            }
+            .login-t:after{
+                content: '';
+                position: absolute;
+                bottom: -20px;
+                left: 50%;
+                margin-left: -20px;
+                display: inline-block;
+                width: 40px;
+                height: 2px;
+                background-color: #504379;
+            }
+        }
+        .login-content{
+            margin: 0 10%;
+            padding: 80px 0;
+            width: 80%;
+            background: #fff;
+            .login-cont{
+                width: 385px;
+                margin: 0 auto;
+                text-align: center;
+            }
+        }
+        .xiegang:after{
+            content: '';
+            position: relative;
+            top: 8px;
+            margin: 0 15px;
+            display: inline-block;
+            width: 1px;
+            height: 30px;
+            background-color: #2E0F6E;
+            transform: rotate(30deg);
+        }
+    }
+</style>
 <template>
   <div id="register2">
-    <XHeader :left-options="headerContent.leftOptions" :title="headerContent.title"></XHeader>
-    <flow class="flowBar">
-      <flow-state state="1" title="填写手机号" is-done></flow-state>
-      <flow-line is-done></flow-line>
-      <flow-state state="2" title="输入验证码" is-done></flow-state>
-      <flow-line></flow-line>
-      <flow-state state="3" title="设置登录密码" ></flow-state>
-    </flow>
+      <header1></header1>
+      <header2></header2>
+      <div class="login-title">
+          <div class="login-t">普通用户 <span class="xiegang"></span> 注册</div>
+      </div>
+      <div class="login-content">
+          <div class="login-cont">
+    <!--<flow class="flowBar">-->
+      <!--<flow-state state="1" title="填写手机号" is-done></flow-state>-->
+      <!--<flow-line is-done></flow-line>-->
+      <!--<flow-state state="2" title="输入验证码" is-done></flow-state>-->
+      <!--<flow-line></flow-line>-->
+      <!--<flow-state state="3" title="设置登录密码" ></flow-state>-->
+    <!--</flow>-->
 
-    <div>
       <group class="pin-group">
         <p class="pin-tip">短信验证码已经发送到</p>
         <p class="pin-phone">{{ phone }}</p>
@@ -19,18 +84,24 @@
         </x-input>
         <x-button class="stepBtn" @click.native="step2Btn" :show-loading="loading">提交验证码</x-button>
       </group>
-    </div>
-
+          </div>
+      </div>
+      <v-footer></v-footer>
   </div>
 </template>
 <script type="text/ecmascript-6">
+    import header1 from '../homePages/header1'
+    import header2 from '../homePages/header2'
+    import vFooter from '../homePages/footer.vue'
 import * as myAPI from '../../services/API/loginServices.es6'
-import { XHeader, Flow, FlowState, FlowLine, Group, XInput, CheckIcon, XButton, Confirm } from 'vux'
+import { Flow, FlowState, FlowLine, Group, XInput, CheckIcon, XButton, Confirm } from 'vux'
 
 export default {
   name: 'register2',
   components: {
-    XHeader,
+      header1,
+      header2,
+      vFooter,
     Flow,
     FlowState,
     FlowLine,
