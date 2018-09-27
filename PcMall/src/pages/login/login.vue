@@ -68,6 +68,7 @@
                     width: 150px;
                 }
                 .login{
+                    padding-bottom: 8px;
                     width: 150px;
                     color:#fff;
                     background-color: #352665;
@@ -301,15 +302,16 @@ export default {
               callback(response.data.userInfo)
             }
             sessionStorage.setItem('userInfo', JSON.stringify(response.data.userInfo))
-            setTimeout(() => {
-              this.loading = false
-              console.log(localStorage.getItem('pormission'))
-              if (localStorage.getItem('pormission')) {
-                this.$router.replace({path: localStorage.getItem('pormission')})
-              } else {
-                this.$router.replace({path: 'home'})
-              }
-            }, 500)
+              this.$router.replace({path: '/loginSuccess'})
+            // setTimeout(() => {
+            //   this.loading = false
+            //   console.log(localStorage.getItem('pormission'))
+            //   if (localStorage.getItem('pormission')) {
+            //     this.$router.replace({path: localStorage.getItem('pormission')})
+            //   } else {
+            //     this.$router.replace({path: 'home'})
+            //   }
+            // }, 500)
           } else {
             this.$vux.toast.show({
               type: 'text',
@@ -378,6 +380,7 @@ export default {
     if (sessionStorage.getItem('fromPath')) {
       let pormission = sessionStorage.getItem('fromPath')
       if (pormission === '/fgpsw3' || pormission === '/signin') {
+          alert(4)
         localStorage.setItem('pormission', '/home')
       } else if (pormission === '/fgpsw' || pormission === '/fgpsw2' || pormission === '/fgpsw3' || pormission === '/signup2' || pormission === '/signup3' || pormission === '/signup' || pormission === '/myPassword' || pormission === '/myAccount' || pormission === '/mySet' || pormission === '/setPsw') {
         // 什么都不做，不修改localStorage
@@ -392,6 +395,7 @@ export default {
     }
     if (sessionStorage.getItem('userInfo')) {
       window.location.href = window.location.protocol + '//' + window.location.host + '/#/signin'
+        alert('用户已经登录')
       this.$router.replace({path: 'home'})
     } else if (code) {
       this.getloginTsl(code, (res) => {
@@ -407,6 +411,7 @@ export default {
         if (localStorage.getItem('pormission')) {
           this.$router.replace({path: localStorage.getItem('pormission')})
         } else {
+            alert(3)
           this.$router.replace({path: 'home'})
         }
       })

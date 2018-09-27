@@ -1,7 +1,11 @@
 const login = () => import('./pages/login/login')
+const loginSuccess = () => import('./pages/login/loginSuccess')
 const register = () => import('./pages/login/register')
 const register2 = () => import('./pages/login/register2')
 const register3 = () => import('./pages/login/register3')
+const fgpsw = () => import('./pages/login/newPW1')
+const fgpsw2 = () => import('./pages/login/newPW2')
+const fgpsw3 = () => import('./pages/login/newPW3')
 const home = () => import('./pages/homePages/home')
 const activity= () => import('./pages/homePages/activity')
 
@@ -100,6 +104,38 @@ var host = [
         component: register3,
         meta: {
             title: '注册'
+        },
+    },
+    {
+        path: '/fgpsw',
+        name: 'fgpsw',
+        component: fgpsw,
+        meta: {
+            title: '忘记密码'
+        },
+    },
+    {
+        path: '/fgpsw2',
+        name: 'fgpsw2',
+        component: fgpsw2,
+        meta: {
+            title: '忘记密码'
+        },
+    },
+    {
+        path: '/fgpsw3',
+        name: 'fgpsw3',
+        component: fgpsw3,
+        meta: {
+            title: '忘记密码'
+        },
+    },
+    {
+        path: '/loginSuccess',
+        name: 'loginSuccess',
+        component: loginSuccess,
+        meta: {
+            title: '登录成功'
         },
     },
 ]

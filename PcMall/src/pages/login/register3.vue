@@ -36,13 +36,35 @@
         }
         .login-content{
             margin: 0 10%;
-            padding: 80px 0;
+            padding-bottom: 80px;
             width: 80%;
             background: #fff;
             .login-cont{
                 width: 385px;
                 margin: 0 auto;
                 text-align: center;
+                //进度条
+                .weui-wepay-flow__li_done .weui-wepay-flow__state,.weui-wepay-flow__process{
+                    background-color: #352665;
+                }
+                .pin-phone{
+                    margin-bottom: 20px;
+                }
+                .ivu-input-wrapper{
+                    width: 160px;
+                }
+                .pw-group{
+                    margin-top: 10px;
+                    width: 100%;
+                    .ivu-input-wrapper{
+                        width: 100%;
+                        margin-top: 20px;
+                    }
+                    .stepBtn{
+                        margin-top: 30px;
+                        line-height: normal;
+                    }
+                }
             }
         }
         .xiegang:after{
@@ -67,23 +89,19 @@
       </div>
       <div class="login-content">
           <div class="login-cont">
-    <!--<flow class="flowBar">-->
-      <!--<flow-state state="1" title="填写手机号" is-done></flow-state>-->
-      <!--<flow-line is-done></flow-line>-->
-      <!--<flow-state state="2" title="输入验证码" is-done></flow-state>-->
-      <!--<flow-line is-done></flow-line>-->
-      <!--<flow-state state="3" title="设置登录密码" is-done></flow-state>-->
-    <!--</flow>-->
+    <flow class="flowBar">
+      <flow-state state="1" title="填写手机号" is-done></flow-state>
+      <flow-line is-done></flow-line>
+      <flow-state state="2" title="输入验证码" is-done></flow-state>
+      <flow-line is-done></flow-line>
+      <flow-state state="3" title="设置登录密码" is-done></flow-state>
+    </flow>
             <div>
-              <group class="pw-group">
-                <x-input v-model="password" type="password" placeholder="请设置6-16位密码" show-clear>
-                  <div slot="label" class="label-icon"></div>
-                </x-input>
-                <x-input v-model="confirmPassword" type="password" placeholder="请确认设置的密码" show-clear>
-                  <div slot="label" class="label-icon"></div>
-                </x-input>
-                <x-button class="stepBtn" @click.native="step3Btn" :show-loading="loading">完成</x-button>
-              </group>
+              <div class="pw-group">
+                <Input v-model="password" type="password" placeholder="请设置6-16位密码" show-clear />
+                <Input v-model="confirmPassword" type="password" placeholder="请确认设置的密码" show-clear />
+                <Button class="stepBtn" @click.native="step3Btn" :show-loading="loading">完成</Button>
+              </div>
             </div>
           </div>
       </div>

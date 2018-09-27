@@ -132,163 +132,6 @@
             transform: rotate(30deg);
         }
     }
-
-
-
-
-
-
-
-    #newPw1, #newPw2, #newPw3,
-    #register1, #register2, #register3,
-    #editMobile1, #editMobile2, #editMobile3, #editMobile4,
-    #bindMobile1, #bindMobile2, #bindMobile3 {
-        min-height: 100%;
-        /*background-color: #fff;*/
-        .weui-cells:before {
-            border: none;
-        }
-        .weui-cells:after {
-            border: none;
-        }
-        .weui-cell:before {
-            border: none;
-        }
-        // 按钮
-        .stepBtn {
-            background-color: #352665;
-            height: 44px;
-            line-height: 44px;
-            color: #FFF;
-            font-size: 18px;
-            margin-top: 60px;
-        }
-        // 进度条
-        /*.flowBar {*/
-        /*padding: 30px;*/
-        /*.weui-wepay-flow__bd {*/
-        /*width: 66%;*/
-        /*margin: 0 auto;*/
-        /*height: 2px;*/
-        /*}*/
-        /*.weui-wepay-flow__li {*/
-        /*width: 20px;*/
-        /*height: 20px;*/
-        /*}*/
-        /*.weui-wepay-flow__li .weui-wepay-flow__state {*/
-        /*width: 20px;*/
-        /*height: 20px;*/
-        /*line-height: 16px;*/
-        /*border: 2px solid #B7B7B7;*/
-        /*border-radius: 50%;*/
-        /*background-color: #fff;*/
-        /*color: #B7B7B7;*/
-        /*}*/
-        /*.weui-wepay-flow__li_done .weui-wepay-flow__state {*/
-        /*line-height: 20px;*/
-        /*border: none;*/
-        /*background-color: #352665;*/
-        /*color: #fff;*/
-        /*}*/
-        /*.weui-wepay-flow__line {*/
-        /*height: 2px;*/
-        /*background-color: #B7B7B7;*/
-        /*}*/
-        /*.weui-wepay-flow__line_done .weui-wepay-flow__process {*/
-        /*background-color: #352665;*/
-        /*}*/
-        /*.weui-wepay-flow__title-bottom,*/
-        /*.weui-wepay-flow__li_done .weui-wepay-flow__title-bottom {*/
-        /*color: #7F7F7F;*/
-        /*}*/
-        /*.weui-wepay-flow__title-bottom {*/
-        /*width: 100px;*/
-        /*margin: auto 10px;*/
-        /*}*/
-        /*}*/
-        .phone-group,
-        .pin-group,
-        .pw-group {
-            width: 295px;
-            margin: 0 auto;
-            margin-top: 40px;
-            .weui-input {
-                font-size: 19px;
-            }
-            .vux-x-input {
-                border-bottom: 1px solid #DBDBDB;
-            }
-            .label-icon {
-                padding-right: 15px;
-            }
-            ::-moz-placeholder { /* Mozilla Firefox 19+ */
-                color: #BDBDBD;
-            }
-            input:-ms-input-placeholder{
-                color: #BDBDBD;
-            }
-
-            input::-webkit-input-placeholder{
-                color: #BDBDBD;
-            }
-        }
-        /*.phone-group {*/
-        /*.agreementBar {*/
-        /*margin-top: 20px;*/
-        /*}*/
-        /*.weui-icon-clear:before {*/
-        /*font-size: 20px;*/
-        /*color: #EEEEEE;*/
-        /*}*/
-        /*.vux-check-icon > .weui-icon-success:before, .vux-check-icon > .weui-icon-success-circle:before {*/
-        /*color: #352665;*/
-        /*font-size: 20px;*/
-        /*}*/
-        /*.agreement {*/
-        /*display: inline-block;*/
-        /*line-height: 20px;*/
-        /*font-size: 14px;*/
-        /*color: #7F7F7F;*/
-        /*a {*/
-        /*color: #0076FF;*/
-        /*}*/
-        /*}*/
-        /*}*/
-        .pin-group {
-            .pin-tip {
-                font-size: 17px;
-                color: #DBDBDB;
-            }
-            .pin-phone {
-                margin-top: 15px;
-                font-size: 24px;
-                font-weight: 400;
-                color: #352665;
-                text-align: center;
-            }
-            .vux-x-input {
-                margin-top: 30px;
-            }
-            .weui-input {
-                width: 145px;
-            }
-            .weui-cell__ft {
-                position: absolute;
-                right: 0px;
-                padding-left: 10px;
-                border-left: 1px solid #DBDBDB;
-                button {
-                    width: 90px;
-                    height: 25px;
-                    font-size: 12px;
-                    border: none;
-                    border-radius: 5px;
-                    background-color: #352665;
-                    color: #FFF;
-                }
-            }
-        }
-    }
 </style>
 <template>
     <div id="register1" >
@@ -315,40 +158,11 @@
                     <span class="agreement">同意<a href="/#/agreement">用户条款</a>和<a href="/#/screatment">隐私协议</a></span>
                 </div>
                 <div class="login-footer">
-                    <Button class="sign" id="signup" @click.native="toSignup" >上一步</Button>
+                    <Button class="sign" id="signup" @click.native="login" >上一步</Button>
                     <Button class="login" id="login" @click.native="step1Btn" :show-loading="loading" >下一步</Button>
                 </div>
             </div>
         </div>
-
-
-        <!--<XHeader :left-options="headerContent.leftOptions" :title="headerContent.title"></XHeader>-->
-        <!--<tab v-show="isWX" v-model="index" class="login-tab">-->
-        <!--<tab-item>-->
-        <!--TSL会员-->
-        <!--</tab-item>-->
-        <!--<tab-item>-->
-        <!--普通用户-->
-        <!--</tab-item>-->
-        <!--</tab>-->
-        <!--<flow class="flowBar">-->
-        <!--<flow-state state="1" title="填写手机号" is-done></flow-state>-->
-        <!--<flow-line></flow-line>-->
-        <!--<flow-state state="2" title="输入验证码"></flow-state>-->
-        <!--<flow-line></flow-line>-->
-        <!--<flow-state state="3" title="设置登录密码"></flow-state>-->
-        <!--</flow>-->
-        <!--<div>-->
-        <!--<group class="phone-group">-->
-        <!--<x-input v-model="phone" type="text" placeholder="请输入您的手机号码" show-clear ref="numInput" @on-change="handlePhone">-->
-        <!--</x-input>-->
-        <!--<div class="agreementBar">-->
-        <!--<check-icon :value.sync="agree"></check-icon>-->
-        <!--<span class="agreement">同意<a href="/#/agreement">用户条款</a>和<a href="/#/screatment">隐私协议</a></span>-->
-        <!--</div>-->
-        <!--<x-button class="stepBtn" @click.native="step1Btn" :show-loading="loading">下一步</x-button>-->
-        <!--</group>-->
-        <!--</div>-->
         <v-footer></v-footer>
     </div>
 </template>
@@ -427,6 +241,9 @@
                     }
                     this.loading = false
                 })
+            },
+            login() {
+              this.$router.push({path:'login'})
             },
             step1Btn () {
                 this.loading = true

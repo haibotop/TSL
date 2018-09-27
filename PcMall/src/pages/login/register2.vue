@@ -36,13 +36,39 @@
         }
         .login-content{
             margin: 0 10%;
-            padding: 80px 0;
+            padding-bottom: 80px;
             width: 80%;
             background: #fff;
             .login-cont{
                 width: 385px;
                 margin: 0 auto;
                 text-align: center;
+                .pin-tip{
+                    color: #666;
+                }
+                //进度条
+                .weui-wepay-flow__li_done .weui-wepay-flow__state,.weui-wepay-flow__process{
+                    background-color: #352665;
+                }
+                .pin-phone{
+                    margin-bottom: 20px;
+                }
+                .ivu-input-wrapper{
+                    width: 160px;
+                }
+                //去掉Input[type='number']上下
+                input::-webkit-outer-spin-button,
+                input::-webkit-inner-spin-button {
+                    -webkit-appearance: none;
+                }
+                input[type="number"]{
+                    -moz-appearance: textfield;
+                }
+                .stepBtn{
+                    margin-top: 30px;
+                    width: 100%;
+                    line-height: normal;
+                }
             }
         }
         .xiegang:after{
@@ -67,23 +93,26 @@
       </div>
       <div class="login-content">
           <div class="login-cont">
-    <!--<flow class="flowBar">-->
-      <!--<flow-state state="1" title="填写手机号" is-done></flow-state>-->
-      <!--<flow-line is-done></flow-line>-->
-      <!--<flow-state state="2" title="输入验证码" is-done></flow-state>-->
-      <!--<flow-line></flow-line>-->
-      <!--<flow-state state="3" title="设置登录密码" ></flow-state>-->
-    <!--</flow>-->
+    <flow class="flowBar">
+      <flow-state state="1" title="填写手机号" is-done></flow-state>
+      <flow-line is-done></flow-line>
+      <flow-state state="2" title="输入验证码" is-done></flow-state>
+      <flow-line></flow-line>
+      <flow-state state="3" title="设置登录密码" ></flow-state>
+    </flow>
 
-      <group class="pin-group">
+      <div class="pin-group">
         <p class="pin-tip">短信验证码已经发送到</p>
         <p class="pin-phone">{{ phone }}</p>
-        <x-input v-model="pin" type="number" placeholder="请输入验证码" :show-clear="false">
-          <div slot="label" class="label-icon"></div>
-          <div slot="right"><Button @click="pinBtn">{{ pinBtnText }}</Button></div>
-        </x-input>
-        <x-button class="stepBtn" @click.native="step2Btn" :show-loading="loading">提交验证码</x-button>
-      </group>
+          <Input v-model="pin" type="number" placeholder="请输入验证码" :show-clear="false" />
+          <Button @click="pinBtn">{{ pinBtnText }}</Button>
+          <Button class="stepBtn" @click.native="step2Btn" :show-loading="loading">提交验证码</Button>
+        <!--<x-input v-model="pin" type="number" placeholder="请输入验证码" :show-clear="false">-->
+          <!--<div slot="label" class="label-icon"></div>-->
+          <!--<div slot="right"><Button @click="pinBtn">{{ pinBtnText }}</Button></div>-->
+        <!--</x-input>-->
+        <!--<x-button class="stepBtn" @click.native="step2Btn" :show-loading="loading">提交验证码</x-button>-->
+      </div>
           </div>
       </div>
       <v-footer></v-footer>
