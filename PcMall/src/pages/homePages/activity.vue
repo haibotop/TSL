@@ -9,7 +9,7 @@
   import * as pageAPI from '@/services/API/homePage.es6'
   import pageTemp from './pageTemp.vue'
   // import { XHeader, Scroller } from 'vux'
-  let scrollerInterval
+  let scrollerInterval 
   export default {
     name: 'activity',
     components: { pageTemp },

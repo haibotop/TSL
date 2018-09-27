@@ -1,7 +1,6 @@
 <template>
   <div id="productBlock">
     <div class="blocks">
-
       <div :class="listLayout">
         <div class="block" v-for="(item, index) in pList" :key="index" @click="goPd(item.defaultSkuId)">
           <div class="img-block"><img :src="item.defaultPicture" :alt="handleName(item.skuName)"></div>

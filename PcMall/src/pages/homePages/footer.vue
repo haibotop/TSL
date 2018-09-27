@@ -55,7 +55,6 @@
 <style lang="stylus" scoped>
     @import "~styles/iconfont/iconfont.css";
     .footer
-        margin-top 40px
         width 1200px
         float left
         .footer-up

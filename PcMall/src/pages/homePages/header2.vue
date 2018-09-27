@@ -1,5 +1,10 @@
 <template>
     <div class="header">
+        <div class="header-logo">
+            <router-link tag="div" to="/">
+
+            </router-link>
+        </div>
         <div class="header-left">
             <a href="javascript:void(0)" @click="handleClick(1)">
                 品牌介绍
@@ -49,21 +54,29 @@
 </script>
 
 <style lang="stylus" scoped>
+@import "~styles/common/common.styl";
     .header
         position relative
-        background blue
         height 120px
         line-height 120px
-        .header-left
-            width 35%
-            margin-left 35%
+        .header-logo
+            div
+               float left
+               width 35%
+               height 120px
+               background url("../../assets/images/tsl_logo.png") no-repeat 60px 
+               background-size 66%
+               cursor pointer
+        .header-left            
             float left
             a
-                color #fff
+                color #000
                 margin-right 60px
+                i 
+                    color $blue
         .header-right
             float right 
-            margin-right 40px
+            margin-right 30px
         .headertype
             position absolute
             background-color #fff

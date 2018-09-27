@@ -1,20 +1,22 @@
 <template>
   <div id="pageTemp">
     <div v-for="(item, index) in domData" :key="index">
-      <template v-if="item.type === 0"><cube :config="item.config"></cube></template>
-      <richText v-else-if="item.type === 1" :config="item.config"></richText>
-      <productBlock v-else-if="item.type === 2 || item.type === 9" :config="item.config"></productBlock>
-      <imgBlock v-else-if="item.type === 3" :config="item.config"></imgBlock>
-      <iviewswiper v-else-if="item.type === 4" :config="item.config"></iviewswiper>
+      <template class="mrbt pdl" v-if="item.type === 0"><cube :config="item.config"></cube></template>
+      <richText class="mrbt pdl" v-else-if="item.type === 1" :config="item.config"></richText>
+      <!-- <productBlock class="mrbt pdl" v-else-if="item.type === 2 || item.type === 9" :config="item.config"></productBlock> -->
+      <imgBlock class="mrbt pdl" v-else-if="item.type === 3" :config="item.config"></imgBlock>
+      <iviewswiper class="mrbt" v-else-if="item.type === 4" :config="item.config"></iviewswiper>
       <!-- <vuxswiper v-else-if="item.type === 4" :config="item.config"></vuxswiper> -->
-      <emptySeat v-else-if="item.type === 5" :height="item.config"></emptySeat>
-      <partingLine v-else-if="item.type === 6" :config="item.config"></partingLine>
-      <iconNav v-else-if="item.type === 7" :config="item.config"></iconNav>
-      <videoBlock v-else-if="item.type === 8" :config="item.config"></videoBlock>
-    </div>
+      <emptySeat class="mrbt pdl" v-else-if="item.type === 5" :height="item.config"></emptySeat>
+      <partingLine class="mrbt pdl" v-else-if="item.type === 6" :config="item.config"></partingLine>
+      <iconNav class="mrbt pdl" v-else-if="item.type === 7" :config="item.config"></iconNav>
+      <videoBlock class="mrbt pdl" v-else-if="item.type === 8" :config="item.config"></videoBlock>   
+      <xxx v-else-if="item.type === 2 || item.type === 9" :config="item.config"></xxx>  
+    </div> 
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import xxx from './xxxxxxxxxx.vue'
   import richText from './richText.vue'
   import cube from './cube.vue'
   import productBlock from './productBlock.vue'
@@ -26,6 +28,7 @@
   export default {
     name: 'pageTemplate',
     components: {
+      xxx,
       richText,
       cube,
       productBlock,
@@ -48,5 +51,11 @@
 <style rel="stylesheet/scss" lang="scss" scoped>
 #pageTemp {
   overflow: visible;
+  .mrbt{
+    margin-bottom: 15px
+  }
+  .pdl{
+    padding-left: 40px
+  }
 }
 </style>

@@ -21,6 +21,11 @@ export default {
 #app{
   width:1200px;
   margin:0 auto;
+  // .ivu-select-dropdown{
+  //   padding: 0;
+  //   margin: 0;
+  //   left: 100px!important
+  // }
   
 }
 </style>
