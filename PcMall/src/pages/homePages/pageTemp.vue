@@ -11,15 +11,15 @@
       <partingLine class="mrbt pdl" v-else-if="item.type === 6" :config="item.config"></partingLine>
       <iconNav class="mrbt pdl" v-else-if="item.type === 7" :config="item.config"></iconNav>
       <videoBlock class="mrbt pdl" v-else-if="item.type === 8" :config="item.config"></videoBlock>   
-      <xxx v-else-if="item.type === 2 || item.type === 9" :config="item.config"></xxx>  
+      <productBlock v-else-if="item.type === 2 || item.type === 9" :config="item.config"></productBlock>  
     </div> 
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import xxx from './xxxxxxxxxx.vue'
+  import productBlock from './productBlock.vue'
   import richText from './richText.vue'
   import cube from './cube.vue'
-  import productBlock from './productBlock.vue'
+  // import productBlock from './productBlock.vue'
   import imgBlock from './imgBlock.vue'
   import iviewswiper from './iviewswiper.vue'
   import emptySeat from './emptySeat.vue'
@@ -28,7 +28,6 @@
   export default {
     name: 'pageTemplate',
     components: {
-      xxx,
       richText,
       cube,
       productBlock,

@@ -6,7 +6,7 @@
                     <span>每日金价</span>
                     <Icon :type="type" size="16"></Icon>
                 </a>  
-                <DropdownMenu slot="list" class="dayprice">
+                <DropdownMenu  slot="list" class="dayprice" >
                         <h3>香港金价（每两）</h3>
                         <table>
                             <tr>
@@ -57,6 +57,10 @@
         </div>     
         <div class="header-right">
             <router-link tag="a" to="/login">     
+                <i><img src="../../assets/icons/icon_call.png" width="24" style="vertical-align:middle"></i>
+                <span>在线客服</span>
+            </router-link>
+            <router-link tag="a" to="/login">     
                 <Icon type="ios-contact-outline" size="20"/>
                 <span>登录/注册</span>
             </router-link>
@@ -64,10 +68,21 @@
                 <Icon type="md-heart-outline" size="20"/>
                 <span>我的收藏</span>
             </router-link>
-            <router-link tag="a" to="/">              
+            <!-- <router-link tag="a" to="/">              
                 <Icon  type="ios-lock-outline" size="20"/>
                 <span>购物袋</span>
-            </router-link>
+            </router-link> -->
+            <Dropdown trigger="custom"  :visible="visible2" style="margin-left: -10px;padding-left:10px" :class="{bgColor:bgColor2}" >
+                <a href="javascript:void(0)" @click.stop="handleClick" >              
+                    <Icon  type="ios-lock-outline" size="20"/>
+                    <span>购物袋</span>
+                </a>
+                <DropdownMenu slot="list" class="shopCart">
+                    <template>
+                        <Table height="250" :columns="columns1" :data="data2"  size="small"></Table>
+                    </template>     
+                </DropdownMenu>
+            </Dropdown>
         </div>
     </div>
 </template>
@@ -77,40 +92,128 @@
         data () {
             return {
                 visible: false,
+                visible2: false,
                 bgColor:false,
-                type:"ios-arrow-down"      
+                bgColor2:false,
+                type:"ios-arrow-down",
+                columns1: [
+                    {
+                        title: '购物袋',
+                        key: 'name'
+                    },
+                    {
+                        title: 'Age',
+                        key: 'age'
+                    },
+                    {
+                        title: 'Address',
+                        key: 'address'
+                    }
+                ],
+                data2: [
+                    {
+                        name: 'John Brown',
+                        age: 18,
+                        address: 'New York No. 1 Lake Park',
+                        date: '2016-10-03'
+                    },
+                    {
+                        name: 'Jim Green',
+                        age: 24,
+                        address: 'London No. 1 Lake Park',
+                        date: '2016-10-01'
+                    },
+                    {
+                        name: 'Joe Black',
+                        age: 30,
+                        address: 'Sydney No. 1 Lake Park',
+                        date: '2016-10-02'
+                    },
+                    {
+                        name: 'Jon Snow',
+                        age: 26,
+                        address: 'Ottawa No. 2 Lake Park',
+                        date: '2016-10-04'
+                    },
+                    {
+                        name: 'John Brown',
+                        age: 18,
+                        address: 'New York No. 1 Lake Park',
+                        date: '2016-10-03'
+                    },
+                    {
+                        name: 'Jim Green',
+                        age: 24,
+                        address: 'London No. 1 Lake Park',
+                        date: '2016-10-01'
+                    },
+                    {
+                        name: 'Joe Black',
+                        age: 30,
+                        address: 'Sydney No. 1 Lake Park',
+                        date: '2016-10-02'
+                    },
+                    {
+                        name: 'Jon Snow',
+                        age: 26,
+                        address: 'Ottawa No. 2 Lake Park',
+                        date: '2016-10-04'
+                    }
+                ]    
             }
         },
-        methods: {
-            handleClick(){
-                
-            },
+        methods: {   
             handleOpen () {
                 this.bgColor = !this.bgColor
-                this.visible =  !this.visible;
+                this.visible =  !this.visible
                 this.type = this.type === "ios-arrow-down"?"ios-arrow-up":"ios-arrow-down"
             },
-            
+            handleClick(){
+                this.bgColor2 = !this.bgColor2
+                this.visible2 =  !this.visible2
+            },
+            bind(){
+                document.onclick = ()=>{
+                    if(this.bgColor){
+                        this.handleOpen ()
+                    }  
+                    if(this.bgColor2){
+                        this.handleClick ()
+                    }   
+                },
+                document.getElementsByClassName('ivu-select-dropdown')[0].onclick=(e)=>{
+                    e.stopPropagation()
+                }
+                document.getElementsByClassName('ivu-select-dropdown')[1].onclick=(e)=>{
+                    e.stopPropagation()
+                }
+            }           
         },
         mounted () {
-            document.body.onclick = ()=>{
-                if(this.bgColor){
-                    this.handleOpen ()
-                }   
-            }
+            this.bind()
         }
     }
 </script>
 
-<style lang="stylus" scoped>
-@import "~styles/common/common.styl";
-    .header >>> .ivu-select-dropdown
+<style>
+    .header .header-left .ivu-select-dropdown{
         padding: 0;
         margin: 0;
         left: 100px!important
+    }
+    .header .header-right .ivu-select-dropdown{
+        padding: 0;
+        margin: 0;
+        left: 724px!important
+    }
+</style>
+
+<style lang="stylus" scoped>
+@import "~styles/common/common.styl";  
     .header
         height 40px
         line-height 40px
+        background-color #fff
         .header-left
             margin-left 60px
             float left
@@ -160,6 +263,18 @@
             margin-right 10px
         .header-right
             float right
+            .bgColor              
+                background-color $blue
+                a 
+                    i,span 
+                        color #fff   
+                .shopCart    
+                    width 550px
+                    height 300px
+                    border 1px solid $blue
+                    border-left 8px solid $blue
+                    padding 0
+                    text-align center    
             a
                 margin-right 20px
                 i 

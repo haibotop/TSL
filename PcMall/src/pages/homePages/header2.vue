@@ -22,8 +22,8 @@
         <div class="header-right">
             <search></search>
         </div>
-        <div v-if="isShow" class="headertype" style="border-left:8px solid blue">
-            <headertype :headertype="headertype"></headertype>
+        <div  class="headertype" >
+            <headertype v-if="isShow" :headertype="headertype"></headertype>
         </div>
     </div>
 </template>
@@ -59,6 +59,7 @@
         position relative
         height 120px
         line-height 120px
+        background-color #fff
         .header-logo
             div
                float left
@@ -84,5 +85,6 @@
             width 100%
             z-index 99
             float left
+            border-left:8px solid $blue
 
 </style>

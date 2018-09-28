@@ -1,19 +1,36 @@
 <template>
-  <div id="productBlock">
-    <div class="blocks">
-      <div :class="listLayout">
-        <div class="block" v-for="(item, index) in pList" :key="index" @click="goPd(item.defaultSkuId)">
-          <div class="img-block"><img :src="item.defaultPicture" :alt="handleName(item.skuName)"></div>
-          <div class="info-block">
-            <p class="name">{{handleName(item.skuName)}}</p>
-            <span class="price" :style="`color: ${color};`">{{ '￥' + handlePrice(item.price) }}</span>
-          </div>
+     <div id="productBlock">
+        <h3>推荐商品</h3>
+        <div class="carousel">
+            <!-- <Carousel  :radius-dot=true :height="380">
+                <CarouselItem> -->
+                    <!-- <div class="swiper-img">
+                        <router-link tag="a" :to="item.url">
+                        <img :src="item.img" alt="">
+                        </router-link>
+                    </div> -->
+                    <div class="carousel-content">
+                        <ul>
+                            <li v-for="(item, index) in pList" :key="index" >
+                                <div class="pic" @click="goPd(item.defaultSkuId)">
+                                  <div class="pic-img">
+                                    <img :src="item.defaultPicture" :alt="handleName(item.skuName)" >
+                                  </div>                                  
+                                </div>
+                                <div>
+                                    <p class="explain">{{handleName(item.skuName)}}</p>
+                                    <p class="price" :style="`color: ${color};`">{{ '￥' + handlePrice(item.price) }}</p>
+                                    <p class="price_">￥1.009</p>
+                                </div>
+                            </li>                           
+                        </ul>
+                    </div>
+                <!-- </CarouselItem>
+            </Carousel> -->
         </div>
-      </div>
-
     </div>
-  </div>
 </template>
+
 <script type="text/ecmascript-6">
   import * as tool from '@/services/myTool.es6'
   let interval1
@@ -63,6 +80,9 @@
       }
     },
     computed: {
+      carouselItemLength(){
+        
+      },
       listLayout () {
         if (this.pStyle === '0') {
           return 'block-layout'
@@ -97,171 +117,64 @@
     }
   }
 </script>
-<style rel="stylesheet/scss" lang="scss" scoped>
-.column-layout, .row-layout {
-  background-color: #fff;
-}
-.column-layout {
-  position: relative;
-  overflow: hidden;
-  width: calc(100% - 10px);
-  padding: 10px 10px 0px 0px;
-  .block {
-    position: relative;
-    float: left;
-    margin: 0px 0px 0px 10px;
-    width: calc(50% - 10px);
-  }
-  .img-block {
-    width: 100%;
-    position: relative;
-    img {
-      position: absolute;
-      display: block;
-      width: 100%;
-      height: 100%;
-      top: 0px;
-      left: 0px;
-      background: #ddd;
-    }
-  }
-  .img-block:before {
-    content: "";
-    display: block;
-    padding-bottom: 100%;
-  }
-  .info-block {
-    height: 60px;
-    .name {
-      width: 100%;
-      // height: 40px;
-      line-height: 18px;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      overflow: hidden;
-      font-size: 14px;
-    }
-    .price {
-      font-size: 14px;
-      bottom: 0;
-      font-weight: 400;
-    }
-  }
-}
-.row-layout {
-  position: relative;
-  width: 100%;
-  .block {
-    position: relative;
-    overflow: hidden;
-    width: 100%;
-    border-bottom: 1px solid #eee;
-    background: rgb(250,250,250);
-  }
-  .img-block {
-    width: 28%;
-    height: 100%;
-    position: relative;
-    float: left;
-    img {
-      background: #ddd;
-      position: absolute;
-      display: block;
-      width: 100%;
-      height: 100%;
-      top: 0px;
-      left: 0px;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      overflow: hidden;
-    }
-  }
-  .img-block:before {
-    content: "";
-    display: block;
-    padding-bottom: 100%;
-  }
-  .info-block {
-    width: calc(72% - 24px);
-    padding: 0px 14px 0px 10px;
-    position: absolute;
-    top: 0;
-    bottom: 0px;
-    right: 0;
-    float: left;
-    .name {
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      // display: -webkit-box;
-      display: flex;
-      display: -webkit-flex;
-      align-items: center;
-      // -webkit-box-orient: vertical;
-      // -webkit-line-clamp: 2;
-      overflow: hidden;
-      font-size: 14px;
-      line-height: 20px;
-    }
-    .price {
-      position: absolute;
-      bottom: 5px;
-      right: 14px;
-      font-size: 14px;
-      font-weight: 400;
-    }
-  }
-}
-.block-layout {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  .block {
-    position: relative;
-    width: 100%;
-    margin: 0px 0px 5px 0px;
-  }
-  .img-block {
-    width: 100%;
-    position: relative;
-    img {
-      position: absolute;
-      display: block;
-      width: 100%;
-      height: 100%;
-      top: 0px;
-      left: 0px;
-      background: #ddd;
-    }
-  }
-  .img-block:before {
-    content: "";
-    display: block;
-    padding-bottom: 100%;
-  }
-  .info-block {
-    width: calc(100% - 20px);
-    padding: 5px 10px;
-    background-color: #fff;
-    height: 50px;
-    .name {
-      width: 100%;
-      height: 40px;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2;
-      overflow: hidden;
-      font-size: 14px;
-    }
-    .price {
-      position: absolute;
-      right: 10px;
-      bottom: 0;
-      font-size: 14px;
-      font-weight: 400;
-    }
-  }
-}
+
+<style scoped lang="stylus">
+@import "~styles/common/common.styl";
+    #productBlock
+        background #fafafa
+        width 100%
+        height 440px
+        h3
+            position relative
+            color $blue
+            font-size 16px
+            line-height 70px
+            text-align center
+            &:after
+                content: ''
+                position absolute
+                width 30px
+                height 2px
+                background-color $blue
+                left  48.7%
+                top 88%  
+        .carousel
+            width 1200px
+            text-align: center
+            float left
+            .carousel-content
+                ul
+                    display: inline-block
+                    margin-top 10px
+                li
+                    float left
+                    width 240px
+                    margin 0 10px
+                    .pic
+                        height 240px
+                        background-color #fff
+                        cursor pointer
+                        .pic-img
+                              width 70%
+                              display inline-block
+                              text-align center
+                              img 
+                                  width 100%
+                .explain
+                    padding 0 36px
+                    line-height 16px
+                    font-size 14px
+                    text-align center 
+                    margin-bottom 4px
+                    color #000
+                    margin-top 15px
+                .price
+                    color $blue                 
+                .price_
+                    color #ccc
+
+
+
+
+                    
 </style>

@@ -3,7 +3,6 @@ const loginSuccess = () => import('./pages/login/loginSuccess')
 const register = () => import('./pages/login/register')
 const register2 = () => import('./pages/login/register2')
 const register3 = () => import('./pages/login/register3')
-const registerSuccess = () => import('./pages/login/registerSuccess')
 const fgpsw = () => import('./pages/login/newPW1')
 const fgpsw2 = () => import('./pages/login/newPW2')
 const fgpsw3 = () => import('./pages/login/newPW3')
@@ -16,7 +15,8 @@ const activity= () => import('./pages/homePages/activity')
 import search from '@/pages/search/searchPage'
 import pl from '@/pages/search/pl'
 
-
+//商品详情
+import pd from '@/pages/pd/pd'
 
 var routers = [];
 
@@ -57,6 +57,41 @@ let searchModel = [
     // }
 ]
 
+// 商品详情
+let pdModel = [
+    {
+      path: '/pd',
+      name: 'pd',
+      component: pd,
+      children: [
+        {
+          path: ':skuId',
+          component: pd
+        }
+      ]
+    },
+    // {
+    //   path: '/previewPd',
+    //   name: 'previewPd',
+    //   component: previewPd,
+    //   children: [
+    //     {
+    //       path: ':skuId',
+    //       component: previewPd
+    //     }
+    //   ]
+    // }
+  ]
+  
+  //活动页
+  let activityPage = [
+    {
+      path: '/page/:calssify/:pageName/:pageId',
+      name: 'page',
+      component: activity
+    }
+  ]
+  
 
 var host = [
     {
@@ -109,14 +144,6 @@ var host = [
         },
     },
     {
-        path: '/registerSuccess',
-        name: 'registerSuccess',
-        component: registerSuccess,
-        meta: {
-            title: '注册成功'
-        },
-    },
-    {
         path: '/fgpsw',
         name: 'fgpsw',
         component: fgpsw,
@@ -158,5 +185,5 @@ var host = [
     },
 ]
 
-routers = routers.concat(host,searchModel)
+routers = routers.concat(host,searchModel,activityPage,pdModel)
 export default routers

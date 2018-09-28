@@ -2,7 +2,7 @@
     <transition>
         <div v-if="headertype === 1" class="content">
             <div class="content-left">
-                <img src="" alt="">
+                <img src="src/assets/images/12treasures.png" alt="">
             </div>
             <div class="content-right">
                 <h2>品牌介绍</h2>
@@ -15,11 +15,13 @@
         <div v-else class="contentlist">
             <ul>
                 <li v-for="(item,index) in type" :key="index" :class="{active:active === index}" @click="handleClick(index)">
-                    <a>
-                        <img :src="item.img" alt="">
+                    <router-link tag="a" to="/">
+                        <div>
+                            <img :src="item.img">
+                        </div>                      
                         <span>{{item.name}}</span>
                         <i v-if="index!=3"></i>
-                    </a>
+                    </router-link>
                 </li>
             </ul>
         </div>
@@ -35,46 +37,46 @@
         },
         data () {
             return {
-                active: 0,
+                active: '',
                 list:[
                     [
                         {
                             name: "戒指",
-                            img: "static/aaa.jpg"
+                            img: "src/assets/images/jiezhi.png"
                         },
                         {
                             name: "项链",
-                            img: "static/aaa.jpg"
+                            img: "src/assets/images/xianglian.png"
                         },
                         {
                             name: "耳环",
-                            img: "static/aaa.jpg"
+                            img: "src/assets/images/erhuan.png"
                         },
                         {
                             name: "吊坠",
-                            img: "static/aaa.jpg"
+                            img: "src/assets/images/diaozhui.png"
                         }                        
                     ],
                     [
                         {
                             name: "The 12 treasures",
-                            img: "static/aaa.jpg"
+                            img: "src/assets/images/12treasures.png"
                         },
                         {
                             name: "Altelier",
-                            img: "static/aaa.jpg"
+                            img: "src/assets/images/Atelier.png"
                         },
                         {
                             name: "Nova",
-                            img: "static/aaa.jpg"
+                            img: "src/assets/images/momentoflove.png"
                         },                     
                         {
                             name: "Raindrop & Eernity",
-                            img: "static/aaa.jpg"
+                            img: "src/assets/images/diaozhui.png"
                         },
                         {
                             name: "motion",
-                            img: "static/aaa.jpg"
+                            img: "src/assets/images/saxx.png"
                         }
                     ]
                 ]
@@ -95,68 +97,79 @@
 
 <style lang="stylus" scoped>
 @import "~styles/common/common.styl";
-
-        .v-enter,v-leave-to
-            opacity :0
-        .v-enter-active,v-leave-active
-            transition opacity 1s
-        .content
-            color $blue
-            .content-left
-                width 250px
-                height 200px
+    .v-enter,.v-leave-to
+        opacity :0
+    .v-enter-active
+        transition opacity .6s
+    .v-leave-active
+        transition opacity .3s
+    .content
+        color $blue
+        .content-left
+            width 250px
+            height 200px
+            float left
+            img
+                margin-top 60px
+                margin-left 30px
+        h2
+            line-height 60px
+            font-weight 400
+        p
+            font-size 14px
+            color #000
+            line-height 18px
+            padding 10px 0 
+        .button
+            float left
+            margin 20px 0
+            width 180px
+    .contentlist
+        border-left 4px solid $blue          
+        ul
+            // height 60px
+            margin 10px 20px
+            
+            li
                 float left
-            h2
-                line-height 60px
-            p
-                font-size 14px
-                color $blue
-                line-height 18px
-                padding 10px 0 
-            .button
-                float left
-                margin 20px 0
-                width 180px
-        .contentlist
-            border-left 4px solid $blue
-            // background yellow              
-            ul
-                // height 60px
-                margin 10px 20px
-                
-                li
-                    float left
-                    width 21.5% 
-                    margin-right 40px
-                    height 60px
-                    line-height 60px
-                    text-align center
-                    margin-top 10px
-                    margin-bottom 10px
-                    span 
-                        color #000  
-                        margin-left 10px
-                    img 
-                        margin-left -10px   
-                        vertical-align middle                                    
-                    &.active
-                        border 2px solid $blue
-                    &:hover
-                        border 2px solid $blue
-                    a
-                        position relative   
+                width 25%
+                // width 21.5% 
+                // margin-right 40px
+                height 70px
+                line-height 70px
+                text-align center
+                margin-top 10px
+                margin-bottom 10px
+                span 
+                    color #000  
+                    margin-left 10px
+                img 
+                    margin-left -10px   
+                    vertical-align middle                                    
+                &.active
+                    border 2px solid $blue
+                &:hover
+                    border 2px solid $blue
+                a
+                    position relative   
+                    display inline-block
+                    width 100%
+                    height inherit
+                    div
                         display inline-block
-                        width 100%
-                        height inherit
-                        i                              
-                            display inline-block
-                            vertical-align middle
-                            background-color $blue
-                            position absolute
-                            width 2px
-                            height 20px
-                            right -2px
-                            top:31%
-                        
+                        width 66px
+                        height 66px
+                        img 
+                            width 100%
+                    i                              
+                        display inline-block
+                        vertical-align middle
+                        background-color $blue
+                        position absolute
+                        width 2px
+                        height 20px
+                        right -2px
+                        top:31%
+                    
 
 </style>
