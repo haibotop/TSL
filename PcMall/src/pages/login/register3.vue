@@ -40,28 +40,41 @@
             width: 80%;
             background: #fff;
             .login-cont{
-                width: 385px;
+                width: 650px;
                 margin: 0 auto;
                 text-align: center;
                 //进度条
                 .weui-wepay-flow__li_done .weui-wepay-flow__state,.weui-wepay-flow__process{
                     background-color: #352665;
                 }
-                .pin-phone{
-                    margin-bottom: 20px;
+                .setPaswd,.password{
+                    span{
+                        display: inline-block;
+                        margin-right: 20px;
+                        width: 100px;
+                        text-align: left;
+                        font-size: 14px;
+                        vertical-align: middle;
+                        color: #333;
+                    }
                 }
-                .ivu-input-wrapper{
-                    width: 160px;
+                .password{
+                    margin-top: 30px;
+                }
+                .ivu-input-wrapper,input{
+                    margin-right: 10px;
+                    width: 300px;
+                    height: 40px;
                 }
                 .pw-group{
-                    margin-top: 10px;
-                    width: 100%;
-                    .ivu-input-wrapper{
-                        width: 100%;
-                        margin-top: 20px;
-                    }
+                    margin-top: 30px;
                     .stepBtn{
-                        margin-top: 30px;
+                        margin-top: 60px;
+                        width: 200px;
+                        height: 50px;
+                        font-size: 16px;
+                        color: #fff;
+                        background-color: #352665;
                         line-height: normal;
                     }
                 }
@@ -98,8 +111,14 @@
     </flow>
             <div>
               <div class="pw-group">
-                <Input v-model="password" type="password" placeholder="请设置6-16位密码" show-clear />
-                <Input v-model="confirmPassword" type="password" placeholder="请确认设置的密码" show-clear />
+                  <div class="setPaswd">
+                      <span>请输入登录密码</span>
+                      <Input v-model="password" type="password" placeholder="请输入您要设置的登录密码" :maxlength=16 />
+                  </div>
+                  <div class="password">
+                      <span>请确认登录密码</span>
+                      <Input v-model="confirmPassword" type="password" placeholder="请再输入登录密码" />
+                  </div>
                 <Button class="stepBtn" @click.native="step3Btn" :show-loading="loading">完成</Button>
               </div>
             </div>

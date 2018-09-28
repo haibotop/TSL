@@ -55,7 +55,10 @@
                     height: 40px;
                 }
                 .stepBtn{
-                    margin-top: 80px;
+                    margin-top: 60px;
+                    span{
+                        font-size: 16px;
+                    }
                     width: 200px;
                     height: 50px;
                     color:#fff;
@@ -229,11 +232,12 @@ export default {
           })
           this.$store.commit('authSucc')
         } else {
-          this.$vux.toast.show({
-            type: 'text',
-            width: '200px',
-            text: '验证码错误'
-          })
+            alert('验证码错误')
+          // this.$vux.toast.show({
+          //   type: 'text',
+          //   width: '200px',
+          //   text: '验证码错误'
+          // })
           this.loading = false
         }
       }).catch(() => {
@@ -250,19 +254,21 @@ export default {
           this.submitPin(this.pin)
           // TODO 验证验证码
         } else {
-          this.$vux.toast.show({
-            type: 'text',
-            width: '200px',
-            text: '请输入6位验证码'
-          })
+            alert('请输入6位验证码')
+          // this.$vux.toast.show({
+          //   type: 'text',
+          //   width: '200px',
+          //   text: '请输入6位验证码'
+          // })
           this.loading = false
         }
       } else {
-        this.$vux.toast.show({
-          type: 'text',
-          width: '200px',
-          text: '请输入验证码'
-        })
+          alert('请输入验证码')
+        // this.$vux.toast.show({
+        //   type: 'text',
+        //   width: '200px',
+        //   text: '请输入验证码'
+        // })
         this.loading = false
       }
     },

@@ -35,39 +35,50 @@
                 width: 510px;
                 margin: 0 auto;
                 text-align: center;
-                .pin-group{
-                    span.yzm{
+                .setPaswd,.password{
+                    span{
                         display: inline-block;
                         margin-right: 20px;
-                        width: 60px;
+                        width: 100px;
                         text-align: left;
-                        font-size: 16px;
+                        font-size: 14px;
                         vertical-align: middle;
                         color: #333;
                     }
                 }
+                .password{
+                    margin-top: 30px;
+                }
+                .forget-password{
+                    margin-top: 15px;
+                    text-align: right;
+                }
                 .ivu-input-wrapper,input{
                     margin-right: 10px;
-                    width: 290px;
+                    width: 300px;
                     height: 40px;
                 }
                 .getYzm{
                     height: 40px;
                 }
-                .stepBtn{
-                    margin-top: 80px;
-                    width: 200px;
-                    height: 50px;
-                    color:#fff;
-                    background-color: #352665;
-                }
-                //去掉Input[type='number']上下
-                input::-webkit-outer-spin-button,
-                input::-webkit-inner-spin-button {
-                    -webkit-appearance: none;
-                }
-                input[type="number"]{
-                    -moz-appearance: textfield;
+
+                .login-footer{
+                    margin-top: 60px;
+                    span{
+                        font-size: 16px;
+                    }
+                    .preBtn{
+                        margin-right: 20px;
+                        width: 200px;
+                        height: 50px;
+                    }
+                    .stepBtn{
+                        padding-bottom: 8px;
+                        width: 200px;
+                        height: 50px;
+                        color:#fff;
+                        background-color: #352665;
+                    }
                 }
             }
             // 进度条
@@ -146,15 +157,24 @@
                 </flow>
 
                 <div>
-                  <group class="pw-group">
-                    <x-input v-model="password" type="password" placeholder="请输入6-16位密码" show-clear>
-                      <div slot="label" class="label-icon"></div>
-                    </x-input>
-                    <x-input v-model="confirmPassword" type="password" placeholder="请确认设置的密码" show-clear>
-                      <div slot="label" class="label-icon"></div>
-                    </x-input>
-                    <x-button class="stepBtn" @click.native="step3Btn" :show-loading="loading">完成</x-button>
-                  </group>
+                  <div class="pw-group">
+                      <div class="setPaswd">
+                          <span>请输入登录密码</span>
+                          <Input v-model="password" style="width: 300px;" type="password" placeholder="请输入您要设置的登录密码" :maxlength=16 />
+                      </div>
+                      <div class="password">
+                          <span>请确认登录密码</span>
+                          <Input v-model="confirmPassword" type="password" style="width: 300px;" placeholder="请再输入登录密码" />
+                      </div>
+
+                    <!--<Input v-model="password" type="password" placeholder="请输入6-16位密码" show-clear />-->
+                    <!--<Input v-model="confirmPassword" type="password" placeholder="请确认设置的密码" show-clear />-->
+
+                      <div class="login-footer">
+                          <Button class="preBtn" id="signup" @click.native="step2Btn" >上一步</Button>
+                          <Button class="stepBtn" @click.native="step3Btn" :show-loading="loading">下一步</Button>
+                      </div>
+                  </div>
                 </div>
           </div>
       </div>
@@ -214,7 +234,7 @@ export default {
           // if (sessionStorage.getItem('pormission')) {
           //   this.$router.replace({path: sessionStorage.getItem('pormission')})
           // } else {
-          this.$router.replace({path: '/'})
+          this.$router.replace({path:'/newPwSuccess'})
           // }
         } else if (response.data.code === 9999) {
           this.$vux.alert.show({
@@ -228,11 +248,12 @@ export default {
       // TODO 提交密码
       this.$http.put(...myAPI.updatePwd(params)).then((response) => {
         if (response.data.code === 200) {
-          this.$vux.toast.show({
-            type: 'text',
-            width: '200px',
-            text: '密码设置成功!'
-          })
+            console.log('密码设置成功!')
+          // this.$vux.toast.show({
+          //   type: 'text',
+          //   width: '200px',
+          //   text: '密码设置成功!'
+          // })
           let params = {
             mobile: this.phone,
             loginPassword: this.password
@@ -245,24 +266,30 @@ export default {
         this.loading = false
       })
     },
+      //上一步
+      step2Btn(){
+        this.$router.push({path: '/fgpsw2'})
+      },
     step3Btn () {
       if (this.loading) {
         return
       }
       this.loading = true
       if (this.password.length === 0) {
-        this.$vux.toast.show({
-          type: 'text',
-          width: '200px',
-          text: '请设置密码'
-        })
+          alert('请设置密码')
+        // this.$vux.toast.show({
+        //   type: 'text',
+        //   width: '200px',
+        //   text: '请设置密码'
+        // })
         this.loading = false
       } else if (!tools.checkPw(this.password)) {
-        this.$vux.toast.show({
-          type: 'text',
-          width: '200px',
-          text: '请重新设置密码(6-16位字母数字组合)'
-        })
+          alert('请重新设置密码(6-16位字母数字组合)')
+        // this.$vux.toast.show({
+        //   type: 'text',
+        //   width: '200px',
+        //   text: '请重新设置密码(6-16位字母数字组合)'
+        // })
         this.loading = false
       } else if (tools.checkPw(this.password)) {
         if (this.confirmPassword === this.password) {
@@ -273,18 +300,20 @@ export default {
           this.loading = true
           this.submitPw(params)
         } else if (this.confirmPassword.length === 0) {
-          this.$vux.toast.show({
-            type: 'text',
-            width: '200px',
-            text: '确认密码(6-16位字母数字组合)'
-          })
+            alert('确认密码(6-16位字母数字组合)')
+          // this.$vux.toast.show({
+          //   type: 'text',
+          //   width: '200px',
+          //   text: '确认密码(6-16位字母数字组合)'
+          // })
           this.loading = false
         } else {
-          this.$vux.toast.show({
-            type: 'text',
-            width: '200px',
-            text: '两次密码不一致!'
-          })
+            alert('两次密码不一致!')
+          // this.$vux.toast.show({
+          //   type: 'text',
+          //   width: '200px',
+          //   text: '两次密码不一致!'
+          // })
           this.loading = false
         }
       }

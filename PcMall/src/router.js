@@ -6,6 +6,7 @@ const register3 = () => import('./pages/login/register3')
 const fgpsw = () => import('./pages/login/newPW1')
 const fgpsw2 = () => import('./pages/login/newPW2')
 const fgpsw3 = () => import('./pages/login/newPW3')
+const newPwSuccess = () => import('./pages/login/newPwSuccess')
 const home = () => import('./pages/homePages/home')
 const activity= () => import('./pages/homePages/activity')
 
@@ -128,6 +129,14 @@ var host = [
         component: fgpsw3,
         meta: {
             title: '忘记密码'
+        },
+    },
+    {
+        path: '/newPwSuccess',
+        name: 'newPwSuccess',
+        component: newPwSuccess,
+        meta: {
+            title: '重置密码成功'
         },
     },
     {

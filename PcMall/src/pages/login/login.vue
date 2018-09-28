@@ -40,7 +40,7 @@
         width: 80%;
         background: #fff;
         .login-cont{
-            width: 385px;
+            width: 650px;
             margin: 0 auto;
             text-align: center;
             .phoneNum,.password{
@@ -49,9 +49,13 @@
                     margin-right: 20px;
                     width: 60px;
                     text-align: left;
-                    font-size: 18px;
+                    font-size: 16px;
                     vertical-align: middle;
                     color: #333;
+                }
+                .ivu-input-wrapper,input{
+                    width: 400px;
+                    height: 40px;
                 }
             }
             .password{
@@ -59,17 +63,23 @@
             }
             .forget-password{
                 margin-top: 15px;
+                margin-right: 80px;
                 text-align: right;
             }
             .login-footer{
-                margin-top: 30px;
+                margin-top: 60px;
+                span{
+                    font-size: 16px;
+                }
                 .sign{
                     margin-right: 20px;
-                    width: 150px;
+                    width: 200px;
+                    height: 50px;
                 }
                 .login{
                     padding-bottom: 8px;
-                    width: 150px;
+                    width: 200px;
+                    height: 50px;
                     color:#fff;
                     background-color: #352665;
                 }
@@ -100,11 +110,11 @@
           <div class="login-cont">
               <div class="phoneNum">
                   <span>手机号</span>
-                  <Input v-model="account" style="width: 300px;" ref="numInput" placeholder="请输入您的手机号码" :maxlength=11  @on-change="handlePhone" />
+                  <Input v-model="account" ref="numInput" placeholder="请输入您的手机号码" :maxlength=11  @on-change="handlePhone" />
               </div>
               <div class="password">
                   <span>密码</span>
-                  <Input v-model="password" type="password" style="width: 300px;" placeholder="请输入您的密码" />
+                  <Input v-model="password" type="password" placeholder="请输入您的密码" />
               </div>
               <div class="forget-password">
                   <a href="/#/fgpsw" class="newPw-btn">忘记密码？</a>

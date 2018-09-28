@@ -66,12 +66,23 @@
                     height: 40px;
                 }
                 .stepBtn{
-                    margin-top: 80px;
+                    margin-top: 60px;
+                    span{
+                        font-size: 16px;
+                    }
                     width: 200px;
                     height: 50px;
                     color:#fff;
                     background-color: #352665;
                 }
+            }
+            //去掉Input[type='number']上下
+            input::-webkit-outer-spin-button,
+            input::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+            }
+            input[type="number"]{
+                -moz-appearance: textfield;
             }
             // 进度条
             .flowBar {
@@ -151,7 +162,7 @@
             <div>
               <div class="phone-group">
                   <span>手机号</span>
-                <Input v-model="phone" type="text" placeholder="请输入注册时的手机号码" show-clear ref="numInput" @on-change="handlePhone" />
+                <Input v-model="phone" type="number" placeholder="请输入注册时的手机号码" show-clear ref="numInput" @on-change="handlePhone" />
               </div>
               <Button class="stepBtn" @click.native="step1Btn" :show-loading="loading">下一步</Button>
             </div>

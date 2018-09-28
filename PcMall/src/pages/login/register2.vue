@@ -40,21 +40,30 @@
             width: 80%;
             background: #fff;
             .login-cont{
-                width: 385px;
+                width: 650px;
                 margin: 0 auto;
                 text-align: center;
+                .pin-group{
+                    margin: 30px 0 0;
+                }
                 .pin-tip{
+                    font-size: 16px;
                     color: #666;
+                }
+                .getYzm{
+                    height: 40px;
                 }
                 //进度条
                 .weui-wepay-flow__li_done .weui-wepay-flow__state,.weui-wepay-flow__process{
                     background-color: #352665;
                 }
                 .pin-phone{
+                    font-size: 16px;
                     margin-bottom: 20px;
                 }
-                .ivu-input-wrapper{
-                    width: 160px;
+                .ivu-input-wrapper,input{
+                    width: 300px;
+                    height: 40px;
                 }
                 //去掉Input[type='number']上下
                 input::-webkit-outer-spin-button,
@@ -65,8 +74,12 @@
                     -moz-appearance: textfield;
                 }
                 .stepBtn{
-                    margin-top: 30px;
-                    width: 100%;
+                    margin-top: 60px;
+                    width: 200px;
+                    height: 50px;
+                    font-size: 16px;
+                    color: #fff;
+                    background-color: #352665;
                     line-height: normal;
                 }
             }
@@ -105,14 +118,14 @@
         <p class="pin-tip">短信验证码已经发送到</p>
         <p class="pin-phone">{{ phone }}</p>
           <Input v-model="pin" type="number" placeholder="请输入验证码" :show-clear="false" />
-          <Button @click="pinBtn">{{ pinBtnText }}</Button>
-          <Button class="stepBtn" @click.native="step2Btn" :show-loading="loading">提交验证码</Button>
+          <Button @click="pinBtn" class="getYzm">{{ pinBtnText }}</Button>
         <!--<x-input v-model="pin" type="number" placeholder="请输入验证码" :show-clear="false">-->
           <!--<div slot="label" class="label-icon"></div>-->
           <!--<div slot="right"><Button @click="pinBtn">{{ pinBtnText }}</Button></div>-->
         <!--</x-input>-->
         <!--<x-button class="stepBtn" @click.native="step2Btn" :show-loading="loading">提交验证码</x-button>-->
       </div>
+      <Button class="stepBtn" @click.native="step2Btn" :show-loading="loading">提交验证码</Button>
           </div>
       </div>
       <v-footer></v-footer>

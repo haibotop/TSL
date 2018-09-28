@@ -32,7 +32,7 @@
             width: 80%;
             background: #fff;
             .login-cont{
-                width: 510px;
+                width: 650px;
                 margin: 0 auto;
                 text-align: center;
                 .phoneNum,.password{
@@ -41,9 +41,14 @@
                         margin-right: 20px;
                         width: 60px;
                         text-align: left;
-                        font-size: 18px;
+                        font-size: 16px;
                         vertical-align: middle;
                         color: #333;
+                    }
+
+                    .ivu-input-wrapper,input{
+                        width: 400px;
+                        height: 40px;
                     }
                 }
                 .password{
@@ -63,14 +68,16 @@
                 }
 
                 .login-footer{
-                    margin-top: 30px;
+                    margin-top: 60px;
                     .sign{
                         margin-right: 20px;
-                        width: 150px;
+                        width: 200px;
+                        height: 50px;
                     }
                     .login{
                         padding-bottom: 6px;
-                        width: 150px;
+                        width: 200px;
+                        height: 50px;
                         color:#fff;
                         background-color: #352665;
                     }
@@ -151,7 +158,7 @@
                 </flow>
                 <div class="phoneNum">
                     <span>手机号</span>
-                    <Input v-model="phone" style="width: 300px;" ref="numInput" placeholder="请输入您的手机号码" :maxlength=11  @on-change="handlePhone" />
+                    <Input v-model="phone" ref="numInput" placeholder="请输入您的手机号码" :maxlength=11  @on-change="handlePhone" />
                 </div>
                 <div class="agreementBar">
                     <check-icon :value.sync="agree"></check-icon>
