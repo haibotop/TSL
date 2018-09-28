@@ -1,6 +1,6 @@
 <style lang="scss" rel="stylesheet/scss">
 #loginSuccess {
-  padding-bottom: 40px;
+  padding: 50px 0;
   background: #fafafa;
   ::-moz-placeholder { /* Mozilla Firefox 19+ */
     color: #9c9c9c;
@@ -12,7 +12,6 @@
     color: #9c9c9c;
   }
     .login-title{
-        margin-top: 50px;
         height: 80px;
         text-align: center;
         .login-t{
@@ -40,7 +39,7 @@
         width: 80%;
         background: #fff;
         .login-cont{
-            width: 385px;
+            width: 650px;
             margin: 0 auto;
             text-align: center;
             .success-tb{
@@ -90,16 +89,21 @@
                 color: #111111;
             }
             .login-footer{
-                margin-top: 30px;
+                margin-top: 80px;
+                span{
+                    font-size: 16px;
+                }
                 .goto-home{
-                    margin-right: 20px;
-                    width: 150px;
+                    margin-right: 30px;
+                    width: 200px;
+                    height: 50px;
                     color:#fff;
                     background-color: #352665;
                 }
                 .look-more{
                     padding-bottom: 8px;
-                    width: 150px;
+                    width: 200px;
+                    height: 50px;
                 }
             }
         }
@@ -118,9 +122,10 @@
 }
 </style>
 <template>
+<div>
+<header1></header1>
+<header2></header2>
   <div id="loginSuccess">
-      <header1></header1>
-      <header2></header2>
       <div class="login-title">
           <div class="login-t">普通用户 <span class="xiegang"></span> 登录</div>
       </div>
@@ -132,13 +137,14 @@
                   <p class="timeOut">{{timeOut_num}}s后跳转到主页</p>
               </div>
               <div class="login-footer">
-                  <Button class="goto-home" @click.native="toSignup" >返回首页</Button>
-                  <Button class="look-more" @click.native="loginBtn" :show-loading="loading" >查看全部产品</Button>
+                  <Button class="goto-home" @click.native="toHome" >返回首页</Button>
+                  <Button class="look-more" @click.native="toHome" :show-loading="loading" >查看全部产品</Button>
               </div>
         </div>
       </div>
-      <v-footer></v-footer>
   </div>
+  <v-footer></v-footer>
+</div>
 </template>
 <script type="text/ecmascript-6">
 import header1 from '../homePages/header1'
@@ -167,7 +173,7 @@ export default {
           this.timeOut_num--;
         },
         toSignup() {
-            this.$router.push({path: '/signup'})
+            this.$router.push({path: '/home'})
         }
     },
     mounted(){
