@@ -1,6 +1,6 @@
 <style lang="scss" rel="stylesheet/scss">
     #register3 {
-        padding-bottom: 40px;
+        padding: 50px 0;
         background: #fafafa;
         ::-moz-placeholder { /* Mozilla Firefox 19+ */
             color: #9c9c9c;
@@ -12,7 +12,6 @@
             color: #9c9c9c;
         }
         .login-title{
-            margin-top: 50px;
             height: 80px;
             text-align: center;
             .login-t{
@@ -94,9 +93,10 @@
     }
 </style>
 <template>
+<div>
+<header1></header1>
+<header2></header2>
   <div id="register3">
-      <header1></header1>
-      <header2></header2>
       <div class="login-title">
           <div class="login-t">普通用户 <span class="xiegang"></span> 注册</div>
       </div>
@@ -124,33 +124,28 @@
             </div>
           </div>
       </div>
-      <v-footer></v-footer>
   </div>
+<v-footer></v-footer>
+</div>
 </template>
 <script type="text/ecmascript-6">
-    import header1 from '../homePages/header1'
-    import header2 from '../homePages/header2'
-    import vFooter from '../homePages/footer.vue'
+import header1 from '../homePages/header1'
+import header2 from '../homePages/header2'
+import vFooter from '../homePages/footer.vue'
 import * as myAPI from '../../services/API/loginServices.es6'
 import * as tools from '../../services/myTool.es6'
-import { XHeader, Flow, FlowState, FlowLine, Group, XInput, CheckIcon, XButton, Confirm } from 'vux'
-
+import {Flow, FlowState, FlowLine, CheckIcon,} from 'vux'
 export default {
-  name: 'register3',
-  components: {
-      header1,
-      header2,
-      vFooter,
-    XHeader,
-    Flow,
-    FlowState,
-    FlowLine,
-    Group,
-    XInput,
-    CheckIcon,
-    XButton,
-    Confirm
-  },
+    name: 'register1',
+    components: {
+        header1,
+        header2,
+        vFooter,
+        Flow,
+        FlowState,
+        FlowLine,
+        CheckIcon,
+    },
   data () {
     return {
       headerContent: {
@@ -179,7 +174,7 @@ export default {
           if (sessionStorage.getItem('pormission')) {
             this.$router.replace({path: sessionStorage.getItem('pormission')})
           } else {
-            this.$router.replace({path: '/'})
+            this.$router.replace({path: '/registerSuccess'})
           }
         } else if (response.data.code === 9999) {
           this.$vux.alert.show({
@@ -193,11 +188,12 @@ export default {
       this.$http.post(...myAPI.regist(params)).then((response) => {
         // 提交密码完成后立即登录
         if (response.data.code === 200) {
-          this.$vux.toast.show({
-            type: 'text',
-            width: '200px',
-            text: '密码设置成功!'
-          })
+            alert('密码设置成功')
+          // this.$vux.toast.show({
+          //   type: 'text',
+          //   width: '200px',
+          //   text: '密码设置成功!'
+          // })
           setTimeout(() => {
             let params = {
               mobile: this.phone,

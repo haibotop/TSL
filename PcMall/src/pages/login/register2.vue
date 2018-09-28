@@ -1,6 +1,6 @@
 <style lang="scss" rel="stylesheet/scss">
     #register2 {
-        padding-bottom: 40px;
+        padding: 50px 0;
         background: #fafafa;
         ::-moz-placeholder { /* Mozilla Firefox 19+ */
             color: #9c9c9c;
@@ -12,7 +12,6 @@
             color: #9c9c9c;
         }
         .login-title{
-            margin-top: 50px;
             height: 80px;
             text-align: center;
             .login-t{
@@ -47,6 +46,7 @@
                     margin: 30px 0 0;
                 }
                 .pin-tip{
+                    margin-bottom: 40px;
                     font-size: 16px;
                     color: #666;
                 }
@@ -98,9 +98,10 @@
     }
 </style>
 <template>
+<div>
+    <header1></header1>
+    <header2></header2>
   <div id="register2">
-      <header1></header1>
-      <header2></header2>
       <div class="login-title">
           <div class="login-t">普通用户 <span class="xiegang"></span> 注册</div>
       </div>
@@ -115,44 +116,34 @@
     </flow>
 
       <div class="pin-group">
-        <p class="pin-tip">短信验证码已经发送到</p>
-        <p class="pin-phone">{{ phone }}</p>
-          <Input v-model="pin" type="number" placeholder="请输入验证码" :show-clear="false" />
+        <p class="pin-tip">短信验证码已经发送到 {{ phone }}</p>
+          <Input v-model="pin" placeholder="请输入验证码" :show-clear="false" />
           <Button @click="pinBtn" class="getYzm">{{ pinBtnText }}</Button>
-        <!--<x-input v-model="pin" type="number" placeholder="请输入验证码" :show-clear="false">-->
-          <!--<div slot="label" class="label-icon"></div>-->
-          <!--<div slot="right"><Button @click="pinBtn">{{ pinBtnText }}</Button></div>-->
-        <!--</x-input>-->
-        <!--<x-button class="stepBtn" @click.native="step2Btn" :show-loading="loading">提交验证码</x-button>-->
       </div>
       <Button class="stepBtn" @click.native="step2Btn" :show-loading="loading">提交验证码</Button>
           </div>
       </div>
-      <v-footer></v-footer>
   </div>
+    <v-footer></v-footer>
+</div>
 </template>
 <script type="text/ecmascript-6">
-    import header1 from '../homePages/header1'
-    import header2 from '../homePages/header2'
-    import vFooter from '../homePages/footer.vue'
+import header1 from '../homePages/header1'
+import header2 from '../homePages/header2'
+import vFooter from '../homePages/footer.vue'
 import * as myAPI from '../../services/API/loginServices.es6'
-import { Flow, FlowState, FlowLine, Group, XInput, CheckIcon, XButton, Confirm } from 'vux'
-
+import {Flow, FlowState, FlowLine, CheckIcon,} from 'vux'
 export default {
-  name: 'register2',
-  components: {
-      header1,
-      header2,
-      vFooter,
-    Flow,
-    FlowState,
-    FlowLine,
-    Group,
-    XInput,
-    CheckIcon,
-    XButton,
-    Confirm
-  },
+    name: 'register1',
+    components: {
+        header1,
+        header2,
+        vFooter,
+        Flow,
+        FlowState,
+        FlowLine,
+        CheckIcon,
+    },
   data () {
     return {
       headerContent: {

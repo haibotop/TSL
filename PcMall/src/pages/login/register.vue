@@ -1,9 +1,8 @@
 <style lang="scss" rel="stylesheet/scss">
     #register1{
-        padding-bottom: 40px;
+        padding: 50px 0;
         background: #fafafa;
         .login-title{
-            margin-top: 50px;
             height: 80px;
             text-align: center;
             .login-t{
@@ -138,12 +137,16 @@
             background-color: #2E0F6E;
             transform: rotate(30deg);
         }
+        .vux-check-icon>.weui-icon-success-circle:before, .vux-check-icon>.weui-icon-success:before{
+            color: #352665;
+        }
     }
 </style>
 <template>
+<div>
+    <header1></header1>
+    <header2></header2>
     <div id="register1" >
-        <header1></header1>
-        <header2></header2>
         <div class="login-title">
             <div class="login-t">普通用户 <span class="xiegang"></span> 注册</div>
         </div>
@@ -158,7 +161,7 @@
                 </flow>
                 <div class="phoneNum">
                     <span>手机号</span>
-                    <Input v-model="phone" ref="numInput" placeholder="请输入您的手机号码" :maxlength=11  @on-change="handlePhone" />
+                    <Input v-model="phone" ref="numInput" placeholder="请输入您的手机号码" :maxlength=11 />
                 </div>
                 <div class="agreementBar">
                     <check-icon :value.sync="agree"></check-icon>
@@ -166,36 +169,30 @@
                 </div>
                 <div class="login-footer">
                     <Button class="sign" id="signup" @click.native="login" >上一步</Button>
-                    <Button class="login" id="login" @click.native="step1Btn" :show-loading="loading" >下一步</Button>
+                    <Button class="login"  @click.native="step1Btn" :show-loading="loading" >下一步</Button>
                 </div>
             </div>
         </div>
-        <v-footer></v-footer>
     </div>
+    <v-footer></v-footer>
+</div>
 </template>
 <script type="text/ecmascript-6">
     import header1 from '../homePages/header1'
     import header2 from '../homePages/header2'
     import vFooter from '../homePages/footer.vue'
     import * as myAPI from '../../services/API/myService.es6'
-    import { XHeader, Tab, TabItem, Flow, FlowState, FlowLine, Group, XInput, CheckIcon, XButton, Confirm } from 'vux'
+    import {Flow, FlowState, FlowLine, CheckIcon,} from 'vux'
     export default {
         name: 'register1',
         components: {
             header1,
             header2,
             vFooter,
-            XHeader,
-            Tab,
-            TabItem,
             Flow,
             FlowState,
             FlowLine,
-            Group,
-            XInput,
             CheckIcon,
-            XButton,
-            Confirm
         },
         data () {
             return {
@@ -219,23 +216,10 @@
             }
         },
         methods: {
-            handlePhone () {
-                var val = this.phone;
-                // if (val) {
-                //   let arr = val.match(/[0-9]/g)
-                //   if (arr) {
-                //     this.phone = arr.join('')
-                //     this.$refs.numInput.reset(arr.join(''))
-                //   } else {
-                //     this.phone = ''
-                //     this.$refs.numInput.reset('')
-                //   }
-                // }
-            },
             submitPhone (phone) {
                 console.log(phone)
                 this.$http.get(myAPI.phone(phone)).then((response) => {
-                    // TODO 注册-发送电话号码
+                    // // TODO 注册-发送电话号码
                     if (response.data.code === 6002) {
                         this.$router.replace({
                             path: 'signup2'
@@ -246,8 +230,11 @@
                             this.$router.replace({path: 'signin'})
                         })
                     }
+
                     this.loading = false
+
                 })
+
             },
             login() {
               this.$router.push({path:'login'})

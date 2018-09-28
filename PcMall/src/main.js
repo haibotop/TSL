@@ -79,7 +79,7 @@ Ajax.$interceptor.responseThen = function (response) {
             title: `错误：${data.code}`,
             content: data.message
           })
-        } else if (data.code > 1000) {
+        } else if (data.code > 1000 && data.code == 6008) {
           iView.LoadingBar.error()
           iView.Modal.warning({
             title: `错误：${data.code}`,

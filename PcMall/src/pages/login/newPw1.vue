@@ -143,9 +143,10 @@
     }
 </style>
 <template>
+<div>
+<header1></header1>
+<header2></header2>
   <div id="newPw1">
-      <header1></header1>
-      <header2></header2>
       <div class="login-title">
           <div class="login-t">普通用户 <span class="xiegang"></span> 忘记密码</div>
       </div>
@@ -162,38 +163,33 @@
             <div>
               <div class="phone-group">
                   <span>手机号</span>
-                <Input v-model="phone" type="number" placeholder="请输入注册时的手机号码" show-clear ref="numInput" @on-change="handlePhone" />
+                <Input v-model="phone" placeholder="请输入注册时的手机号码" show-clear ref="numInput" @on-change="handlePhone" />
               </div>
               <Button class="stepBtn" @click.native="step1Btn" :show-loading="loading">下一步</Button>
             </div>
           </div>
       </div>
-      <v-footer></v-footer>
   </div>
+  <v-footer></v-footer>
+</div>
 </template>
 <script type="text/ecmascript-6">
-    import header1 from '../homePages/header1'
-    import header2 from '../homePages/header2'
-    import vFooter from '../homePages/footer.vue'
+import header1 from '../homePages/header1'
+import header2 from '../homePages/header2'
+import vFooter from '../homePages/footer.vue'
 import * as myAPI from '../../services/API/loginServices.es6'
-import { XHeader, Flow, FlowState, FlowLine, Group, XInput, CheckIcon, XButton, Confirm } from 'vux'
-
+import {Flow, FlowState, FlowLine, CheckIcon,} from 'vux'
 export default {
-  name: 'newPw1',
-  components: {
-      header1,
-      header2,
-      vFooter,
-    XHeader,
-    Flow,
-    FlowState,
-    FlowLine,
-    Group,
-    XInput,
-    CheckIcon,
-    XButton,
-    Confirm
-  },
+    name: 'register1',
+    components: {
+        header1,
+        header2,
+        vFooter,
+        Flow,
+        FlowState,
+        FlowLine,
+        CheckIcon,
+    },
   data () {
     return {
       headerContent: {

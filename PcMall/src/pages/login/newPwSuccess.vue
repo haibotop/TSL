@@ -1,6 +1,6 @@
 <style lang="scss" rel="stylesheet/scss">
-#loginSuccess {
-  padding-bottom: 40px;
+#newPwSuccess {
+  padding: 50px 0;
   background: #fafafa;
   ::-moz-placeholder { /* Mozilla Firefox 19+ */
     color: #9c9c9c;
@@ -12,7 +12,6 @@
     color: #9c9c9c;
   }
     .login-title{
-        margin-top: 50px;
         height: 80px;
         text-align: center;
         .login-t{
@@ -90,12 +89,12 @@
                 color: #111111;
             }
             .login-footer{
-                margin-top: 60px;
+                margin-top: 80px;
                 span{
                     font-size: 16px;
                 }
                 .goto-home{
-                    margin-right: 20px;
+                    margin-right: 30px;
                     width: 200px;
                     height: 50px;
                     color:#fff;
@@ -123,7 +122,7 @@
 }
 </style>
 <template>
-  <div id="loginSuccess">
+  <div id="newPwSuccess">
       <header1></header1>
       <header2></header2>
       <div class="login-title">

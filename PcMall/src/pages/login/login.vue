@@ -1,6 +1,6 @@
 <style lang="scss" rel="stylesheet/scss">
 #login {
-  padding-bottom: 40px;
+    padding: 50px 0;
   background: #fafafa;
   ::-moz-placeholder { /* Mozilla Firefox 19+ */
     color: #9c9c9c;
@@ -12,7 +12,6 @@
     color: #9c9c9c;
   }
     .login-title{
-        margin-top: 50px;
         height: 80px;
         text-align: center;
         .login-t{
@@ -72,7 +71,7 @@
                     font-size: 16px;
                 }
                 .sign{
-                    margin-right: 20px;
+                    margin-right: 30px;
                     width: 200px;
                     height: 50px;
                 }
@@ -100,9 +99,10 @@
 }
 </style>
 <template>
+<div>
+<header1></header1>
+<header2></header2>
   <div id="login">
-      <header1></header1>
-      <header2></header2>
       <div class="login-title">
           <div class="login-t">普通用户 <span class="xiegang"></span> 登录</div>
       </div>
@@ -121,68 +121,31 @@
               </div>
               <div class="login-footer">
                   <Button class="sign" id="signup" @click.native="toSignup" >注册</Button>
-                  <Button class="login" id="login" @click.native="loginBtn" :show-loading="loading" >登录</Button>
+                  <Button class="login" @click.native="loginBtn" :show-loading="loading" >登录</Button>
               </div>
         </div>
       </div>
-
-
-    <!--<tab v-model="index" class="login-tab">-->
-      <!--<tab-item>-->
-        <!--TSL会员-->
-      <!--</tab-item>-->
-      <!--<tab-item>-->
-        <!--普通用户-->
-      <!--</tab-item>-->
-    <!--</tab>-->
-    <!--<group class="login-group" v-show="index === 1">-->
-      <!--<x-input type="text" v-model="account" placeholder="请输入您的手机号码" ref="numInput" :max="11" @on-change="handlePhone">-->
-        <!--<div slot="label"><img src="../../assets/icons/icon_ipone.svg" alt=""></div>-->
-      <!--</x-input>-->
-      <!--<x-input type="password" v-model="password" class="pw-input" placeholder="请输入您的密码" ref="pwdInput">-->
-        <!--<div slot="label"><img src="../../assets/icons/icon_password.svg" alt=""></div>-->
-      <!--</x-input>-->
-      <!--<x-button id="login" class="login-btn" @click.native="loginBtn" :show-loading="loading">登录</x-button>-->
-      <!--<x-button id="signup" class="signup-btn" @click.native="toSignup">注册</x-button>-->
-      <!--<div class="sub-btn">-->
-        <!--<a href="/#/fgpsw" class="newPw-btn">忘记密码？</a>-->
-      <!--</div>-->
-    <!--</group>-->
-    <!--<group class="login-group" v-show="index === 0" style="color: #fff;">-->
-      <!--<div style="text-align:center;margin-top:20px;" v-show="!isWeChat">-->
-        <!--<img src="../../assets/icons/tips.svg" alt="">-->
-        <!--<div style="color:#c8c8c8;margin-top:40px">TSL会员仅供微信客户端登录</div>-->
-      <!--</div>-->
-      <!--<div v-show="isWeChat">-->
-      <!--<x-button id="tsllogin" class="login-btn" @click.native="loginTsl" :show-loading="loading">登录</x-button>-->
-      <!--<div class="sub-btn">-->
-        <!--<x-button id="tslsignup" class="signup-btn" @click.native="signupTsl">注册</x-button>-->
-      <!--</div>-->
-      <!--</div>-->
-    <!--</group>-->
-      <v-footer></v-footer>
   </div>
+<v-footer></v-footer>
+</div>
 </template>
 <script type="text/ecmascript-6">
 import header1 from '../homePages/header1'
 import header2 from '../homePages/header2'
 import vFooter from '../homePages/footer.vue'
 import * as myAPI from '../../services/API/loginServices.es6'
-import { Tab, TabItem, Group, XInput, XButton, Toast, debounce } from 'vux'
+import {Flow, FlowState, FlowLine, CheckIcon,} from 'vux'
 export default {
-  name: 'login',
-  components: {
-    header1,
-    header2,
-    vFooter,
-    Tab,
-    TabItem,
-    Group,
-    XInput,
-    XButton,
-    Toast,
-    debounce
-  },
+    name: 'register1',
+    components: {
+        header1,
+        header2,
+        vFooter,
+        Flow,
+        FlowState,
+        FlowLine,
+        CheckIcon,
+    },
   data () {
     return {
       index: 0,

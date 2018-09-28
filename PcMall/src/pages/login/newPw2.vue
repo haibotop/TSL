@@ -151,7 +151,7 @@
                 <div>
                   <div class="pin-group">
                       <span class="yzm">验证码</span>
-                    <Input v-model="pin" type="number" placeholder="请输入验证码" :show-clear="false" />
+                    <Input v-model="pin" placeholder="请输入验证码" :show-clear="false" />
                       <Button class="getYzm" @click="pinBtn">{{ pinBtnText }}</Button>
                     <Button class="stepBtn" @click.native="step2Btn" :show-loading="loading">提交验证码</Button>
                   </div>
