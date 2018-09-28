@@ -101,7 +101,7 @@
         .v-enter-active,v-leave-active
             transition opacity 1s
         .content
-            color $color
+            color $blue
             .content-left
                 width 250px
                 height 200px
