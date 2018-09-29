@@ -1,4 +1,4 @@
-<style lang="scss" rel="stylesheet/scss">
+<style scoped lang="scss" rel="stylesheet/scss">
     #register2 {
         padding: 50px 0;
         background: #fafafa;
@@ -61,7 +61,7 @@
                     font-size: 16px;
                     margin-bottom: 20px;
                 }
-                .ivu-input-wrapper,input{
+                .ivu-input-wrapper,.ivu-input{
                     width: 300px;
                     height: 40px;
                 }
@@ -117,7 +117,7 @@
 
       <div class="pin-group">
         <p class="pin-tip">短信验证码已经发送到 {{ phone }}</p>
-          <Input v-model="pin" placeholder="请输入验证码" :show-clear="false" />
+          <Input v-model="pin" ref="yzm" placeholder="请输入验证码" :show-clear="false" />
           <Button @click="pinBtn" class="getYzm">{{ pinBtnText }}</Button>
       </div>
       <Button class="stepBtn" @click.native="step2Btn" :show-loading="loading">提交验证码</Button>
@@ -174,11 +174,10 @@ export default {
           } else if (response.data.code === 200 && response.data.object) {
             this.pinCD(this.response.data.object)
           } else if (response.data.code === 9001) {
-            this.$vux.toast.show({
-              type: 'text',
-              width: '200px',
-              text: '发送失败!'
-            })
+              this.$Modal.warning({
+                  title: '提示',
+                  content: '发送失败'
+              })
           }
         })
       }
@@ -193,11 +192,13 @@ export default {
           })
           this.$store.commit('authSucc')
         } else {
-          this.$vux.toast.show({
-            type: 'text',
-            width: '200px',
-            text: '验证码错误'
-          })
+            this.$Modal.warning({
+                title: '提示',
+                content: '验证码错误',
+                onOk: () => {
+                    this.$refs.yzm.focus();
+                }
+            })
           this.loading = false
         }
       }).catch(() => {
@@ -214,19 +215,23 @@ export default {
           this.submitPin(this.pin)
          // TODO 验证验证码
         } else {
-          this.$vux.toast.show({
-            type: 'text',
-            width: '200px',
-            text: '请输入6位验证码'
-          })
+            this.$Modal.warning({
+                title: '提示',
+                content: '请输入6位验证码',
+                onOk: () => {
+                    this.$refs.yzm.focus();
+                }
+            })
           this.loading = false
         }
       } else {
-        this.$vux.toast.show({
-          type: 'text',
-          width: '200px',
-          text: '请输入验证码'
-        })
+          this.$Modal.warning({
+              title: '提示',
+              content: '请输入验证码',
+              onOk: () => {
+                  this.$refs.yzm.focus();
+              }
+          })
         this.loading = false
       }
     },
@@ -259,7 +264,7 @@ export default {
   },
   mounted: function () {
     if (this.$store.getters.phone === '' || this.$store.getters.authsuccess) {
-      this.$router.replace({path: 'fgpsw'})
+      this.$router.replace({path: 'signup2'})
     } else {
       this.phone = this.$store.getters.phone
       this.getPin(this.phone)

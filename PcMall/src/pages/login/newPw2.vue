@@ -1,9 +1,8 @@
-<style lang="scss" rel="stylesheet/scss">
+<style scoped lang="scss" rel="stylesheet/scss">
     #newPw2{
-        padding-bottom: 40px;
+        padding: 50px 0;
         background: #fafafa;
         .login-title{
-            margin-top: 50px;
             height: 100px;
             text-align: center;
             .login-t{
@@ -32,7 +31,7 @@
             width: 80%;
             background: #fff;
             .login-cont{
-                width: 510px;
+                width: 650px;
                 margin: 0 auto;
                 text-align: center;
                 .pin-group{
@@ -42,7 +41,7 @@
                         width: 60px;
                         text-align: left;
                         font-size: 16px;
-                        vertical-align: middle;
+                        vertical-align: text-bottom;
                         color: #333;
                     }
                 }
@@ -56,11 +55,9 @@
                 }
                 .stepBtn{
                     margin-top: 60px;
-                    span{
-                        font-size: 16px;
-                    }
                     width: 200px;
                     height: 50px;
+                    font-size: 16px;
                     color:#fff;
                     background-color: #352665;
                 }
@@ -71,50 +68,6 @@
                 }
                 input[type="number"]{
                     -moz-appearance: textfield;
-                }
-            }
-            // 进度条
-            .flowBar {
-                margin-bottom: 70px;
-                padding-top: 70px;
-                .weui-wepay-flow__bd {
-                    width: 100%;
-                    margin: 0 auto;
-                    height: 2px;
-                }
-                .weui-wepay-flow__li {
-                    width: 20px;
-                    height: 20px;
-                }
-                .weui-wepay-flow__li .weui-wepay-flow__state {
-                    width: 20px;
-                    height: 20px;
-                    line-height: 16px;
-                    border: 2px solid #B7B7B7;
-                    border-radius: 50%;
-                    background-color: #fff;
-                    color: #B7B7B7;
-                }
-                .weui-wepay-flow__li_done .weui-wepay-flow__state {
-                    line-height: 20px;
-                    border: none;
-                    background-color: #352665;
-                    color: #fff;
-                }
-                .weui-wepay-flow__line {
-                    height: 2px;
-                    background-color: #B7B7B7;
-                }
-                .weui-wepay-flow__line_done .weui-wepay-flow__process {
-                    background-color: #352665;
-                }
-                .weui-wepay-flow__title-bottom,
-                .weui-wepay-flow__li_done .weui-wepay-flow__title-bottom {
-                    color: #7F7F7F;
-                }
-                .weui-wepay-flow__title-bottom {
-                    width: 100px;
-                    margin: auto 10px;
                 }
             }
         }
@@ -132,9 +85,10 @@
     }
 </style>
 <template>
+<div>
+<header1></header1>
+<header2></header2>
   <div id="newPw2">
-      <header1></header1>
-      <header2></header2>
       <div class="login-title">
           <div class="login-t">普通用户 <span class="xiegang"></span> 忘记密码</div>
       </div>
@@ -151,39 +105,34 @@
                 <div>
                   <div class="pin-group">
                       <span class="yzm">验证码</span>
-                    <Input v-model="pin" placeholder="请输入验证码" :show-clear="false" />
+                    <Input v-model="pin" ref="yzm" placeholder="请输入验证码" :show-clear="false" />
                       <Button class="getYzm" @click="pinBtn">{{ pinBtnText }}</Button>
                     <Button class="stepBtn" @click.native="step2Btn" :show-loading="loading">提交验证码</Button>
                   </div>
                 </div>
           </div>
       </div>
-      <v-footer></v-footer>
   </div>
+  <v-footer></v-footer>
+</div>
 </template>
 <script type="text/ecmascript-6">
-    import header1 from '../homePages/header1'
-    import header2 from '../homePages/header2'
-    import vFooter from '../homePages/footer.vue'
+import header1 from '../homePages/header1'
+import header2 from '../homePages/header2'
+import vFooter from '../homePages/footer.vue'
 import * as myAPI from '../../services/API/loginServices.es6'
-import { XHeader, Flow, FlowState, FlowLine, Group, XInput, CheckIcon, XButton, Confirm } from 'vux'
-
+import {Flow, FlowState, FlowLine, CheckIcon,} from 'vux'
 export default {
-  name: 'newPw2',
-  components: {
-      header1,
-      header2,
-      vFooter,
-    XHeader,
-    Flow,
-    FlowState,
-    FlowLine,
-    Group,
-    XInput,
-    CheckIcon,
-    XButton,
-    Confirm
-  },
+    name: 'register1',
+    components: {
+        header1,
+        header2,
+        vFooter,
+        Flow,
+        FlowState,
+        FlowLine,
+        CheckIcon,
+    },
   data () {
     return {
       headerContent: {
@@ -213,12 +162,10 @@ export default {
           } else if (response.data.code === 200 && response.data.object) {
             this.pinCD(this.response.data.object)
           } else if (response.data.code === 9001) {
-                alert('发送失败')
-            // this.$vux.toast.show({
-            //   type: 'text',
-            //   width: '200px',
-            //   text: '发送失败！'
-            // })
+              this.$Modal.warning({
+                  title: '提示',
+                  content: '发送失败'
+              })
           }
         })
       }
@@ -232,12 +179,13 @@ export default {
           })
           this.$store.commit('authSucc')
         } else {
-            alert('验证码错误')
-          // this.$vux.toast.show({
-          //   type: 'text',
-          //   width: '200px',
-          //   text: '验证码错误'
-          // })
+            this.$Modal.warning({
+                title: '提示',
+                content: '验证码错误',
+                onOk: () => {
+                    this.$refs.yzm.focus();
+                }
+            })
           this.loading = false
         }
       }).catch(() => {
@@ -254,21 +202,23 @@ export default {
           this.submitPin(this.pin)
           // TODO 验证验证码
         } else {
-            alert('请输入6位验证码')
-          // this.$vux.toast.show({
-          //   type: 'text',
-          //   width: '200px',
-          //   text: '请输入6位验证码'
-          // })
+            this.$Modal.warning({
+                title: '提示',
+                content: '请输入6位验证码',
+                onOk: () => {
+                    this.$refs.yzm.focus();
+                }
+            })
           this.loading = false
         }
       } else {
-          alert('请输入验证码')
-        // this.$vux.toast.show({
-        //   type: 'text',
-        //   width: '200px',
-        //   text: '请输入验证码'
-        // })
+          this.$Modal.warning({
+              title: '提示',
+              content: '请输入验证码',
+              onOk: () => {
+                  this.$refs.yzm.focus();
+              }
+          })
         this.loading = false
       }
     },

@@ -80,11 +80,11 @@ Ajax.$interceptor.responseThen = function (response) {
             content: data.message
           })
         } else if (data.code > 1000 && data.code == 6008) {
-          iView.LoadingBar.error()
-          iView.Modal.warning({
-            title: `错误：${data.code}`,
-            content: data.message
-          })
+          // iView.LoadingBar.error()
+          // iView.Modal.warning({
+          //   title: `错误：${data.code}`,
+          //   content: data.message
+          // })
           // && [].indexOf(data.code) === -1
           // 其它一般性业务处理错误（调用Vue.$defaultServiceTip.error）
         }

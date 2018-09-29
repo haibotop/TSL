@@ -1,4 +1,54 @@
 <style lang="scss" rel="stylesheet/scss">
+    #register1 .ivu-input ,#register2 .ivu-input ,#register3 .ivu-input {
+        height: 40px;
+    }
+    .flowBar {
+        margin-bottom: 40px;
+    .weui-wepay-flow__bd {
+        width: 100%;
+        margin: 0 auto;
+        height: 2px;
+    }
+    .weui-wepay-flow__li {
+        width: 20px;
+        height: 20px;
+    }
+    .weui-wepay-flow__li .weui-wepay-flow__state {
+        width: 20px;
+        height: 20px;
+        line-height: 16px;
+        border: 2px solid #B7B7B7;
+        border-radius: 50%;
+        background-color: #fff;
+        color: #B7B7B7;
+    }
+    .weui-wepay-flow__li_done .weui-wepay-flow__state {
+        line-height: 20px;
+        border: none;
+        background-color: #352665;
+        color: #fff;
+    }
+    .weui-wepay-flow__line {
+        height: 2px;
+        background-color: #B7B7B7;
+    }
+    .weui-wepay-flow__line_done .weui-wepay-flow__process {
+        background-color: #352665;
+    }
+    .weui-wepay-flow__title-bottom,
+    .weui-wepay-flow__li_done .weui-wepay-flow__title-bottom {
+        color: #7F7F7F;
+    }
+    .weui-wepay-flow__title-bottom {
+        width: 100px;
+        margin: auto 10px;
+    }
+    }
+    .vux-check-icon>.weui-icon-success-circle:before, .vux-check-icon>.weui-icon-success:before{
+        color: #352665;
+    }
+</style>
+<style scoped lang="scss" rel="stylesheet/scss">
     #register1{
         padding: 50px 0;
         background: #fafafa;
@@ -72,59 +122,19 @@
                         margin-right: 20px;
                         width: 200px;
                         height: 50px;
+                        font-size: 16px;
                     }
                     .login{
                         padding-bottom: 6px;
                         width: 200px;
                         height: 50px;
+                        font-size: 16px;
                         color:#fff;
                         background-color: #352665;
                     }
                 }
             }
-            // 进度条
-            .flowBar {
-                margin-bottom: 40px;
-                .weui-wepay-flow__bd {
-                    width: 100%;
-                    margin: 0 auto;
-                    height: 2px;
-                }
-                .weui-wepay-flow__li {
-                    width: 20px;
-                    height: 20px;
-                }
-                .weui-wepay-flow__li .weui-wepay-flow__state {
-                    width: 20px;
-                    height: 20px;
-                    line-height: 16px;
-                    border: 2px solid #B7B7B7;
-                    border-radius: 50%;
-                    background-color: #fff;
-                    color: #B7B7B7;
-                }
-                .weui-wepay-flow__li_done .weui-wepay-flow__state {
-                    line-height: 20px;
-                    border: none;
-                    background-color: #352665;
-                    color: #fff;
-                }
-                .weui-wepay-flow__line {
-                    height: 2px;
-                    background-color: #B7B7B7;
-                }
-                .weui-wepay-flow__line_done .weui-wepay-flow__process {
-                    background-color: #352665;
-                }
-                .weui-wepay-flow__title-bottom,
-                .weui-wepay-flow__li_done .weui-wepay-flow__title-bottom {
-                    color: #7F7F7F;
-                }
-                .weui-wepay-flow__title-bottom {
-                    width: 100px;
-                    margin: auto 10px;
-                }
-            }
+
         }
         .xiegang:after{
             content: '';
@@ -136,9 +146,6 @@
             height: 30px;
             background-color: #2E0F6E;
             transform: rotate(30deg);
-        }
-        .vux-check-icon>.weui-icon-success-circle:before, .vux-check-icon>.weui-icon-success:before{
-            color: #352665;
         }
     }
 </style>
@@ -165,7 +172,7 @@
                 </div>
                 <div class="agreementBar">
                     <check-icon :value.sync="agree"></check-icon>
-                    <span class="agreement">同意<a href="/#/agreement">用户条款</a>和<a href="/#/screatment">隐私协议</a></span>
+                    <span class="agreement">同意<a href="/#/agreement"> 用户条款 </a>和<a href="/#/screatment"> 隐私协议</a></span>
                 </div>
                 <div class="login-footer">
                     <Button class="sign" id="signup" @click.native="login" >上一步</Button>
@@ -226,12 +233,20 @@
                         })
                         this.$store.commit('setPhone', this.phone)
                     } else if (response.data.code === 6008) {
-                        this.showPlugin('', '手机号已注册', '立即登录', () => {
-                            this.$router.replace({path: 'signin'})
+                        this.$Modal.confirm({
+                            title: '提示',
+                            content: '手机号已注册',
+                            okText: '立即登录',
+                            cancelText: '重新填写',
+                            onOk: () => {
+                                this.$router.replace({path: 'login'})
+                            },
+                            onCancel: () => {
+                                this.$refs.numInput.focus()
+                            }
                         })
                     }
 
-                    this.loading = false
 
                 })
 
@@ -242,32 +257,32 @@
             step1Btn () {
                 this.loading = true
                 if (this.agree === false) {
-                    alert('请阅读条款并勾选')
-                    // this.$vux.toast.show({
-                    //   type: 'text',
-                    //   width: '200px',
-                    //   text: '请阅读条款并勾选'
-                    // })
+                    this.$Modal.warning({
+                        title: '提示',
+                        content: '请阅读条款并勾选'
+                    });
                     this.$refs.numInput.focus()
                     this.loading = false
                     return
                 }
                 if (this.phone.length === 0) {
-                    alert('请输入手机号')
-                    // this.$vux.toast.show({
-                    //   type: 'text',
-                    //   width: '200px',
-                    //   text: '请输入手机号'
-                    // })
+                    this.$Modal.warning({
+                        title: '提示',
+                        content: '请输入手机号',
+                        onOk: () => {
+                            this.$refs.numInput.focus();
+                        }
+                    });
                     this.$refs.numInput.focus()
                     this.loading = false
                 } else if (this.phone.length !== 11) {
-                    alert('请输入正确的手机号码')
-                    // this.$vux.toast.show({
-                    //   type: 'text',
-                    //   width: '200px',
-                    //   text: '请输入正确的手机号码'
-                    // })
+                    this.$Modal.warning({
+                        title: '提示',
+                        content: '请输入正确的手机号码',
+                        onOk: () => {
+                            this.$refs.numInput.focus();
+                        }
+                    });
                     this.$refs.numInput.focus()
                     this.loading = false
                 } else if (this.phone.length === 11) {

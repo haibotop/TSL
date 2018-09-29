@@ -1,6 +1,6 @@
-<style lang="scss" rel="stylesheet/scss">
+<style scoped lang="scss" rel="stylesheet/scss">
 #login {
-    padding: 50px 0;
+  padding: 50px 0;
   background: #fafafa;
   ::-moz-placeholder { /* Mozilla Firefox 19+ */
     color: #9c9c9c;
@@ -49,7 +49,7 @@
                     width: 60px;
                     text-align: left;
                     font-size: 16px;
-                    vertical-align: middle;
+                    vertical-align: text-bottom;
                     color: #333;
                 }
                 .ivu-input-wrapper,input{
@@ -67,18 +67,17 @@
             }
             .login-footer{
                 margin-top: 60px;
-                span{
-                    font-size: 16px;
-                }
                 .sign{
                     margin-right: 30px;
                     width: 200px;
                     height: 50px;
+                    font-size: 16px;
                 }
                 .login{
                     padding-bottom: 8px;
                     width: 200px;
                     height: 50px;
+                    font-size: 16px;
                     color:#fff;
                     background-color: #352665;
                 }
@@ -114,7 +113,7 @@
               </div>
               <div class="password">
                   <span>密码</span>
-                  <Input v-model="password" type="password" placeholder="请输入您的密码" />
+                  <Input v-model="password" ref="pwdInput" type="password" placeholder="请输入您的密码" />
               </div>
               <div class="forget-password">
                   <a href="/#/fgpsw" class="newPw-btn">忘记密码？</a>
@@ -123,6 +122,14 @@
                   <Button class="sign" id="signup" @click.native="toSignup" >注册</Button>
                   <Button class="login" @click.native="loginBtn" :show-loading="loading" >登录</Button>
               </div>
+              <Modal v-model="model1" footerHide style="width: 850px;height: 300px;" :styles="{top: '355px'}">
+                  <p solt="header" style="font-size: 24px;color: #352665;text-align: left;margin-left: 30px;">提示</p>
+                  <p style="margin: 50px 0; font-size: 16px;color: #111;text-align: center;">您填写的手机号未注册为手机会员</p>
+                  <div  style="margin: 30px 0; text-align: center;" >
+                      <Button @click.native="reWrite" style="margin-right: 30px; width: 200px;height: 50px;font-size: 16px;">重新填写</Button>
+                      <Button @click.native="signBtn" style="width: 200px;height: 50px;font-size: 16px; background-color: #352665;color: #fff;">注册</Button>
+                  </div>
+              </Modal>
         </div>
       </div>
   </div>
@@ -153,7 +160,8 @@ export default {
       account: '',
       password: '',
       userId: '',
-      isWeChat: false
+      isWeChat: false,
+      model1: false,
     }
   },
   methods: {
@@ -170,26 +178,13 @@ export default {
       }
       return obj
     },
-      handlePhone(){
-        var val = this.account;
-        console.log(val)
-          this.userId = val.replace(/[^0-9]/g, '')
-          // setTimeout(() => { this.$refs.numInput.reset(val.replace(/[^0-9]/g, '')) }, 30)
-          // this.$refs.numInput.reset(val.replace(/[^0-9]/g, ''))
+    handlePhone(){
+      var val = this.account;
+      console.log(val)
+        this.userId = val.replace(/[^0-9]/g, '')
     },
-    // handlePhone: debounce(function (val) {
-    //   this.userId = val.replace(/[^0-9]/g, '')
-    //   // setTimeout(() => { this.$refs.numInput.reset(val.replace(/[^0-9]/g, '')) }, 30)
-    //   this.$refs.numInput.reset(val.replace(/[^0-9]/g, ''))
-    // }, 100),
     logout () {
       this.$http.delete(myAPI.logout())
-    },
-    signupTsl () {
-      if (this.is_WX) {
-        window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx0f946bc97a01fe9b&redirect_uri=http%3A%2F%2Fwx0f946bc97a01fe9b.pub-wechat.bizvane.com%2FbizvaneApp%2Fviews%2Fmember_center.html&response_type=code&scope=snsapi_base&state=123&component_appid=wx7e7319a046a816d5&connect_redirect=1#wechat_redirect'
-        // this.$router.push({path: 'registerTsl'})
-      }
     },
     loginTsl () {
       if (this.isWeChat) {
@@ -209,42 +204,38 @@ export default {
     },
     loginBtn () {
       if (this.userId.length === 0) {
-          alert("请输入手机号码")
-        // this.$vux.toast.show({
-        //   type: 'text',
-        //   width: '200px',
-        //   text: '请输入手机号码'
-        // })
-        this.$refs.numInput.focus()
-        this.loading = false
+          this.$Modal.warning({
+              title: '提示',
+              content: '请填写手机号码',
+              onOk: () => {
+                  this.$refs.numInput.focus()
+              }
+          });
       } else if (this.userId.length !== 11) {
-          alert("请输入正确的手机号码")
-        // this.$vux.toast.show({
-        //   type: 'text',
-        //   width: '200px',
-        //   text: '请输入正确的手机号码'
-        // })
-        this.$refs.numInput.focus()
-        this.loading = false
+          this.$Modal.warning({
+              title: '提示',
+              content: '请输入正确的手机号码',
+              onOk: () => {
+                  this.$refs.numInput.focus()
+              }
+          });
       } else if (this.userId.length === 11) {
         if (this.password.length === 0) {
-            alert("请输入密码")
-          // this.$vux.toast.show({
-          //   type: 'text',
-          //   width: '200px',
-          //   text: '请输入密码'
-          // })
-          this.$refs.pwdInput.focus()
-          this.loading = false
+            this.$Modal.warning({
+                title: '提示',
+                content: '请输入密码',
+                onOk: () => {
+                    this.$refs.pwdInput.focus()
+                }
+            });
         } else if (this.password.length < 6 || this.password.length > 16) {
-            alert("用户名或密码错误")
-          // this.$vux.toast.show({
-          //   type: 'text',
-          //   width: '200px',
-          //   text: '用户名或密码错误'
-          // })
-          this.$refs.numInput.focus()
-          this.loading = false
+            this.$Modal.warning({
+                title: '提示',
+                content: '用户名或密码错误',
+                onOk: () => {
+                    this.$refs.numInput.focus()
+                }
+            });
         } else if (this.password.length >= 6 && this.password.length <= 16) {
           let param = {
             loginPassword: this.password,
@@ -257,15 +248,6 @@ export default {
         }
       }
     },
-    // 判断当前是否在微信浏览器中打开
-    is_WX () {
-      let ua = window.navigator.userAgent.toLowerCase()
-      if (ua.indexOf('micromessenger') !== -1) {
-        return true
-      } else {
-        return false
-      }
-    },
     // ========================= API =======================
     login (param, callback) {
       if (navigator.onLine) {
@@ -276,34 +258,36 @@ export default {
             }
             sessionStorage.setItem('userInfo', JSON.stringify(response.data.userInfo))
               this.$router.replace({path: '/loginSuccess'})
-            // setTimeout(() => {
-            //   this.loading = false
-            //   console.log(localStorage.getItem('pormission'))
-            //   if (localStorage.getItem('pormission')) {
-            //     this.$router.replace({path: localStorage.getItem('pormission')})
-            //   } else {
-            //     this.$router.replace({path: 'home'})
-            //   }
-            // }, 500)
           } else {
-            this.$vux.toast.show({
-              type: 'text',
-              text: response.data.message,
-              width: '200px'
-            })
-            this.$refs.numInput.focus()
-            this.loading = false
+              if(response.data.code == 6002){
+                  this.model1 = true;
+              }else{
+                  this.$Modal.warning({
+                      title: '提示',
+                      content: response.data.message,
+                      onOk: () => {
+                          this.$refs.numInput.focus()
+                      }
+                  });
+              }
           }
         }).catch(() => {
           this.loading = false
         })
       } else {
-        this.$vux.toast.show({
-          type: 'text',
-          width: '200px',
-          text: '当前无网络！'
-        })
+          this.$Modal.warning({
+              title: '提示',
+              content: '当前无网络！',
+          });
       }
+    },
+    reWrite(){
+        this.model1 = false;
+        this.$refs.numInput.focus();
+    },
+    signBtn(){
+        this.model1 = false;
+        this.$router.push({path: '/signup'})
     },
     getAuthUrl (redirUrl, callback) {
       this.$http.get(myAPI.getAuthUrl(redirUrl))
@@ -331,11 +315,10 @@ export default {
           sessionStorage.setItem('setPw', JSON.stringify(user))
           this.$router.replace({path: 'setPsw'})
         } else {
-          this.$vux.toast.show({
-            type: 'text',
-            width: '200px',
-            text: res.data.message
-          })
+            this.$Modal.warning({
+                title: '提示',
+                content: response.data.message
+            });
           this.loading = false
           let _url = window.location.protocol + '//' + window.location.host + '/#/signin'
           window.history.pushState({}, 0, _url)
@@ -343,17 +326,12 @@ export default {
       })
     }
   },
-  beforeMount () {
-    // 判断是否微信端
-    this.isWeChat = this.is_WX()
-  },
   mounted () {
     this.loading = true
     let code = this.getUrlParam().code
     if (sessionStorage.getItem('fromPath')) {
       let pormission = sessionStorage.getItem('fromPath')
       if (pormission === '/fgpsw3' || pormission === '/signin') {
-          alert(4)
         localStorage.setItem('pormission', '/home')
       } else if (pormission === '/fgpsw' || pormission === '/fgpsw2' || pormission === '/fgpsw3' || pormission === '/signup2' || pormission === '/signup3' || pormission === '/signup' || pormission === '/myPassword' || pormission === '/myAccount' || pormission === '/mySet' || pormission === '/setPsw') {
         // 什么都不做，不修改localStorage
@@ -368,23 +346,20 @@ export default {
     }
     if (sessionStorage.getItem('userInfo')) {
       window.location.href = window.location.protocol + '//' + window.location.host + '/#/signin'
-        alert('用户已经登录')
       this.$router.replace({path: 'home'})
     } else if (code) {
       this.getloginTsl(code, (res) => {
         sessionStorage.setItem('userInfo', JSON.stringify(res.userInfo))
         this.loading = false
-        this.$vux.toast.show({
-          type: 'text',
-          width: '200px',
-          text: '登录成功！'
-        })
+          this.$Modal.success({
+              title: '提示',
+              content: '登录成功！'
+          });
         let _url = window.location.protocol + '//' + window.location.host + '/#/signin'
         window.history.pushState({}, 0, _url)
         if (localStorage.getItem('pormission')) {
           this.$router.replace({path: localStorage.getItem('pormission')})
         } else {
-            alert(3)
           this.$router.replace({path: 'home'})
         }
       })

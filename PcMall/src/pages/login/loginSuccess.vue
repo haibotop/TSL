@@ -1,4 +1,4 @@
-<style lang="scss" rel="stylesheet/scss">
+<style scoped lang="scss" rel="stylesheet/scss">
 #loginSuccess {
   padding: 50px 0;
   background: #fafafa;
@@ -90,13 +90,11 @@
             }
             .login-footer{
                 margin-top: 80px;
-                span{
-                    font-size: 16px;
-                }
                 .goto-home{
                     margin-right: 30px;
                     width: 200px;
                     height: 50px;
+                    font-size: 16px;
                     color:#fff;
                     background-color: #352665;
                 }
@@ -104,6 +102,7 @@
                     padding-bottom: 8px;
                     width: 200px;
                     height: 50px;
+                    font-size: 16px;
                 }
             }
         }

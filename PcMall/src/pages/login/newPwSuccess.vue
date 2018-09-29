@@ -1,4 +1,4 @@
-<style lang="scss" rel="stylesheet/scss">
+<style scoped lang="scss" rel="stylesheet/scss">
 #newPwSuccess {
   padding: 50px 0;
   background: #fafafa;
@@ -90,13 +90,11 @@
             }
             .login-footer{
                 margin-top: 80px;
-                span{
-                    font-size: 16px;
-                }
                 .goto-home{
                     margin-right: 30px;
                     width: 200px;
                     height: 50px;
+                    font-size: 16px;
                     color:#fff;
                     background-color: #352665;
                 }
@@ -104,6 +102,7 @@
                     padding-bottom: 8px;
                     width: 200px;
                     height: 50px;
+                    font-size: 16px;
                 }
             }
         }
@@ -122,9 +121,10 @@
 }
 </style>
 <template>
+<div>
+<header1></header1>
+<header2></header2>
   <div id="newPwSuccess">
-      <header1></header1>
-      <header2></header2>
       <div class="login-title">
           <div class="login-t">普通用户 <span class="xiegang"></span> 忘记密码</div>
       </div>
@@ -136,13 +136,14 @@
                   <p class="timeOut">{{timeOut_num}}s后跳转到主页</p>
               </div>
               <div class="login-footer">
-                  <Button class="goto-home" @click.native="toSignup" >返回首页</Button>
-                  <Button class="look-more" @click.native="loginBtn" :show-loading="loading" >查看全部产品</Button>
+                  <Button class="goto-home" @click.native="toHome" >返回首页</Button>
+                  <Button class="look-more" @click.native="toHome" :show-loading="loading" >查看全部产品</Button>
               </div>
         </div>
       </div>
-      <v-footer></v-footer>
   </div>
+  <v-footer></v-footer>
+</div>
 </template>
 <script type="text/ecmascript-6">
 import header1 from '../homePages/header1'
@@ -170,8 +171,8 @@ export default {
         countDown() {
           this.timeOut_num--;
         },
-        toSignup() {
-            this.$router.push({path: '/signup'})
+        toHome() {
+            this.$router.push({path: '/home'})
         }
     },
     mounted(){

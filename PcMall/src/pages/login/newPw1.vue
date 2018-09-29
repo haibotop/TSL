@@ -1,9 +1,13 @@
 <style lang="scss" rel="stylesheet/scss">
+    #newPw1 .ivu-input ,#newPw2 .ivu-input ,#newPw3 .ivu-input {
+        height: 40px;
+    }
+</style>
+<style scoped lang="scss" rel="stylesheet/scss">
     #newPw1{
-        padding-bottom: 40px;
+        padding: 50px 0;
         background: #fafafa;
         .login-title{
-            margin-top: 50px;
             height: 100px;
             text-align: center;
             .login-t{
@@ -32,7 +36,7 @@
             width: 80%;
             background: #fff;
             .login-cont{
-                width: 510px;
+                width: 650px;
                 margin: 0 auto;
                 text-align: center;
                 .phone-group{
@@ -42,7 +46,7 @@
                         width: 60px;
                         text-align: left;
                         font-size: 16px;
-                        vertical-align: middle;
+                        vertical-align: text-bottom;
                         color: #333;
                     }
                 }
@@ -67,11 +71,9 @@
                 }
                 .stepBtn{
                     margin-top: 60px;
-                    span{
-                        font-size: 16px;
-                    }
                     width: 200px;
                     height: 50px;
+                    font-size: 16px;
                     color:#fff;
                     background-color: #352665;
                 }
@@ -83,50 +85,6 @@
             }
             input[type="number"]{
                 -moz-appearance: textfield;
-            }
-            // 进度条
-            .flowBar {
-                margin-bottom: 70px;
-                padding-top: 70px;
-                .weui-wepay-flow__bd {
-                    width: 100%;
-                    margin: 0 auto;
-                    height: 2px;
-                }
-                .weui-wepay-flow__li {
-                    width: 20px;
-                    height: 20px;
-                }
-                .weui-wepay-flow__li .weui-wepay-flow__state {
-                    width: 20px;
-                    height: 20px;
-                    line-height: 16px;
-                    border: 2px solid #B7B7B7;
-                    border-radius: 50%;
-                    background-color: #fff;
-                    color: #B7B7B7;
-                }
-                .weui-wepay-flow__li_done .weui-wepay-flow__state {
-                    line-height: 20px;
-                    border: none;
-                    background-color: #352665;
-                    color: #fff;
-                }
-                .weui-wepay-flow__line {
-                    height: 2px;
-                    background-color: #B7B7B7;
-                }
-                .weui-wepay-flow__line_done .weui-wepay-flow__process {
-                    background-color: #352665;
-                }
-                .weui-wepay-flow__title-bottom,
-                .weui-wepay-flow__li_done .weui-wepay-flow__title-bottom {
-                    color: #7F7F7F;
-                }
-                .weui-wepay-flow__title-bottom {
-                    width: 100px;
-                    margin: auto 10px;
-                }
             }
         }
         .xiegang:after{
@@ -163,7 +121,7 @@
             <div>
               <div class="phone-group">
                   <span>手机号</span>
-                <Input v-model="phone" placeholder="请输入注册时的手机号码" show-clear ref="numInput" @on-change="handlePhone" />
+                <Input v-model="phone" placeholder="请输入注册时的手机号码" :maxlength="11" ref="numInput" />
               </div>
               <Button class="stepBtn" @click.native="step1Btn" :show-loading="loading">下一步</Button>
             </div>
@@ -208,19 +166,6 @@ export default {
     }
   },
   methods: {
-    handlePhone () {
-      //   var val = this.phone;
-      // if (val) {
-      //   let arr = val.match(/[0-9]/g)
-      //   if (arr) {
-      //     this.phone = arr.join('')
-      //     this.$refs.numInput.reset(arr.join(''))
-      //   } else {
-      //     this.phone = ''
-      //     this.$refs.numInput.reset('')
-      //   }
-      // }
-    },
     submitPhone (phone) {
         console.log(phone)
       this.$http.get(myAPI.phone(phone)).then((response) => {
@@ -231,19 +176,13 @@ export default {
           })
           this.$store.commit('setPhone', this.phone)
         } else if (response.data.code === 6002) {
-          this.$vux.confirm.show({
-            content: '手机号未注册',
-            confirmText: '立即注册',
-            onConfirm: () => {
-              this.$router.replace({path: 'signup'})
-              this.loading = false
-              this.$refs.numInput.focus()
-            },
-            onCancel: () => {
-              this.loading = false
-              this.$refs.numInput.focus()
-            }
-          })
+            this.$Modal.warning({
+                title: '提示',
+                content: '手机号未注册',
+                onOk: () => {
+                    this.$refs.numInput.focus();
+                }
+            })
         }
       }).catch(() => {
         this.loading = false
@@ -251,26 +190,25 @@ export default {
       })
     },
     step1Btn () {
-      if (this.loading) {
-        return
-      }
       this.loading = true
       if (this.phone.length === 0) {
-          alert('请输入手机号')
-        // this.$vux.toast.show({
-        //   type: 'text',
-        //   width: '200px',
-        //   text: '请输入手机号'
-        // })
+          this.$Modal.warning({
+              title: '提示',
+              content: '请输入手机号',
+              onOk: () => {
+                  this.$refs.numInput.focus();
+              }
+          })
         this.loading = false
         this.$refs.numInput.focus()
       } else if (this.phone.length !== 11) {
-          alert('请输入正确的手机号码')
-        // this.$vux.toast.show({
-        //   type: 'text',
-        //   width: '200px',
-        //   text: '请输入正确的手机号码'
-        // })
+          this.$Modal.warning({
+              title: '提示',
+              content: '请输入正确的手机号码',
+              onOk: () => {
+                  this.$refs.numInput.focus();
+              }
+          })
         this.loading = false
         this.$refs.numInput.focus()
       } else if (this.phone.length === 11) {

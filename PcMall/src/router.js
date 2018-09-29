@@ -3,6 +3,7 @@ const loginSuccess = () => import('./pages/login/loginSuccess')
 const register = () => import('./pages/login/register')
 const register2 = () => import('./pages/login/register2')
 const register3 = () => import('./pages/login/register3')
+const registerSuccess = () => import('./pages/login/registerSuccess')
 const fgpsw = () => import('./pages/login/newPW1')
 const fgpsw2 = () => import('./pages/login/newPW2')
 const fgpsw3 = () => import('./pages/login/newPW3')
@@ -141,6 +142,14 @@ var host = [
         component: register3,
         meta: {
             title: '注册'
+        },
+    },
+    {
+        path: '/registerSuccess',
+        name: 'registerSuccess',
+        component: registerSuccess,
+        meta: {
+            title: '注册成功'
         },
     },
     {
