@@ -110,8 +110,8 @@
             height 200px
             float left
             img
-                margin-top 60px
-                margin-left 30px
+                $mt(60px)
+                $ml(30px)
         h2
             line-height 60px
             font-weight 400
@@ -125,7 +125,7 @@
             margin 20px 0
             width 180px
     .contentlist
-        border-left 4px solid $blue          
+        $border(border-left,4px)       
         ul
             // height 60px
             margin 10px 20px
@@ -138,18 +138,18 @@
                 height 70px
                 line-height 70px
                 text-align center
-                margin-top 10px
-                margin-bottom 10px
+                $mt(10px)
+                $mb(10px)
                 span 
                     color #000  
-                    margin-left 10px
+                    $ml(10px)
                 img 
-                    margin-left -10px   
+                    $ml(-10px) 
                     vertical-align middle                                    
                 &.active
-                    border 2px solid $blue
+                    $border(b,2px)
                 &:hover
-                    border 2px solid $blue
+                    $border(b,2px)
                 a
                     position relative   
                     display inline-block

@@ -165,9 +165,9 @@
                     line-height 16px
                     font-size 14px
                     text-align center 
-                    margin-bottom 4px
+                    $mb(4px)
                     color #000
-                    margin-top 15px
+                    $mt(15px)
                 .price
                     color $blue                 
                 .price_

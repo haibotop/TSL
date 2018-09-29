@@ -72,12 +72,12 @@
             float left
             a
                 color #000
-                margin-right 60px
+                $mr(60px)
                 i 
                     color $blue
         .header-right
             float right 
-            margin-right 30px
+            $mr(30px)
         .headertype
             position absolute
             background-color #fff
@@ -85,6 +85,6 @@
             width 100%
             z-index 99
             float left
-            border-left:8px solid $blue
+            $border(border-left,8px)
 
 </style>

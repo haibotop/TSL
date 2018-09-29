@@ -1,9 +1,54 @@
 <template>
   <div>
-    这是详情页
+    <header1></header1>
+    <header2></header2>
+    <div id="detail">
+      <div class="detail-title"><div class="detail-t">珠宝类型 <span class="xiegang"></span> 戒指</div></div>
+      <div class="detail-content">
+        <div class="breadcrumb">
+          <template>
+              <Breadcrumb separator=">">
+                <BreadcrumbItem to="/" class="color">首页</BreadcrumbItem>
+                <BreadcrumbItem to="/components/breadcrumb">珠宝类型</BreadcrumbItem>
+                <BreadcrumbItem to="/">戒指</BreadcrumbItem>
+                <BreadcrumbItem to="/" class="last">型号</BreadcrumbItem>
+            </Breadcrumb>
+          </template>
+        </div>
+        <div class="detail-content-center">
+          <div class="detail-content-left">
+            <div class="goodDetails_name_img">
+              <div class="little_img" >
+                  <Icon type="ios-arrow-up" @click='handleMove(1)'/>
+                  <div>
+                    <ul ref="picMove" :style="moveTop">
+                      <li v-for="img in imgUrl" @click='getIndex(img.url)'>
+                          <img :src="img.url">
+                      </li>
+                    </ul>
+                  </div>            
+                  <Icon type="ios-arrow-down" @click='handleMove(2)'/>
+              </div>
+              <div class="big_img">
+                  <img :src="ImgUrl">
+              </div>         
+          </div>
+          </div>
+          <div class="detail-content-right">
+            s
+          </div>
+        </div>
+        <div class="detail-content-bottom">
+
+        </div>
+      </div>
+    </div>
   </div>
 </template>
-// <script type="text/ecmasprict-6">
+ <script type="text/ecmasprict-6">
+  import header1 from '@/pages/homePages/header1'
+  import header2 from '@/pages/homePages/header2'
+  import vFooter from '@/pages/homePages/footer.vue'
 //   import * as tool from '@/services/myTool.es6'
 //   import * as pdAPI from '@/services/API/pdServices.es6'
 //   import * as mkApi from '@/services/API/marketing.es6'
@@ -16,672 +61,718 @@
 //   let interval
 //   let getSkuCancel
 //   let interval2 // 用于计算‘一次上拉’是否显示
-//   export default {
-//     name: 'pd',
-//     directives: {
-//       TransferDom
-//     },
-//     components: Object.assign({ pdSwiper, pdRichText, pdCoupons, pdPromotion }, { XHeader, Scroller, Group, CellBox, Cell, Popup, Checker, CheckerItem, InlineXNumber, XNumber, debounce, Tab, TabItem, XTable, Badge }),
-//     data () {
-//       return {
-//         filstLoad: 0,
-//         color: '#352665',
-//         leftOption: {
-//           backText: ''
-//         },
-//         // ----------上拉或下拉的状态
-//         scrollerStatus: {
-//           pulldownStatus: 'default',
-//           pullupStatus: 'default'
-//         },
-//         pullupConfig: {
-//           content: '', // Pull Up To Refresh
-//           pullUpHeight: 60,
-//           height: 50,
-//           autoRefresh: false,
-//           downContent: '', // Release To Refresh
-//           upContent: '', // Pull Up To Refresh
-//           loadingContent: '', // Loading...
-//           clsPrefix: '' // xs-plugin-pullup-
-//         },
-//         scrollerHeight: 0,
-//         // ---------sku信息
-//         skuId: '',
-//         skuInfo: '',
-//         // ---------spu信息
-//         spuId: '',
-//         spuInfo: '',
-//         specArray: [], // sku属性数组 [{specId:'', specName:'', specValueArray:[specId:'',specName:'',specValueId:'',specValueName:''], specValueFlags:[booleam]}]
-//         specValueArray: [],
-//         skuSpecArray: [], // 可用的sku组合 [[specId:'',specName:'',specValueId:'',specValueName:''], []]
-//         usedSpecValueArray: [], // 正在使用的sku组合的 sku属性 的 JSON 数组
-//         // ----------已选sku组合[{specId,specName,specValueId,specValueName}]
-//         specArrayOn: [],
-//         num: 1,
-//         // ----------选择规格
-//         specFlag: false,
-//         modalmodel: '', // 0 加入购物车 1 立即购买
-//         // ----------领取优惠券
-//         couponList: [],
-//         hasCoupon: false,
-//         couponFlag: false,
-//         // ----------更多详情
-//         moreFlag: false,
-//         tabIndex: 2,
-//         introduction: '',
-//         commonSpecArray: [],
-//         // ----------收藏
-//         isCollected: false,
-//         // ----------购物车信息
-//         cartNum: 0,
-//         // ----------一次上拉完成，可执行二次上拉
-//         pullupStep1: false,
-//         // 菜单
-//         menuFlag: false,
-//         getSkuCompeleted: false
-//       }
-//     },
-//     mounted: function () {
-//       this.scrollerHeight = document.body.clientHeight - 96
-//       this.skuId = this.$route.params.skuId
-//       this.getSkuInfo(this.skuId,function(){})
-//      // this.getOptimal(this.skuId)
-//       if (sessionStorage.getItem('settlementProductItems') && sessionStorage.getItem('userInfo')) {
-//         this.$router.push({path: '/createOrder'})
-//         return
-//       }
-//       interval = setInterval(() => {
-//         if (this.skuId) {
-//           // 获得 图集、sku、默认规格
-//           this.getSkuInfo(this.skuId, (res) => {
-//             this.skuInfo = res.data.skuInfo
-//             if (res.data.skuInfo.minPrice) {
-//               this.skuInfo.sku.discountPrice = this.getDiscountPrice(res.data.skuInfo.minPrice, res.data.skuInfo.sku.price)
-//               this.skuInfo.hasDiscount = true
+  export default {
+    name: 'pd',
+    // directives: {
+    //   TransferDom
+    // },
+    components: {
+      header1,
+      header2
+    },
+    // components: Object.assign({ pdSwiper, pdRichText, pdCoupons, pdPromotion }, { XHeader, Scroller, Group, CellBox, Cell, Popup, Checker, CheckerItem, InlineXNumber, XNumber, debounce, Tab, TabItem, XTable, Badge }),
+    data () {
+      return {
+        moveTop:{
+          top: "0px"
+        },
+        imgUrl: [
+          {index:1, url: require('../../assets/images/logo.png')},
+          {index:2, url: require('../../assets/images/anmoqi.jpg')},
+          {index:3, url: require('../../assets/images/style_03.jpg')},
+          {index:4, url: require('../../assets/images/style_02.jpg')},
+          {index:5, url: require('../../assets/images/logo.png')}
+        ],
+        ImgUrl: require('../../assets/images/logo.png'),
+        filstLoad: 0,
+        color: '#352665',
+        leftOption: {
+          backText: ''
+        },
+        // ----------上拉或下拉的状态
+        scrollerStatus: {
+          pulldownStatus: 'default',
+          pullupStatus: 'default'
+        },
+        pullupConfig: {
+          content: '', // Pull Up To Refresh
+          pullUpHeight: 60,
+          height: 50,
+          autoRefresh: false,
+          downContent: '', // Release To Refresh
+          upContent: '', // Pull Up To Refresh
+          loadingContent: '', // Loading...
+          clsPrefix: '' // xs-plugin-pullup-
+        },
+        scrollerHeight: 0,
+        // ---------sku信息
+        skuId: '',
+        skuInfo: '',
+        // ---------spu信息
+        spuId: '',
+        spuInfo: '',
+        specArray: [], // sku属性数组 [{specId:'', specName:'', specValueArray:[specId:'',specName:'',specValueId:'',specValueName:''], specValueFlags:[booleam]}]
+        specValueArray: [],
+        skuSpecArray: [], // 可用的sku组合 [[specId:'',specName:'',specValueId:'',specValueName:''], []]
+        usedSpecValueArray: [], // 正在使用的sku组合的 sku属性 的 JSON 数组
+        // ----------已选sku组合[{specId,specName,specValueId,specValueName}]
+        specArrayOn: [],
+        num: 1,
+        // ----------选择规格
+        specFlag: false,
+        modalmodel: '', // 0 加入购物车 1 立即购买
+        // ----------领取优惠券
+        couponList: [],
+        hasCoupon: false,
+        couponFlag: false,
+        // ----------更多详情
+        moreFlag: false,
+        tabIndex: 2,
+        introduction: '',
+        commonSpecArray: [],
+        // ----------收藏
+        isCollected: false,
+        // ----------购物车信息
+        cartNum: 0,
+        // ----------一次上拉完成，可执行二次上拉
+        pullupStep1: false,
+        // 菜单
+        menuFlag: false,
+        getSkuCompeleted: false
+      }
+    },
+    methods: {
+      getIndex(imgUrl){
+        this.ImgUrl = imgUrl;
+      },
+      handleMove(num){
+        console.log(this.$refs.picMove.style.top)
+        // let length = this.imgUrl.length - 4
+        // this.imgUrlLength = length
+        console.log(this.imgUrlLength+'ss')
+        if(num === 1){         
+          if(this.timgUrlLength !== 0){        
+            alert(3)   
+            this.moveTop.top = parseInt(this.moveTop.top) - 70 + 'px'
+            this.imgUrlLength-=1
+            
+          }          
+        }else{
+          // if(){
+          //   this.moveTop.top = parseInt(this.moveTop.top) + 70 + 'px'
+          // }
+        }
+      }
+    },
+    mounted:function(){
+      console.log(this.$refs.picMove.style.top)
+    },
+    computed: {
+      imgUrlLength () {
+        return this.imgUrl.length - 4
+      }
+    },
+    // mounted: function () {
+    //   this.scrollerHeight = document.body.clientHeight - 96
+    //   this.skuId = this.$route.params.skuId
+    //   this.getSkuInfo(this.skuId,function(){})
+    //  // this.getOptimal(this.skuId)
+    //   if (sessionStorage.getItem('settlementProductItems') && sessionStorage.getItem('userInfo')) {
+    //     this.$router.push({path: '/createOrder'})
+    //     return
+    //   }
+    //   interval = setInterval(() => {
+    //     if (this.skuId) {
+    //       // 获得 图集、sku、默认规格
+    //       this.getSkuInfo(this.skuId, (res) => {
+    //         this.skuInfo = res.data.skuInfo
+    //         if (res.data.skuInfo.minPrice) {
+    //           this.skuInfo.sku.discountPrice = this.getDiscountPrice(res.data.skuInfo.minPrice, res.data.skuInfo.sku.price)
+    //           this.skuInfo.hasDiscount = true
 
-//             } else {
-//               this.skuInfo.hasDiscount = false
-//             }
-//             console.log('价格：', this.skuInfo.sku.price)
-//             this.getSkuCompeleted = true
-//             this.spuId = res.data.skuInfo.sku.spuId
-//             this.specArrayOn = res.data.skuInfo.spec
-//             // 获取 可用的sku组合、所有sku属性数组、视频
-//             this.getSpuInfo(res.data.skuInfo.sku.spuId, (res) => {
-//               this.spuInfo = res.data.spuInfo
-//               // 可用的sku组合
-//               this.skuSpecArray = res.data.spuInfo.skuSpecArray
-//               // 处理sku属性数组，元素格式为{specId, specName, specValueId, specValueName}
-//               this.getSpecArray(res.data.spuInfo.specArray)
-//             })
-//             // 获取商品简介、spu名字、spu属性
-//             this.getSpuSpec(res.data.skuInfo.sku.spuId)
-//           })
-//           if (sessionStorage.getItem('userInfo')) {
-//             // TODO 当localStorage存在，后台缓存不存在，会出现401
-//             // 收藏
-//             this.checkCollect(() => {
-//               this.getCartItem()
-//             })
-//             // 获取优惠券
-//             this.getSkuCoupon(this.skuId)
-//           }
-//           clearInterval(interval)
-//         }
-//       }, 0)
-//     },
-//     methods: {
-//       getOptimal (skuId) {
-//         let params = [];
-//         params.push(skuId)
-//         this.$http.post(...mkApi.getOptimal(params)).then(res => {
-//           if (res.data.code === 200) {
-//             console.log('getOptimal', res.data)
-//           } else {
-//           }
-//         }).catch(() => {})
-//       },
-//        // ---计算促销后的价格
-//       getDiscountPrice (discountParams, price) {
-//         if (discountParams.type === 3) { // 单品折扣
-//           console.log(discountParams.type)
-//           price = parseInt(price * discountParams.discount * 0.01) + price % 100
-//           if (discountParams.typeAlone === 1) { // 元级取整
-//             price = tool.handlePrice(price)
-//             price = parseInt(price)
-//           } else if (discountParams.typeAlone === 2) {
-//             price = tool.handlePrice(price)
-//             price = parseFloat(price).toFixed(1)
-//           }
-//         } else if (discountParams.type === 4) { // 直降
-//           console.log(discountParams.type)
-//           price = price - discountParams.directAmount
-//           price = tool.handlePrice(price)
-//         } else {
-//           console.log(discountParams.type)
-//           price = tool.handlePrice(price)
-//         }
-//         return price
-//       },
-//       // ----------接口-get-skuInfo
-//       getSkuInfo (skuId, callback) {
-//         this.$http.get(...pdAPI.getSkuInfo(skuId)).then(res => {
-//           if (res.data.code === 200) {
-//             console.log('getSkuInfo优惠', res.data)
-//             if (typeof callback === 'function') { callback(res) }
-//           } else {
-//           }
-//         }).catch(() => {})
-//       },
-//       // ----------接口-get-spuInfo
-//       getSpuInfo (spuId, callback) {
-//         this.$http.get(...pdAPI.getSpuInfo(spuId)).then(res => {
-//           if (res.data.code === 200) {
-//             if (typeof callback === 'function') { callback(res) }
-//           } else {
-//           }
-//         }).catch(() => {})
-//       },
-//       // ----------接口-获取商品优惠券
-//       getSkuCoupon (skuid) {
-//         this.$http.get(mkApi.getSkuCoupon(skuid)).then(res => {
-//           if (res.data.code === 200) {
-//             console.log('获取了skuid对应的商品优惠券', res)
-//             this.couponList = res.data.proCouponInfos
-//             if (this.couponList.length < 1) {
-//               this.hasCoupon = false
-//             } else {
-//               this.hasCoupon = true
-//               let couponArr = []
-//               for (var i in this.couponList) {
-//                 couponArr.push(this.getDiscountPrice(this.couponList[i], this.skuInfo.sku.price))
-//               }
-//               console.log('couponArr', couponArr)
-//             }
-//           }
-//         })
-//       },
-//       // ----------处理spec属性数组，属性值对象加上specId和specName
-//       getSpecArray (data) {
-//         let specArray = []
-//         for (let i of data) {
-//           let spec1 = {
-//             specId: i.specId,
-//             specName: i.specName,
-//             specValueArray: [],
-//             specValueFlags: []
-//           }
-//           for (let j of i.specValueArray) {
-//             spec1.specValueArray.push({
-//               specId: i.specId,
-//               specName: i.specName,
-//               specValueId: j.specValueId,
-//               specValueName: j.specValueName
-//             })
-//             spec1.specValueFlags.push(false)
-//           }
-//           specArray.push(spec1)
-//         }
-//         this.specArray = specArray
-//         this.handleSpecState()
-//       },
-//       // ----------处理spec置灰
-//       handleSpecState () {
-//         // ----------取出正在使用的sku组合包含的属性值
-//         let usedSpecValueArray = []
-//         let qobj = {}
-//         for (let i of this.skuSpecArray) {
-//           for (let j of i) {
-//             if (qobj[JSON.stringify(j)] !== 1) {
-//               usedSpecValueArray.push(JSON.stringify(j))
-//               qobj[JSON.stringify(j)] = 1
-//             }
-//           }
-//         }
-//         this.usedSpecValueArray = usedSpecValueArray
-//         qobj = {}
-//         // ----------将会使用的设为true,即完全没有使用到的属性值设为false
-//         for (let i of usedSpecValueArray) {
-//           for (let j in this.specArray) {
-//             for (let k in this.specArray[j].specValueArray) {
-//               if (i === JSON.stringify(this.specArray[j].specValueArray[k])) {
-//                 this.specArray[j].specValueFlags[k] = true
-//               }
-//             }
-//           }
-//         }
-//         // ----------根据当前选择的属性值，置灰不能成为组合的属性值
-//         // 本次高亮的属性值
-//         let thisValueArray = []
-//         for (let i of this.specArrayOn) {
-//           for (let j of this.skuSpecArray) {
-//             // 当前选择的sku属性值 存在于 可使用的sku组合
-//             if (JSON.stringify(j).indexOf(JSON.stringify(i)) !== -1) {
-//               // 遍历 可使用的sku组合的属性值
-//               for (let k of j) {
-//                 if (JSON.stringify(i) !== JSON.stringify(k) && !qobj[JSON.stringify(k)]) {
-//                   thisValueArray.push(JSON.stringify(k))
-//                   qobj[JSON.stringify(k)] = 1
-//                 }
-//               }
-//             }
-//           }
-//         }
-//         for (let i in this.specArray) {
-//           for (let j in this.specArray[i].specValueArray) {
-//             if (thisValueArray.length > 0 && thisValueArray.indexOf(JSON.stringify(this.specArray[i].specValueArray[j])) === -1) {
-//               this.specArray[i].specValueFlags[j] = false
-//             }
-//           }
-//         }
-//         this.$vux.loading.hide()
-//         if (this.filstLoad === 0) {
-//           this.filstLoad++
-//         } else {
-//           this.getSkuBySpec()
-//         }
-//       },
-//       // ----------spec组合变动，获取spec组合信息
-//       getSkuBySpec: debounce(function () {
-//         this.num = 1
-//         this.$http.post(...pdAPI.specGetSku(this.specArrayOn).concat({
-//         cancelToken: new this.$http.CancelToken(function (cancel) {
-//           if (typeof getSkuCancel === 'function') {
-//             getSkuCancel()
-//           }
-//           getSkuCancel = cancel
-//         })
-//       })).then((res) => {
-//         if (res.data.code === 200) {
-//           this.skuId = res.data.skuInfo.sku.id
-//           this.skuInfo = res.data.skuInfo
-//           if (res.data.skuInfo.minPrice) {
-//               this.skuInfo.sku.discountPrice = this.getDiscountPrice(res.data.skuInfo.minPrice, res.data.skuInfo.sku.price)
-//               this.skuInfo.hasDiscount = true
+    //         } else {
+    //           this.skuInfo.hasDiscount = false
+    //         }
+    //         console.log('价格：', this.skuInfo.sku.price)
+    //         this.getSkuCompeleted = true
+    //         this.spuId = res.data.skuInfo.sku.spuId
+    //         this.specArrayOn = res.data.skuInfo.spec
+    //         // 获取 可用的sku组合、所有sku属性数组、视频
+    //         this.getSpuInfo(res.data.skuInfo.sku.spuId, (res) => {
+    //           this.spuInfo = res.data.spuInfo
+    //           // 可用的sku组合
+    //           this.skuSpecArray = res.data.spuInfo.skuSpecArray
+    //           // 处理sku属性数组，元素格式为{specId, specName, specValueId, specValueName}
+    //           this.getSpecArray(res.data.spuInfo.specArray)
+    //         })
+    //         // 获取商品简介、spu名字、spu属性
+    //         this.getSpuSpec(res.data.skuInfo.sku.spuId)
+    //       })
+    //       if (sessionStorage.getItem('userInfo')) {
+    //         // TODO 当localStorage存在，后台缓存不存在，会出现401
+    //         // 收藏
+    //         this.checkCollect(() => {
+    //           this.getCartItem()
+    //         })
+    //         // 获取优惠券
+    //         this.getSkuCoupon(this.skuId)
+    //       }
+    //       clearInterval(interval)
+    //     }
+    //   }, 0)
+    // },
+    // methods: {
+    //   getOptimal (skuId) {
+    //     let params = [];
+    //     params.push(skuId)
+    //     this.$http.post(...mkApi.getOptimal(params)).then(res => {
+    //       if (res.data.code === 200) {
+    //         console.log('getOptimal', res.data)
+    //       } else {
+    //       }
+    //     }).catch(() => {})
+    //   },
+    //    // ---计算促销后的价格
+    //   getDiscountPrice (discountParams, price) {
+    //     if (discountParams.type === 3) { // 单品折扣
+    //       console.log(discountParams.type)
+    //       price = parseInt(price * discountParams.discount * 0.01) + price % 100
+    //       if (discountParams.typeAlone === 1) { // 元级取整
+    //         price = tool.handlePrice(price)
+    //         price = parseInt(price)
+    //       } else if (discountParams.typeAlone === 2) {
+    //         price = tool.handlePrice(price)
+    //         price = parseFloat(price).toFixed(1)
+    //       }
+    //     } else if (discountParams.type === 4) { // 直降
+    //       console.log(discountParams.type)
+    //       price = price - discountParams.directAmount
+    //       price = tool.handlePrice(price)
+    //     } else {
+    //       console.log(discountParams.type)
+    //       price = tool.handlePrice(price)
+    //     }
+    //     return price
+    //   },
+    //   // ----------接口-get-skuInfo
+    //   getSkuInfo (skuId, callback) {
+    //     this.$http.get(...pdAPI.getSkuInfo(skuId)).then(res => {
+    //       if (res.data.code === 200) {
+    //         console.log('getSkuInfo优惠', res.data)
+    //         if (typeof callback === 'function') { callback(res) }
+    //       } else {
+    //       }
+    //     }).catch(() => {})
+    //   },
+    //   // ----------接口-get-spuInfo
+    //   getSpuInfo (spuId, callback) {
+    //     this.$http.get(...pdAPI.getSpuInfo(spuId)).then(res => {
+    //       if (res.data.code === 200) {
+    //         if (typeof callback === 'function') { callback(res) }
+    //       } else {
+    //       }
+    //     }).catch(() => {})
+    //   },
+    //   // ----------接口-获取商品优惠券
+    //   getSkuCoupon (skuid) {
+    //     this.$http.get(mkApi.getSkuCoupon(skuid)).then(res => {
+    //       if (res.data.code === 200) {
+    //         console.log('获取了skuid对应的商品优惠券', res)
+    //         this.couponList = res.data.proCouponInfos
+    //         if (this.couponList.length < 1) {
+    //           this.hasCoupon = false
+    //         } else {
+    //           this.hasCoupon = true
+    //           let couponArr = []
+    //           for (var i in this.couponList) {
+    //             couponArr.push(this.getDiscountPrice(this.couponList[i], this.skuInfo.sku.price))
+    //           }
+    //           console.log('couponArr', couponArr)
+    //         }
+    //       }
+    //     })
+    //   },
+    //   // ----------处理spec属性数组，属性值对象加上specId和specName
+    //   getSpecArray (data) {
+    //     let specArray = []
+    //     for (let i of data) {
+    //       let spec1 = {
+    //         specId: i.specId,
+    //         specName: i.specName,
+    //         specValueArray: [],
+    //         specValueFlags: []
+    //       }
+    //       for (let j of i.specValueArray) {
+    //         spec1.specValueArray.push({
+    //           specId: i.specId,
+    //           specName: i.specName,
+    //           specValueId: j.specValueId,
+    //           specValueName: j.specValueName
+    //         })
+    //         spec1.specValueFlags.push(false)
+    //       }
+    //       specArray.push(spec1)
+    //     }
+    //     this.specArray = specArray
+    //     this.handleSpecState()
+    //   },
+    //   // ----------处理spec置灰
+    //   handleSpecState () {
+    //     // ----------取出正在使用的sku组合包含的属性值
+    //     let usedSpecValueArray = []
+    //     let qobj = {}
+    //     for (let i of this.skuSpecArray) {
+    //       for (let j of i) {
+    //         if (qobj[JSON.stringify(j)] !== 1) {
+    //           usedSpecValueArray.push(JSON.stringify(j))
+    //           qobj[JSON.stringify(j)] = 1
+    //         }
+    //       }
+    //     }
+    //     this.usedSpecValueArray = usedSpecValueArray
+    //     qobj = {}
+    //     // ----------将会使用的设为true,即完全没有使用到的属性值设为false
+    //     for (let i of usedSpecValueArray) {
+    //       for (let j in this.specArray) {
+    //         for (let k in this.specArray[j].specValueArray) {
+    //           if (i === JSON.stringify(this.specArray[j].specValueArray[k])) {
+    //             this.specArray[j].specValueFlags[k] = true
+    //           }
+    //         }
+    //       }
+    //     }
+    //     // ----------根据当前选择的属性值，置灰不能成为组合的属性值
+    //     // 本次高亮的属性值
+    //     let thisValueArray = []
+    //     for (let i of this.specArrayOn) {
+    //       for (let j of this.skuSpecArray) {
+    //         // 当前选择的sku属性值 存在于 可使用的sku组合
+    //         if (JSON.stringify(j).indexOf(JSON.stringify(i)) !== -1) {
+    //           // 遍历 可使用的sku组合的属性值
+    //           for (let k of j) {
+    //             if (JSON.stringify(i) !== JSON.stringify(k) && !qobj[JSON.stringify(k)]) {
+    //               thisValueArray.push(JSON.stringify(k))
+    //               qobj[JSON.stringify(k)] = 1
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //     for (let i in this.specArray) {
+    //       for (let j in this.specArray[i].specValueArray) {
+    //         if (thisValueArray.length > 0 && thisValueArray.indexOf(JSON.stringify(this.specArray[i].specValueArray[j])) === -1) {
+    //           this.specArray[i].specValueFlags[j] = false
+    //         }
+    //       }
+    //     }
+    //     this.$vux.loading.hide()
+    //     if (this.filstLoad === 0) {
+    //       this.filstLoad++
+    //     } else {
+    //       this.getSkuBySpec()
+    //     }
+    //   },
+    //   // ----------spec组合变动，获取spec组合信息
+    //   getSkuBySpec: debounce(function () {
+    //     this.num = 1
+    //     this.$http.post(...pdAPI.specGetSku(this.specArrayOn).concat({
+    //     cancelToken: new this.$http.CancelToken(function (cancel) {
+    //       if (typeof getSkuCancel === 'function') {
+    //         getSkuCancel()
+    //       }
+    //       getSkuCancel = cancel
+    //     })
+    //   })).then((res) => {
+    //     if (res.data.code === 200) {
+    //       this.skuId = res.data.skuInfo.sku.id
+    //       this.skuInfo = res.data.skuInfo
+    //       if (res.data.skuInfo.minPrice) {
+    //           this.skuInfo.sku.discountPrice = this.getDiscountPrice(res.data.skuInfo.minPrice, res.data.skuInfo.sku.price)
+    //           this.skuInfo.hasDiscount = true
 
-//             } else {
-//               this.skuInfo.hasDiscount = false
-//             }
-//           this.spuId = res.data.skuInfo.sku.spuId
-//           this.$router.replace({path: `/pd/${this.skuInfo.sku.id}`})
-//           this.checkCollect()
-//         }
-//       })
-//       }, 300),
-//       // ----------上拉
-//       onPullup: debounce(function () {
-//         if (this.pullupStep1) {
-//           if (this.$refs.pdSwiper) {
-//             this.$refs.pdSwiper.btnEvent(false)
-//           }
-//           this.moreFlag = true
-//           this.pullupStep1 = false
-//           clearInterval(interval2)
-//         } else {
-//           clearInterval(interval2)
-//           this.pullupStep1 = true
-//           interval2 = setInterval(() => {
-//             if (document.getElementsByClassName('xs-container')[0].style.transform.indexOf('translateY(0px)') !== -1) {
-//               this.pullupStep1 = false
-//               clearInterval(interval2)
-//             }
-//           }, 300)
-//         }
-//         this.$refs.scroller.donePullup()
-//       }, 100),
-//       checkCollect (callback) {
-//         if (sessionStorage.getItem('userInfo')) {
-//           this.$http.get(...pdAPI.isProductCollection(this.skuId)).then(res => {
-//             if (res.data.code === 6017) {
-//               this.isCollected = true
-//             } else if (res.data.code === 6018) {
-//               this.isCollected = false
-//             }
-//             if (typeof callback === 'function') {
-//               callback()
-//             }
-//           })
-//         }
-//       },
-//       collect: debounce(function () {
-//         if (this.isCollected) {
-//           this.$http.delete(...pdAPI.deleteProductCollect(this.skuId).concat({
-//             cancelToken: new this.$http.CancelToken(function (cancel) {
-//               if (typeof getSkuCancel === 'function') {
-//                 getSkuCancel()
-//               }
-//               getSkuCancel = cancel
-//             })
-//           })).then(res => {
-//             if (res.data.code === 200) {
-//               this.isCollected = false
-//             }
-//           })
-//         } else {
-//           let source = this.$http.CancelToken.source()
-//           this.$http.post(...pdAPI.productCollect({productId: this.skuId}), {cancelToken: source.token, certified: true, source: source}).then(res => {
-//             if (res.data.code === 200) {
-//               this.isCollected = true
-//             } else if (res.data.code === 6017) {
-//               this.isCollected = true
-//             }
-//           })
-//         }
-//       }, 300),
-//       goShoppingCart () {
-//         this.$router.push({path: '/shoppingCart'})
-//       },
-//       // ----------加入购物车
-//       postCartItem () {
-//         if (this.skuInfo.sku.stock === 0) { return }
-//         if (sessionStorage.getItem('userInfo')) {
-//           let cartItemData  = {
-//             memberId: null,
-//             merchantId: '123',
-//             productId: this.skuId,
-//             productItemId: null,
-//             quantity: this.num
-//           }
-//           this.$http.post(...pdAPI.postCartItem(cartItemData), {certified: true}).then((response) => {
-//             this.specFlag = true
-//             this.num = 1
-//             if (response.data.code === 200) {
-//               this.$vux.toast.show({text: '加入购物袋成功', type: 'text', width: '200px'})
-//               this.getCartItem()
-//             } else {
-//               if (response.data.code === 1008) {
-//                 this.skuInfo.sku.status = 2
-//               }
-//               this.$vux.toast.show({text: response.data.message, type: 'text', width: '200px'})
-//             }
-//           })
-//         } else {
-//           if (!localStorage.getItem('cartProductItems')) {
-//             localStorage.setItem('cartProductItems', '[]')
-//           }
-//           if (localStorage.getItem('cartProductItems') === '[]') {
-//             let arr = [{
-//               amount: this.num,
-//               barcode: this.skuInfo.sku.barcode,
-//               code: this.skuInfo.sku.code,
-//               defaultPicture: this.skuInfo.sku.defaultPicture,
-//               id: this.skuInfo.sku.id,
-//               memberId: '',
-//               merchantId: '123',
-//               name: this.skuInfo.sku.name,
-//               originalPrice: 0,
-//               price: this.skuInfo.sku.price,
-//               sales: this.skuInfo.sku.sales,
-//               specs: this.specArrayOn,
-//               spuId: this.skuInfo.sku.spuId,
-//               status: this.skuInfo.sku.status,
-//               stock: this.skuInfo.sku.stock
-//             }]
-//             localStorage.setItem('cartProductItems', JSON.stringify(arr))
-//             this.$vux.toast.show({text: '加入购物袋成功', type: 'text', width: '200px'})
-//             this.num = 1
-//             this.specFlag = true
-//             this.getCartItem()
-//           } else {
-//             let arr = JSON.parse(localStorage.getItem('cartProductItems'))
-//             let repetition = false
-//             for (let i of arr) {
-//               if (this.skuInfo.sku.id === i.id) {
-//                 i.amount = i.amount * 1 + this.num * 1
-//                 repetition = true
-//               }
-//             }
-//             if (!repetition) {
-//               arr.push({
-//                 amount: this.num,
-//                 barcode: this.skuInfo.sku.barcode,
-//                 code: this.skuInfo.sku.code,
-//                 defaultPicture: this.skuInfo.sku.defaultPicture,
-//                 id: this.skuInfo.sku.id,
-//                 memberId: '',
-//                 merchantId: '123',
-//                 name: this.skuInfo.sku.name,
-//                 originalPrice: 0,
-//                 price: this.skuInfo.sku.price,
-//                 sales: this.skuInfo.sku.sales,
-//                 specs: this.specArrayOn,
-//                 spuId: this.skuInfo.sku.spuId,
-//                 status: this.skuInfo.sku.status,
-//                 stock: this.skuInfo.sku.stock
-//               })
-//             }
-//             localStorage.setItem('cartProductItems', JSON.stringify(arr))
-//             this.$vux.toast.show({text: '加入购物袋成功', type: 'text', width: '200px'})
-//             this.getCartItem()
-//           }
-//         }
-//       },
-//       // ----------------- 领取优惠券
-//       openGetCoupon () {
-//         this.couponFlag = true
-//       },
-//       // ---------- 直接购买 创建订单
-//       createOrder () {
-//         console.log('直接购买')
-//         if (this.skuInfo.sku.stock === 0) { return }
-//         if (sessionStorage.getItem('userInfo')) {
-//           let cartItemData  = {
-//             memberId: null,
-//             merchantId: '123',
-//             productId: this.skuId,
-//             productItemId: null,
-//             quantity: this.num
-//           }
-//           this.$http.post(...pdAPI.postCartItem(cartItemData), {certified: true}).then((response) => {
-//             if (response.data.code === 200) {
-//               sessionStorage.setItem('settlementProductItems',`[{"promotionId":"${this.$refs.pdPromotion.selected ? this.$refs.pdPromotion.selected.id : ''}","productItem":[{"productId":"${this.skuId}","quantity":${this.num}}]}]`)
-//               this.$router.push({path: `/createOrder`})
-//                this.specFlag = true
-//                this.num = 1
-//             } else {
-//               this.$vux.toast.show({text: response.data.message, type: 'text', width: '200px'})
-//             }
-//           })
-//         } else {
-//           this.$vux.confirm.show({
-//             content: '用户未登录',
-//             confirmText: '去登录',
-//             onConfirm: () => {
-//               sessionStorage.setItem('settlementProductItems', `[{"promotionId":"${ this.$refs.pdPromotion.selected ? this.$refs.pdPromotion.selected.id : ''}","productItem":[{"productId":"${this.skuId}","quantity":${this.num}}]}]`)
-//               this.$router.push({path: '/signin'})
-//             }
-//           })
-//         }
-//       },
-//       // ----------获取购物车商品数量
-//       getCartItem () {
-//         if (sessionStorage.getItem('userInfo')) {
-//           tool.preCartToCart(this, () => {
-//             this.$http.get(...pdAPI.getCartItem()).then((response) => {
-//               if (response.data.code === 200) {
-//                 this.getCartNum(response.data.pageInfo.list)
-//               }
-//             })
-//           })
-//         } else {
-//           if (localStorage.getItem('cartProductItems')) {
-//             let cartProductItems = JSON.parse(localStorage.getItem('cartProductItems'))
-//             this.getCartNum(cartProductItems)
-//           }
-//         }
-//       },
-//       getCartNum (data) {
-//         // let sum = 0
-//         // for (let i of data) {
-//         //   sum += i.amount * 1
-//         // }
-//         // this.cartNum = sum
-//         this.cartNum = data.length
-//       },
-//       // ----------接口-spu和spu通用属性信息
-//       getSpuSpec (spuId) {
-//         this.$http.get(...pdAPI.spuSpec(spuId)).then(res => {
-//           if (res.data.code === 200) {
-//             this.introduction = res.data.spuInfo.introduction
-//             let commonSpecArray = []
-//             if (res.data.spuInfo.spuSpecArray) {
-//               res.data.spuInfo.spuSpecArray.forEach(e => {
-//                 if (e.specName !== '产地') {
-//                   commonSpecArray.push(e)
-//                 }
-//               })
-//             }
-//             this.commonSpecArray = commonSpecArray
-//           }
-//         })
-//       },
-//       handlePrice (price) {
-//         return tool.handlePrice(price)
-//       },
-//       handleName (name) {
-//         return tool.handleName(name)
-//       },
-//       handleSpecValueArray (arr) {
-//         let isTime = false
-//         if (/^1[0-9]{12}$/.test(arr[0])) {
-//           isTime = true
-//         }
-//         if (isTime) {
-//           let date = new Date(arr[0] * 1)
-//           return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
-//         } else {
-//           return arr.join(',')
-//         }
-//       },
-//       openSpecModal (model) {
-//         this.modalmodel = model
-//         if (this.skuInfo.sku) {
-//           this.specFlag = this.skuInfo.sku.status === 1 ? true : false
-//         } else {
-//           this.specFlag = false
-//         }
-//       },
-//       onScroll: debounce(function (position) {
-//         if (this.$refs.scroller) {
-//           this.$refs.scroller.reset()
-//         }
-//       }, 30)
-//     },
-//     computed: {
-//       heartSvg () {
-//         return require('../../assets/icons/heart.svg')
-//       },
-//       heartFillSvg () {
-//         return require('../../assets/icons/heart-fill.svg')
-//       },
-//       bagSvg () {
-//         return require('../../assets/icons/bag.svg')
-//       },
-//       // ----------轮播数据
-//       swiperData () {
-//         let arr = []
-//         if (this.spuInfo) {
-//           if (this.spuInfo.videoUrl) {
-//             arr.push({
-//               type: 'video',
-//               data: this.spuInfo.videoUrl
-//             })
-//           }
-//         }
-//         if (this.skuInfo) {
-//           if (this.skuInfo.image.length > 0) {
-//             for (let i of this.skuInfo.image) {
-//               arr.push({
-//                 type: 'img',
-//                 src: i.pictureUrl,
-//                 link: ''
-//               })
-//             }
-//           }
-//         }
-//         return arr
-//       },
-//       specValueNameStr () {
-//         let arr = []
-//         for (let i of this.specArrayOn) {
-//           arr.push(i.specValueName)
-//         }
-//         return arr.join(' ')
-//       },
-//       // 默认规格字符串，判断是否是单品
-//       specStr () {
-//         return JSON.stringify(this.specArrayOn)
-//       },
-//       specScrollerHeight () {
-//         return document.body.clientHeight * 0.75 - 101 - 50 + 'px'
-//       },
-//       bottomStyle () {
-//         return `top:${document.body.clientHeight - 50}px`
-//       },
-//       cartBtnStyle () {
-//         if (this.skuInfo) {
-//           return this.skuInfo.sku.stock !== 0 ? 'add-to-cart' : 'add-to-cart-disabled'
-//         } else {
-//           return 'add-to-cart-disabled'
-//         }
-//       },
-//       buyBtnStyle () {
-//         if (this.skuInfo) {
-//           return this.skuInfo.sku.stock !== 0 ? 'buy' : 'buy-disabled'
-//         } else {
-//           return 'buy-disabled'
-//         }
-//       },
-//       // ---------图文详情
-//       moreStyle () {
-//         return `min-height: ${document.body.clientHeight - 46}px`
-//       },
-//       // ---------是否允许购买
-//       disabledBuy () {
-//         if (this.skuInfo.sku) {
-//           return this.skuInfo.sku.stock === 0 || this.skuInfo.sku.status !== 1 ? true : false
-//         } else {
-//           return true
-//         }
-//       },
-//       canBuy () {
-//         if (this.disabledBuy) {
-//           return false
-//         } else {
-//           return true
-//         }
-//       }
-//     },
-//     watch: {
-//       specStr (newV, oldV) {
-//         if (oldV !== '[]') {
-//           if (newV !== oldV) {
-//             this.handleSpecState()
-//           }
-//         }
-//       },
-//       specFlag (flag) {
-//         if (!flag) {
-//           this.modalmodel = ''
-//         }
-//         if (this.$refs.pdSwiper) {
-//           this.$refs.pdSwiper.hideVideo(flag)
-//         }
-//       },
-//       moreFlag (flag) {
-//         if (this.$refs.pdSwiper) {
-//           this.$refs.pdSwiper.hideVideo(flag)
-//         }
-//       }
-//     },
-//     beforeRouteLeave: (to, from, next) => {
-//       clearInterval(interval)
-//       clearInterval(interval2)
-//       next()
-//     }
-//   }
-// </script>
-// <style rel="stylesheet/scss" lang="scss" scoped>
+    //         } else {
+    //           this.skuInfo.hasDiscount = false
+    //         }
+    //       this.spuId = res.data.skuInfo.sku.spuId
+    //       this.$router.replace({path: `/pd/${this.skuInfo.sku.id}`})
+    //       this.checkCollect()
+    //     }
+    //   })
+    //   }, 300),
+    //   // ----------上拉
+    //   onPullup: debounce(function () {
+    //     if (this.pullupStep1) {
+    //       if (this.$refs.pdSwiper) {
+    //         this.$refs.pdSwiper.btnEvent(false)
+    //       }
+    //       this.moreFlag = true
+    //       this.pullupStep1 = false
+    //       clearInterval(interval2)
+    //     } else {
+    //       clearInterval(interval2)
+    //       this.pullupStep1 = true
+    //       interval2 = setInterval(() => {
+    //         if (document.getElementsByClassName('xs-container')[0].style.transform.indexOf('translateY(0px)') !== -1) {
+    //           this.pullupStep1 = false
+    //           clearInterval(interval2)
+    //         }
+    //       }, 300)
+    //     }
+    //     this.$refs.scroller.donePullup()
+    //   }, 100),
+    //   checkCollect (callback) {
+    //     if (sessionStorage.getItem('userInfo')) {
+    //       this.$http.get(...pdAPI.isProductCollection(this.skuId)).then(res => {
+    //         if (res.data.code === 6017) {
+    //           this.isCollected = true
+    //         } else if (res.data.code === 6018) {
+    //           this.isCollected = false
+    //         }
+    //         if (typeof callback === 'function') {
+    //           callback()
+    //         }
+    //       })
+    //     }
+    //   },
+    //   collect: debounce(function () {
+    //     if (this.isCollected) {
+    //       this.$http.delete(...pdAPI.deleteProductCollect(this.skuId).concat({
+    //         cancelToken: new this.$http.CancelToken(function (cancel) {
+    //           if (typeof getSkuCancel === 'function') {
+    //             getSkuCancel()
+    //           }
+    //           getSkuCancel = cancel
+    //         })
+    //       })).then(res => {
+    //         if (res.data.code === 200) {
+    //           this.isCollected = false
+    //         }
+    //       })
+    //     } else {
+    //       let source = this.$http.CancelToken.source()
+    //       this.$http.post(...pdAPI.productCollect({productId: this.skuId}), {cancelToken: source.token, certified: true, source: source}).then(res => {
+    //         if (res.data.code === 200) {
+    //           this.isCollected = true
+    //         } else if (res.data.code === 6017) {
+    //           this.isCollected = true
+    //         }
+    //       })
+    //     }
+    //   }, 300),
+    //   goShoppingCart () {
+    //     this.$router.push({path: '/shoppingCart'})
+    //   },
+    //   // ----------加入购物车
+    //   postCartItem () {
+    //     if (this.skuInfo.sku.stock === 0) { return }
+    //     if (sessionStorage.getItem('userInfo')) {
+    //       let cartItemData  = {
+    //         memberId: null,
+    //         merchantId: '123',
+    //         productId: this.skuId,
+    //         productItemId: null,
+    //         quantity: this.num
+    //       }
+    //       this.$http.post(...pdAPI.postCartItem(cartItemData), {certified: true}).then((response) => {
+    //         this.specFlag = true
+    //         this.num = 1
+    //         if (response.data.code === 200) {
+    //           this.$vux.toast.show({text: '加入购物袋成功', type: 'text', width: '200px'})
+    //           this.getCartItem()
+    //         } else {
+    //           if (response.data.code === 1008) {
+    //             this.skuInfo.sku.status = 2
+    //           }
+    //           this.$vux.toast.show({text: response.data.message, type: 'text', width: '200px'})
+    //         }
+    //       })
+    //     } else {
+    //       if (!localStorage.getItem('cartProductItems')) {
+    //         localStorage.setItem('cartProductItems', '[]')
+    //       }
+    //       if (localStorage.getItem('cartProductItems') === '[]') {
+    //         let arr = [{
+    //           amount: this.num,
+    //           barcode: this.skuInfo.sku.barcode,
+    //           code: this.skuInfo.sku.code,
+    //           defaultPicture: this.skuInfo.sku.defaultPicture,
+    //           id: this.skuInfo.sku.id,
+    //           memberId: '',
+    //           merchantId: '123',
+    //           name: this.skuInfo.sku.name,
+    //           originalPrice: 0,
+    //           price: this.skuInfo.sku.price,
+    //           sales: this.skuInfo.sku.sales,
+    //           specs: this.specArrayOn,
+    //           spuId: this.skuInfo.sku.spuId,
+    //           status: this.skuInfo.sku.status,
+    //           stock: this.skuInfo.sku.stock
+    //         }]
+    //         localStorage.setItem('cartProductItems', JSON.stringify(arr))
+    //         this.$vux.toast.show({text: '加入购物袋成功', type: 'text', width: '200px'})
+    //         this.num = 1
+    //         this.specFlag = true
+    //         this.getCartItem()
+    //       } else {
+    //         let arr = JSON.parse(localStorage.getItem('cartProductItems'))
+    //         let repetition = false
+    //         for (let i of arr) {
+    //           if (this.skuInfo.sku.id === i.id) {
+    //             i.amount = i.amount * 1 + this.num * 1
+    //             repetition = true
+    //           }
+    //         }
+    //         if (!repetition) {
+    //           arr.push({
+    //             amount: this.num,
+    //             barcode: this.skuInfo.sku.barcode,
+    //             code: this.skuInfo.sku.code,
+    //             defaultPicture: this.skuInfo.sku.defaultPicture,
+    //             id: this.skuInfo.sku.id,
+    //             memberId: '',
+    //             merchantId: '123',
+    //             name: this.skuInfo.sku.name,
+    //             originalPrice: 0,
+    //             price: this.skuInfo.sku.price,
+    //             sales: this.skuInfo.sku.sales,
+    //             specs: this.specArrayOn,
+    //             spuId: this.skuInfo.sku.spuId,
+    //             status: this.skuInfo.sku.status,
+    //             stock: this.skuInfo.sku.stock
+    //           })
+    //         }
+    //         localStorage.setItem('cartProductItems', JSON.stringify(arr))
+    //         this.$vux.toast.show({text: '加入购物袋成功', type: 'text', width: '200px'})
+    //         this.getCartItem()
+    //       }
+    //     }
+    //   },
+    //   // ----------------- 领取优惠券
+    //   openGetCoupon () {
+    //     this.couponFlag = true
+    //   },
+    //   // ---------- 直接购买 创建订单
+    //   createOrder () {
+    //     console.log('直接购买')
+    //     if (this.skuInfo.sku.stock === 0) { return }
+    //     if (sessionStorage.getItem('userInfo')) {
+    //       let cartItemData  = {
+    //         memberId: null,
+    //         merchantId: '123',
+    //         productId: this.skuId,
+    //         productItemId: null,
+    //         quantity: this.num
+    //       }
+    //       this.$http.post(...pdAPI.postCartItem(cartItemData), {certified: true}).then((response) => {
+    //         if (response.data.code === 200) {
+    //           sessionStorage.setItem('settlementProductItems',`[{"promotionId":"${this.$refs.pdPromotion.selected ? this.$refs.pdPromotion.selected.id : ''}","productItem":[{"productId":"${this.skuId}","quantity":${this.num}}]}]`)
+    //           this.$router.push({path: `/createOrder`})
+    //            this.specFlag = true
+    //            this.num = 1
+    //         } else {
+    //           this.$vux.toast.show({text: response.data.message, type: 'text', width: '200px'})
+    //         }
+    //       })
+    //     } else {
+    //       this.$vux.confirm.show({
+    //         content: '用户未登录',
+    //         confirmText: '去登录',
+    //         onConfirm: () => {
+    //           sessionStorage.setItem('settlementProductItems', `[{"promotionId":"${ this.$refs.pdPromotion.selected ? this.$refs.pdPromotion.selected.id : ''}","productItem":[{"productId":"${this.skuId}","quantity":${this.num}}]}]`)
+    //           this.$router.push({path: '/signin'})
+    //         }
+    //       })
+    //     }
+    //   },
+    //   // ----------获取购物车商品数量
+    //   getCartItem () {
+    //     if (sessionStorage.getItem('userInfo')) {
+    //       tool.preCartToCart(this, () => {
+    //         this.$http.get(...pdAPI.getCartItem()).then((response) => {
+    //           if (response.data.code === 200) {
+    //             this.getCartNum(response.data.pageInfo.list)
+    //           }
+    //         })
+    //       })
+    //     } else {
+    //       if (localStorage.getItem('cartProductItems')) {
+    //         let cartProductItems = JSON.parse(localStorage.getItem('cartProductItems'))
+    //         this.getCartNum(cartProductItems)
+    //       }
+    //     }
+    //   },
+    //   getCartNum (data) {
+    //     // let sum = 0
+    //     // for (let i of data) {
+    //     //   sum += i.amount * 1
+    //     // }
+    //     // this.cartNum = sum
+    //     this.cartNum = data.length
+    //   },
+    //   // ----------接口-spu和spu通用属性信息
+    //   getSpuSpec (spuId) {
+    //     this.$http.get(...pdAPI.spuSpec(spuId)).then(res => {
+    //       if (res.data.code === 200) {
+    //         this.introduction = res.data.spuInfo.introduction
+    //         let commonSpecArray = []
+    //         if (res.data.spuInfo.spuSpecArray) {
+    //           res.data.spuInfo.spuSpecArray.forEach(e => {
+    //             if (e.specName !== '产地') {
+    //               commonSpecArray.push(e)
+    //             }
+    //           })
+    //         }
+    //         this.commonSpecArray = commonSpecArray
+    //       }
+    //     })
+    //   },
+    //   handlePrice (price) {
+    //     return tool.handlePrice(price)
+    //   },
+    //   handleName (name) {
+    //     return tool.handleName(name)
+    //   },
+    //   handleSpecValueArray (arr) {
+    //     let isTime = false
+    //     if (/^1[0-9]{12}$/.test(arr[0])) {
+    //       isTime = true
+    //     }
+    //     if (isTime) {
+    //       let date = new Date(arr[0] * 1)
+    //       return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+    //     } else {
+    //       return arr.join(',')
+    //     }
+    //   },
+    //   openSpecModal (model) {
+    //     this.modalmodel = model
+    //     if (this.skuInfo.sku) {
+    //       this.specFlag = this.skuInfo.sku.status === 1 ? true : false
+    //     } else {
+    //       this.specFlag = false
+    //     }
+    //   },
+    //   onScroll: debounce(function (position) {
+    //     if (this.$refs.scroller) {
+    //       this.$refs.scroller.reset()
+    //     }
+    //   }, 30)
+    // },
+    // computed: {
+    //   heartSvg () {
+    //     return require('../../assets/icons/heart.svg')
+    //   },
+    //   heartFillSvg () {
+    //     return require('../../assets/icons/heart-fill.svg')
+    //   },
+    //   bagSvg () {
+    //     return require('../../assets/icons/bag.svg')
+    //   },
+    //   // ----------轮播数据
+    //   swiperData () {
+    //     let arr = []
+    //     if (this.spuInfo) {
+    //       if (this.spuInfo.videoUrl) {
+    //         arr.push({
+    //           type: 'video',
+    //           data: this.spuInfo.videoUrl
+    //         })
+    //       }
+    //     }
+    //     if (this.skuInfo) {
+    //       if (this.skuInfo.image.length > 0) {
+    //         for (let i of this.skuInfo.image) {
+    //           arr.push({
+    //             type: 'img',
+    //             src: i.pictureUrl,
+    //             link: ''
+    //           })
+    //         }
+    //       }
+    //     }
+    //     return arr
+    //   },
+    //   specValueNameStr () {
+    //     let arr = []
+    //     for (let i of this.specArrayOn) {
+    //       arr.push(i.specValueName)
+    //     }
+    //     return arr.join(' ')
+    //   },
+    //   // 默认规格字符串，判断是否是单品
+    //   specStr () {
+    //     return JSON.stringify(this.specArrayOn)
+    //   },
+    //   specScrollerHeight () {
+    //     return document.body.clientHeight * 0.75 - 101 - 50 + 'px'
+    //   },
+    //   bottomStyle () {
+    //     return `top:${document.body.clientHeight - 50}px`
+    //   },
+    //   cartBtnStyle () {
+    //     if (this.skuInfo) {
+    //       return this.skuInfo.sku.stock !== 0 ? 'add-to-cart' : 'add-to-cart-disabled'
+    //     } else {
+    //       return 'add-to-cart-disabled'
+    //     }
+    //   },
+    //   buyBtnStyle () {
+    //     if (this.skuInfo) {
+    //       return this.skuInfo.sku.stock !== 0 ? 'buy' : 'buy-disabled'
+    //     } else {
+    //       return 'buy-disabled'
+    //     }
+    //   },
+    //   // ---------图文详情
+    //   moreStyle () {
+    //     return `min-height: ${document.body.clientHeight - 46}px`
+    //   },
+    //   // ---------是否允许购买
+    //   disabledBuy () {
+    //     if (this.skuInfo.sku) {
+    //       return this.skuInfo.sku.stock === 0 || this.skuInfo.sku.status !== 1 ? true : false
+    //     } else {
+    //       return true
+    //     }
+    //   },
+    //   canBuy () {
+    //     if (this.disabledBuy) {
+    //       return false
+    //     } else {
+    //       return true
+    //     }
+    //   }
+    // },
+    // watch: {
+    //   specStr (newV, oldV) {
+    //     if (oldV !== '[]') {
+    //       if (newV !== oldV) {
+    //         this.handleSpecState()
+    //       }
+    //     }
+    //   },
+    //   specFlag (flag) {
+    //     if (!flag) {
+    //       this.modalmodel = ''
+    //     }
+    //     if (this.$refs.pdSwiper) {
+    //       this.$refs.pdSwiper.hideVideo(flag)
+    //     }
+    //   },
+    //   moreFlag (flag) {
+    //     if (this.$refs.pdSwiper) {
+    //       this.$refs.pdSwiper.hideVideo(flag)
+    //     }
+    //   }
+    // },
+    // beforeRouteLeave: (to, from, next) => {
+    //   clearInterval(interval)
+    //   clearInterval(interval2)
+    //   next()
+    // }
+  }
+ </script>
+ <style rel="stylesheet/scss" lang="scss" scoped>
 //  .discount-price{
 //    color:red;
 //  }
@@ -975,4 +1066,100 @@
 //     position: relative !important;
 //   }
 // }
-// </style>
+</style>
+
+<style>
+  #detail .breadcrumb .ivu-breadcrumb-item-link{
+    color: #4a90e2
+  }
+  #detail .breadcrumb .last .ivu-breadcrumb-item-link{
+    color: #000;
+    font-weight: normal
+  }
+</style>
+
+<style lang="stylus" scoped>
+@import "~styles/common/common.styl";
+  #detail 
+    background #fafafa
+    padding 0 30px
+    .detail-title 
+      padding 30px 0     
+      text-align center
+      .detail-t 
+        position relative
+        display inline-block
+        text-align center
+        font-size 20px
+        color #0f0f0f
+        &:after
+          content ''
+          position absolute
+          bottom -20px
+          left 50%
+          $ml(-20px)
+          display inline-block
+          width 40px
+          height 2px
+          background-color $blue
+        .xiegang:after
+          content ''
+          position relative
+          top 8px
+          margin 0 15px
+          display inline-block
+          width 1px
+          height 30px
+          background-color $blue
+          transform rotate(30deg)
+    .detail-content
+      overflow hidden
+      background #fff
+      padding 0 50px
+      .breadcrumb
+        $mb(20px)
+        height 80px
+        line-height 80px
+        .ivu-breadcrumb
+          font-size 14px
+      .detail-content-center
+        .detail-content-left
+          width 600px
+          .goodDetails_name_img
+            .little_img
+              width 50px
+              float left
+              position relative
+              i
+                cursor pointer
+                width 70px
+                height 24px
+                font-size 20px
+                text-align center
+              div
+                height 280px
+                width 70px
+                overflow hidden
+                position relative
+                ul
+                  position absolute
+                  top 0
+                  li
+                    width 70px
+                    height 70px
+                    img
+                      width 100%
+                      height 100%
+                    &:hover
+                      $border(b,2px)
+            .big_img
+              float left
+              $ml(120px)
+              width 300px
+              height 300px
+              img
+                width 100%
+                height 100%
+
+        // .detail-content-right    
+</style>

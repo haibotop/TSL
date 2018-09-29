@@ -215,7 +215,7 @@
         line-height 40px
         background-color #fff
         .header-left
-            margin-left 60px
+            $ml(60px)
             float left
             i 
                 color $blue
@@ -229,8 +229,8 @@
                     padding-left 10px     
                     width 350px
                     height 450px
-                    border 1px solid $blue
-                    border-left 8px solid $blue
+                    $border(b,1px)
+                    $border(border-left,8px)
                     padding 0
                     text-align center
                     h3
@@ -244,7 +244,7 @@
                         tr:nth-of-type(1)
                             color #000  
                             display block
-                            border-bottom 1px solid $blue
+                            $border(border-bottom,1px)
                             th
                                 width 100px
                            
@@ -256,7 +256,7 @@
                     p
                         font-size 12px
                         line-height 18px
-                        margin-top 10px
+                        $mt(10px)
                         color $blue                  
         span,a
             color #000
@@ -271,12 +271,12 @@
                 .shopCart    
                     width 550px
                     height 300px
-                    border 1px solid $blue
-                    border-left 8px solid $blue
+                    $border(b,1px)
+                    $border(border-left,8px)
                     padding 0
                     text-align center    
             a
-                margin-right 20px
+                $mr(20px)
                 i 
                     color $blue
 </style>
