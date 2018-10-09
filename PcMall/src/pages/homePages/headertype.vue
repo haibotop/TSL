@@ -1,8 +1,8 @@
 <template>
-    <transition>
+    <transition mode="out-in">
         <div v-if="headertype === 1" class="content">
             <div class="content-left">
-                <img src="src/assets/images/12treasures.png" alt="">
+                <img src="../../assets/images/12treasures.png" alt="">
             </div>
             <div class="content-right">
                 <h2>品牌介绍</h2>
@@ -42,41 +42,41 @@
                     [
                         {
                             name: "戒指",
-                            img: "src/assets/images/jiezhi.png"
+                            img: require('../../assets/images/jiezhi.png')
                         },
                         {
                             name: "项链",
-                            img: "src/assets/images/xianglian.png"
+                            img: require('../../assets/images/xianglian.png')
                         },
                         {
                             name: "耳环",
-                            img: "src/assets/images/erhuan.png"
+                            img: require('../../assets/images/erhuan.png')
                         },
                         {
                             name: "吊坠",
-                            img: "src/assets/images/diaozhui.png"
+                            img: require('../../assets/images/diaozhui.png')
                         }                        
                     ],
                     [
                         {
                             name: "The 12 treasures",
-                            img: "src/assets/images/12treasures.png"
+                            img: require('../../assets/images/12treasures.png')
                         },
                         {
                             name: "Altelier",
-                            img: "src/assets/images/Atelier.png"
+                            img: require('../../assets/images/Atelier.png')
                         },
                         {
                             name: "Nova",
-                            img: "src/assets/images/momentoflove.png"
+                            img: require('../../assets/images/momentoflove.png')
                         },                     
                         {
                             name: "Raindrop & Eernity",
-                            img: "src/assets/images/diaozhui.png"
+                            img: require('../../assets/images/diaozhui.png')
                         },
                         {
                             name: "motion",
-                            img: "src/assets/images/saxx.png"
+                            img: require('../../assets/images/saxx.png')
                         }
                     ]
                 ]
@@ -102,7 +102,7 @@
     .v-enter-active
         transition opacity .6s
     .v-leave-active
-        transition opacity .3s
+        transition opacity .2s
     .content
         color $blue
         .content-left

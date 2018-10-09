@@ -6,15 +6,15 @@
             </router-link>
         </div>
         <div class="header-left">
-            <a href="javascript:void(0)" @click="handleClick(1)">
+            <a href="javascript:void(0)" @mouseenter="handleClick(1)" @mouseleave="handleClick(1)">
                 品牌介绍
                 <Icon :type="arrow === 1 ? 'ios-arrow-up' : 'ios-arrow-down'" size="16"></Icon>
             </a>                                            
-            <a href="javascript:void(0)" @click="handleClick(2)">
+            <a href="javascript:void(0)" @mouseenter="handleClick(2)" @mouseleave="handleClick(2)" >
                 珠宝类型
                 <Icon :type="arrow === 2 ? 'ios-arrow-up' : 'ios-arrow-down'" size="16"></Icon>
             </a>              
-            <a href="javascript:void(0)" @click="handleClick(3)">
+            <a href="javascript:void(0)" @mouseenter="handleClick(3)" @mouseleave="handleClick(3)">
                 珠宝系列
                 <Icon :type="arrow === 3 ? 'ios-arrow-up' : 'ios-arrow-down'" size="16"></Icon>
             </a>              
@@ -22,7 +22,7 @@
         <div class="header-right">
             <search></search>
         </div>
-        <div  class="headertype" >
+        <div class="headertype" @mouseenter="handleClick(headertype)" @mouseleave="handleClick(headertype)">
             <headertype v-if="isShow" :headertype="headertype"></headertype>
         </div>
     </div>
@@ -36,7 +36,7 @@
             return {
                 isShow: false,
                 arrow:'ios-arrow-down',
-                headertype: 0
+                headertype: 0,
             }
         },
         components: {
@@ -44,11 +44,11 @@
             headertype
         },
         methods: {
-            handleClick(index) {
+            handleClick(index) {    
                 this.headertype = index
                 this.isShow = this.arrow === index? false: true
-                this.arrow = this.arrow === index? false: index               
-            }
+                this.arrow = this.arrow === index? false: index                                      
+            }          
         }
     }
 </script>
@@ -73,6 +73,7 @@
             a
                 color #000
                 $mr(60px)
+                display inline-block
                 i 
                     color $blue
         .header-right

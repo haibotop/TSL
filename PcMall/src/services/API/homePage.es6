@@ -10,3 +10,5 @@ export function showList () {
 export function getTemplate (templateId) {
   return [`index/homePage/v1/template/${templateId}`]
 }
+
+//http://10.48.64.26:7080/platform/index/homePage/v1/template/${templateId}

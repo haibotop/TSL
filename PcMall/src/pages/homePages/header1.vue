@@ -1,8 +1,8 @@
 <template>
     <div class="header">
         <div class="header-left">
-            <Dropdown trigger="custom"  :visible="visible" style="margin-left: 6px;padding-left:10px" :class="{bgColor:bgColor}" >
-                <a href="javascript:void(0)" @click.stop="handleOpen">
+            <Dropdown @mouseenter.native="handleOpen" @mouseleave.native="handleOpen" trigger="custom"  :visible="visible" style="margin-left: 6px;padding-left:10px" :class="{bgColor:bgColor}" >
+                <a href="javascript:void(0)" >
                     <span>每日金价</span>
                     <Icon :type="type" size="16"></Icon>
                 </a>  
@@ -72,8 +72,8 @@
                 <Icon  type="ios-lock-outline" size="20"/>
                 <span>购物袋</span>
             </router-link> -->
-            <Dropdown trigger="custom"  :visible="visible2" style="margin-left: -10px;padding-left:10px" :class="{bgColor:bgColor2}" >
-                <a href="javascript:void(0)" @click.stop="handleClick" >              
+            <Dropdown @mouseenter.native="handleClick" @mouseleave.native="handleClick"  trigger="custom"  :visible="visible2" style="margin-left: -10px;padding-left:10px" :class="{bgColor:bgColor2}" >
+                <a href="javascript:void(0)" >              
                     <Icon  type="ios-lock-outline" size="20"/>
                     <span>购物袋</span>
                 </a>
@@ -168,29 +168,13 @@
                 this.visible =  !this.visible
                 this.type = this.type === "ios-arrow-down"?"ios-arrow-up":"ios-arrow-down"
             },
-            handleClick(){
+            handleClick() {
                 this.bgColor2 = !this.bgColor2
                 this.visible2 =  !this.visible2
-            },
-            bind(){
-                document.onclick = ()=>{
-                    if(this.bgColor){
-                        this.handleOpen ()
-                    }  
-                    if(this.bgColor2){
-                        this.handleClick ()
-                    }   
-                },
-                document.getElementsByClassName('ivu-select-dropdown')[0].onclick=(e)=>{
-                    e.stopPropagation()
-                }
-                document.getElementsByClassName('ivu-select-dropdown')[1].onclick=(e)=>{
-                    e.stopPropagation()
-                }
-            }           
+            }               
         },
         mounted () {
-            this.bind()
+            
         }
     }
 </script>
