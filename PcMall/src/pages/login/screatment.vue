@@ -86,7 +86,7 @@
 <template>
   <div id="screatment">
     <XHeader :left-options="headerContent.leftOptions">
-      <div class="logo"><img src="../../assets/icons/logo.png" alt=""></div>
+      <!--<div class="logo"><img src="../../assets/icons/logo.png" alt=""></div>-->
     </XHeader>
     <div class="content">
       <h1 class="text-headline">隐私协议</h1>
@@ -124,7 +124,7 @@
             <li>1）回应用户的查询；</li>
             <li>2）推广新产品、在线的活动或宣传，详情请参阅「直接促销」部份；
 按用户提供的个人资料与用户沟通，如电话、电邮、短讯、智能电话应用程序的推动通知或邮寄方式；
-</li> 
+</li>
             <li>3）特定功能：如与朋友分享产品、维持用户的购物清单、维持用户在本店的购物袋，包括对用户数据的确认和安全审查及处理用户的付款；</li>
             <li>4）进行顾客市场调查，分析趋势及行为，用以提升我们的产品及服务水平；让我们可按规定作披露以符合任何具约束力的法例、法规或法院指令要求；及与上述直接有关的所有用途。</li>
           </ul>

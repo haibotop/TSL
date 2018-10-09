@@ -172,7 +172,7 @@
                 </div>
                 <div class="agreementBar">
                     <check-icon :value.sync="agree"></check-icon>
-                    <span class="agreement">同意<a href="/#/agreement"> 用户条款 </a>和<a href="/#/screatment"> 隐私协议</a></span>
+                    <span class="agreement">同意<router-link tag="a" to="/agreement"> 用户条款 </router-link>和<router-link tag="a" to="/screatment"> 隐私协议</router-link></span>
                 </div>
                 <div class="login-footer">
                     <Button class="sign" id="signup" @click.native="login" >上一步</Button>

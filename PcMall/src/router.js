@@ -3,6 +3,8 @@ const loginSuccess = () => import('./pages/login/loginSuccess')
 const register = () => import('./pages/login/register')
 const register2 = () => import('./pages/login/register2')
 const register3 = () => import('./pages/login/register3')
+const agreement = () => import('./pages/login/agreement')
+const screatment = () => import('./pages/login/screatment')
 const registerSuccess = () => import('./pages/login/registerSuccess')
 const fgpsw = () => import('./pages/login/newPW1')
 const fgpsw2 = () => import('./pages/login/newPW2')
@@ -150,6 +152,22 @@ var host = [
         component: registerSuccess,
         meta: {
             title: '注册成功'
+        },
+    },
+    {
+        path: '/agreement',
+        name: 'agreement',
+        component: agreement,
+        meta: {
+            title: '用户条款'
+        },
+    },
+    {
+        path: '/screatment',
+        name: 'screatment',
+        component: screatment,
+        meta: {
+            title: '隐私协议'
         },
     },
     {

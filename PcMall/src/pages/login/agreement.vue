@@ -91,7 +91,7 @@
 <template>
   <div id="agreement">
     <XHeader :left-options="headerContent.leftOptions">
-      <div class="logo"><img src="../../assets/icons/logo.png" alt=""></div>
+      <!--<div class="logo"><img src="../../assets/icons/logo.png" alt=""></div>-->
     </XHeader>
     <div class="content">
       <h1 class="text-headline">用户条款</h1>
