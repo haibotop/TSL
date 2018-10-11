@@ -14,11 +14,11 @@
         </div>
         <div v-else class="contentlist">
             <ul>
-                <li v-for="(item,index) in type" :key="index" :class="{active:active === index}" @click="handleClick(index)">
+                <li v-for="(item,index) in type" :key="index" :class="{active:active === index}" @click="handleClick(item)">
                     <router-link tag="a" to="/">
                         <div>
                             <img :src="item.img">
-                        </div>                      
+                        </div>
                         <span>{{item.name}}</span>
                         <i v-if="index!=3"></i>
                     </router-link>
@@ -32,7 +32,7 @@
     export default {
         props:{
             headertype:{
-                default: 1,                
+                default: 1,
             }
         },
         data () {
@@ -55,7 +55,7 @@
                         {
                             name: "吊坠",
                             img: require('../../assets/images/diaozhui.png')
-                        }                        
+                        }
                     ],
                     [
                         {
@@ -69,7 +69,7 @@
                         {
                             name: "Nova",
                             img: require('../../assets/images/momentoflove.png')
-                        },                     
+                        },
                         {
                             name: "Raindrop & Eernity",
                             img: require('../../assets/images/diaozhui.png')
@@ -83,9 +83,9 @@
             }
         },
         methods: {
-            handleClick(index){
-                this.active = index
-            }
+            handleClick(item){
+                this.$router.push({path: '/pl/' + item.name,query: {type: "珠宝类型",typeName:item.name}})
+            },
         },
         computed: {
             type(){
@@ -119,17 +119,17 @@
             font-size 14px
             color #000
             line-height 18px
-            padding 10px 0 
+            padding 10px 0
         .button
             float left
             margin 20px 0
             width 180px
     .contentlist
-        $border(border-left,4px)       
+        $border(border-left,4px)
         ul
             // height 60px
             margin 10px 20px
-            
+
             li
                 float left
                 width 25%
@@ -140,18 +140,18 @@
                 text-align center
                 $mt(10px)
                 $mb(10px)
-                span 
-                    color #000  
+                span
+                    color #000
                     $ml(10px)
-                img 
-                    $ml(-10px) 
-                    vertical-align middle                                    
+                img
+                    $ml(-10px)
+                    vertical-align middle
                 &.active
                     $border(b,2px)
                 &:hover
                     $border(b,2px)
                 a
-                    position relative   
+                    position relative
                     display inline-block
                     width 100%
                     height inherit
@@ -159,9 +159,9 @@
                         display inline-block
                         width 66px
                         height 66px
-                        img 
+                        img
                             width 100%
-                    i                              
+                    i
                         display inline-block
                         vertical-align middle
                         background-color $blue
@@ -170,6 +170,6 @@
                         height 20px
                         right -2px
                         top:31%
-                    
+
 
 </style>

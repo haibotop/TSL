@@ -75,7 +75,7 @@
           path = 'pl'
         }
         this.bus.$emit('changData',this.keyword)
-        this.$router.replace({path: path})
+        this.$router.replace({path: path,query: {type: "搜索结果",typeName:this.keyword}})
         
       },
       onCancel () {

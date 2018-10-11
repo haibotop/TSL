@@ -1,10 +1,8 @@
 <style lang="scss" rel="stylesheet/scss">
     .page-fenye{
         padding: 50px 0;
-        .ivu-page-item-active, .ivu-page-next:hover, .ivu-page-prev:hover{
-            border-color: #352665;
-        }
-        .ivu-page-item:hover{
+        .ivu-page-item:hover, .ivu-page-item-active, .ivu-page-next:hover,
+        .ivu-page-prev:hover, .ivu-page-options-elevator input:hover, .ivu-page-options-elevator input:focus{
             border-color: #352665;
         }
         a,a:hover, a:active, .ivu-page-item:hover a, .ivu-page-item-active a, .ivu-page-next:hover a, .ivu-page-prev:hover a{
@@ -68,28 +66,80 @@
                     }
                 }
                 .sort-type{
-                    display: inline-block;
-                }
-                .sort-type-r{
-                    float: right;
-                }
-                .filter-txt{
-                    margin-right: 20px;
-                }
-                .filter-box{
-                    margin-top: 40px;
-                    margin-right: 15px;
-                    display: inline-block;
-                    height: 28px;
-                    line-height: 26px;
-                    padding: 0 10px;
-                    color: #352665;
-                    border: 1px solid #352665;
+                    text-align: center;
                     span{
-                        padding-right: 20px;
+                        position: relative;
+                        padding: 0 30px;
+                        display: inline-block;
+                        width: 90px;
+                        color: #333;
+                        cursor: pointer;
                     }
-                    .btn-close{
-                        margin-top: -2px;
+                    span:after{
+                        display: inline-block;
+                        position: absolute;
+                        top: 3px;
+                        right: 0px;
+                        content: '';
+                        width: 1px;
+                        height: 14px;
+                        background-color: #c4c4c4;
+                    }
+                    span:last-child:after{
+                        background-color: transparent;
+                    }
+                    .classblue{
+                        color: #352665;
+                    }
+                    .arrowDown:before{
+                        position: absolute;
+                        top: 14px;
+                        right: 19px;
+                        content: '';
+                        display: inline-block;
+                        border: 4px solid transparent;
+                        border-top-color: #c7c7c7;
+                    }
+                    .arrowDown:after{
+                        position: absolute;
+                        top: 4px;
+                        right: 22px;
+                        content: '';
+                        display: inline-block;
+                        width: 2px;
+                        height: 11px;
+                        background-color: #c7c7c7;
+                    }
+                    .arrowUp:before{
+                        position: absolute;
+                        top: 1px;
+                        right: 19px;
+                        content: '';
+                        display: inline-block;
+                        border: 4px solid transparent;
+                        border-bottom-color: #c7c7c7;
+                    }
+                    .arrowUp:after{
+                        position: absolute;
+                        top: 7px;
+                        right: 22px;
+                        content: '';
+                        display: inline-block;
+                        width: 2px;
+                        height: 11px;
+                        background-color: #c7c7c7;
+                    }
+                    .arrowDownActive:before{
+                        border-top-color: #352665;
+                    }
+                    .arrowDownActive:after{
+                        background-color: #352665;
+                    }
+                    .arrowUpActive:before{
+                        border-bottom-color: #352665;
+                    }
+                    .arrowUpActive:after{
+                        background-color: #352665;
                     }
                 }
             }
@@ -100,7 +150,6 @@
                     li{
                         float: left;
                         width: 240px;
-                        height: 365px;
                         margin: 20px 10px 0;
                         border:2px solid transparent;
                         .pic{
@@ -109,10 +158,12 @@
                             cursor: pointer;
                             .pic-img{
                                 width: 100%;
+                                height: 100%;
                                 display: inline-block;
                                 text-align: center;
                                     img{
                                         width: 100%;
+                                        height: 100%;
                                     }
 
                             }
@@ -122,7 +173,14 @@
                         border: 2px solid #352665;
                     }
                     .goods-items-footer{
-                        padding: 15px 0;
+                        position: relative;
+                        height: 110px;
+                        .vertical-middel{
+                            position: absolute;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            width: 100%;
+                        }
                         .explain{
                             padding: 0 36px;
                             line-height: 16px;
@@ -142,6 +200,13 @@
                 }
             }
         }
+        .goTo-top{
+            padding: 10px;
+            background: #352665;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+        }
     }
 </style>
 <template>
@@ -150,36 +215,21 @@
     <header2></header2>
     <div class="goods-content">
         <div class="common-title">
-            <div class="common-t">首页 <span class="xiegang"></span> 搜索结果</div>
+            <div class="common-t">{{this.$route.query.type}} <span class="xiegang"></span> {{this.$route.query.typeName}}</div>
         </div>
         <div class="filter-nav">
             <div class="filter-nav-t">
-                <div class="sort-type">
-                    <span>排序方式：</span>
-                    <Dropdown trigger="click" @on-click="change_filter">
-                        <a href="javascript:void(0)" name="filter-total" v-html="this.filterTxt">综合</a>
-                        <Icon type="ios-arrow-down"></Icon>
-                        <DropdownMenu slot="list">
-                            <DropdownItem name="filter-total">综合</DropdownItem>
-                            <DropdownItem name="filter-sailNum">销量</DropdownItem>
-                            <DropdownItem name="filter-price">价格</DropdownItem>
-                            <DropdownItem name="filter-time">时间</DropdownItem>
-                        </DropdownMenu>
-                    </Dropdown>
+                <div class="sort-type" @click="change_filter($event)">
+                    <span v-for="(item,index) of sortArray" :data-num="index" :class="{classblue:index == currentSort}">
+                        {{item}}
+                        <i :data-num="index" :class="{arrowUp:index == 4, arrowDown:index != 4,
+                        arrowDownActive:index == currentSort && index !=4, arrowUpActive:index == currentSort && index ==4}" ></i>
+                    </span>
+
                 </div>
             </div>
         </div>
 
-      <!-- <scroller
-      ref="scroller"
-      lock-x
-      use-pullup
-      @on-pullup-loading="onPullup"
-      use-pulldown
-      @on-pulldown-loading="onPulldown"
-      height="-91"
-      :pullup-config="pullupDefaultConfig"
-      :pulldown-config="pulldownDefaultConfig"> -->
         <div class="goods-items">
             <div class="no-datas" v-if="(datas || []).length === 0">暂无数据</div>
             <ul>
@@ -190,32 +240,21 @@
                         </div>
                     </div>
                     <div class="goods-items-footer">
-                        <p class="explain">{{handleName(item.spuName)}}</p>
-                        <p class="price" :style="`color: ${color};`">{{ '￥' + handlePrice(item.price) }}</p>
-                        <p class="price_">￥1.009</p>
+                        <div class="vertical-middel">
+                            <p class="explain">{{handleName(item.spuName)}}</p>
+                            <p class="price" :style="`color: ${color};`">{{ '￥' + handlePrice(item.price) }}</p>
+                            <p class="price_">￥1.009</p>
+                        </div>
                     </div>
                 </li>
             </ul>
         </div>
-        <Page :total="100" class="page-fenye" />
+        <Page :total="this.totalCount" :page-size="pageSize" :show-total="true" :show-elevator="true"
+              @on-change="getDataList" @on-page-size-change="getPageList" class="page-fenye" />
+        <BackTop :height="100" :bottom="100">
+            <div class="goTo-top">返回顶部</div>
+        </BackTop>
 
-        <!--<div :class="listLayout" :style="listStyle" >-->
-          <!--<div class="no-datas" v-if="(datas || []).length === 0">暂无数据</div>-->
-          <!--<div class="block" v-for="(item, index) in datas" :key="index" @click="goPd(item.defaultSkuId)">-->
-            <!--<div class="img-block">-->
-              <!--<div class="img-block-inner">-->
-                <!--<img :src="item.defaultPicture" alt="">-->
-              <!--</div>-->
-            <!--</div>-->
-            <!--<div class="info-block">-->
-              <!--<p class="name">-->
-                <!--{{handleName(item.spuName)}}-->
-              <!--</p>-->
-              <!--<span class="price" :style="`color: ${color};`">{{ '￥' + handlePrice(item.price) }}</span>-->
-            <!--</div>-->
-          <!--</div>-->
-        <!--</div>-->
-      <!-- </scroller> -->
 
     </div>
     <v-footer></v-footer>
@@ -224,7 +263,6 @@
 <script type="text/ecmascript-6">
   import * as tool from '@/services/myTool.es6'
   import * as api from '@/services/API/searchServices.es6'
-  // import { XHeader, Icon, Tab, TabItem, Scroller } from 'vux'
   import header1 from '@/pages/homePages/header1'
   import header2 from '@/pages/homePages/header2'
   import vFooter from '@/pages/homePages/footer'
@@ -236,25 +274,26 @@
       header1,
       header2,
       vFooter
-      // XHeader,
-      // Icon,
-      // Tab,
-      // TabItem,
-      // Scroller
     },
     data () {
       return {
+        sortArray:['综合','销量','时间','价格','价格'],
         rotreParams:'',
+        currentSort: -1,
         currentPage: 1,
-        pageSize: 10,
+        pageSize: 16,
         totalCount: null,
         totalPage: null,
         color: '#352665',
         keyword: '',
         catalogId: '',
         catalogName: '',
-        filterTxt: '综合',
         catalogType: '',
+          filterTxt: '综合',
+          // ----------0综合 1销量 2价格 3评论
+          currTabSort: 0,
+          // ----------1升序 2降序
+          sort: 1,
         leftOption: {
           backText: ''
         },
@@ -310,23 +349,53 @@
       //   }
       // }, 0)
     },
-    // watch: {
-    //   rotreParams: function (val, oldVal) {
-    //     console.log('new: %s, old: %s', val, oldVal)
-    //   },
-    // },
+    watch: {
+      rotreParams: function (val, oldVal) {
+        console.log('new: %s, old: %s', val, oldVal)
+      },
+        '$route':'getParamsFromUrl'
+    },
     methods: {
-        change_filter(name){
-            console.log(name)
-          if(name == 'filter-total'){
+        //分页
+        getDataList(page){
+            this.currentPage = page
+            this.getPageList()
+        },
+        getPageList(){
+            this.getPl()
+        },
+        //排序方式
+        change_filter(event){
+          let num = event.target.dataset.num
+            console.log(num)
+          if(num == 0){
               this.filterTxt = '综合'
-          }else if(name == 'filter-sailNum'){
+              this.currentSort = num;
+              this.currTabSort = 0
+
+          }else if(num == 1){
                 this.filterTxt = '销量'
-          }else if(name == 'filter-price'){
-              this.filterTxt = '价格'
-          }else if(name == 'filter-time'){
+              this.currentSort = num;
+              this.currTabSort = 1
+          }else if(num == 2){
+              this.filterTxt = '价格升序'
+              this.currentSort = num;
+              this.currTabSort = 2
+          }else if(num == 3){
+              this.filterTxt = '价格降序'
+              this.currentSort = num;
+              this.currTabSort = 3
+          }else if(num == 4){
               this.filterTxt = '时间'
+              this.currentSort = num;
+              this.currTabSort = 4
           }
+            clearTimeout(timeout)
+            timeout = setTimeout(() => {
+                this.getPl()
+                clearTimeout(timeout)
+                timeout = ''
+            }, 300)
         },
       getParamsFromUrl () {
         if (this.$route.query.catalogId) {
@@ -335,7 +404,9 @@
           this.catalogType = this.$route.query.type
         }
         if (this.$route.params.keyword) {
+            console.log('11',this.$route.params)
           this.keyword = this.$route.params.keyword
+            this.getPl ()
         }
       },
       getPl () {
@@ -343,19 +414,21 @@
         query.currentPage = this.currentPage
         query.pageSize = this.pageSize
         // sort 1：价格升序、2：价格降序、3:销量降序、4：评论数降序、5：时间降序
+          console.log(this.currTabSort)
         switch (this.currTabSort) {
           case 0: break
           case 1: query.sort = 3; break
-          case 2: query.sort = this.sort === 1 ? 1 : 2; break
-          case 3: query.sort = 5; break
+          case 2: query.sort = 1; break
+          case 3: query.sort = 2; break
+          case 4: query.sort = 5; break
         }
         if (this.keyword) {
           this.keyword = this.keyword.replace(/s+/g, '')
           query.keyword = this.keyword
-          console.log('每次必进1',this.keyword)
+          console.log('搜索词',this.keyword)
           this.query(query)
         } else if (this.catalogId) {
-          console.log('每次必进2',this.keyword)
+          console.log('keyword',this.keyword)
           query.catalogId = this.catalogId
           query.catalogName = this.catalogName
           query.type = this.catalogType
@@ -391,8 +464,9 @@
               // this.$refs.scroller.donePulldown()
               // this.$refs.scroller.reset({top: 0})
             } else {
+                this.datas = res.data.page.datas
               // 上拉
-              this.datas = this.datas.concat(res.data.page.datas)
+              // this.datas = this.datas.concat(res.data.page.datas)
               // this.$refs.scroller.donePullup()
             }
             this.totalCount = res.data.page.totalCount
