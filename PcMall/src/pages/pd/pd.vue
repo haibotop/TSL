@@ -22,7 +22,7 @@
                   <Icon type="ios-arrow-up" @click='handleMove(1)'/>
                   <div>
                     <ul ref="picMove" :style="moveTop">
-                      <li v-for="(img,index) in swiperData" @click="getIndex(img.src,index)" :class="{active:active === index}">
+                      <li v-for="(img,index) in swiperData" :key="index" @click="getIndex(img.src,index)" :class="{active:active === index}">
                           <img :src="img.src">
                       </li>
                     </ul>
@@ -36,20 +36,46 @@
           </div>
           <div class="detail-content-right">
             <h3 class="title">{{skuInfo.sku ? handleName(skuInfo.sku.name) : ''}}</h3>
+            <div class="adv">
+              <div v-for="(item, index) in commonSpecArray" :key="index" v-show="item.specName === '商品广告词'" class="p-adv">
+                {{handleSpecValueArray(item.specValueArray)}}
+              </div>
+            </div>
             <div class="price">
               <p>价格：<span class="sp_1">￥{{skuInfo.sku ? handlePrice(skuInfo.sku.price) : 0}}</span><span class="sp_2">添加收藏</span></p> 
             </div>           
-            <div class="originalPrice">原价：<span>￥8888.00</span></div>
-            <div class="spec">
-              <span>规格：</span>
-              <span class="spec-sp2">1.43g(0.16克拉)
+            <div class="originalPrice">原价：<span>￥{{skuInfo.sku ? handlePrice(skuInfo.sku.originalPrice) : 0}}</span></div>
+            <div class="spec" v-for="(item, index) in specArray" :key="index">
+              <span >{{handleName(item.specName)}}：</span>
+              <!-- <span class="spec-sp2"
+                v-for="(item2, index2) in item.specValueArray"
+                :key="index2"
+                :value="item2"
+                :disabled="!item.specValueFlags[index2]">{{item2.specValueName}}
                 <Icon type="ios-checkmark" size="18"/>
                 <div class="triangle_border_left">
                     <span></span>
                 </div>
-              </span>
+              </span> -->
+              <template>
+                <RadioGroup class="spec-check" v-model="JSON.stringify(specArrayOn[index])" type="button" @on-change="toOtherSpec($event,specArrayOn[index])">
+                  <div v-for="(item2, index2) in item.specValueArray" :key="index2">
+                    <Radio                
+                    :label="item2.specValueName"
+                    :disabled="!item.specValueFlags[index2]"
+                    @click.native="checkSpec(index,index2)"
+                    :value="JSON.stringify(item2)"
+                    >
+                    </Radio>  
+                    <!-- <Icon type="ios-checkmark" size="18" v-if="index==xoxo&&index2==isShowCheckSpec"/>
+                    <div class="triangle_border_left" v-if="index==xoxo&&index2==isShowCheckSpec">
+                        <span></span>
+                    </div> -->
+                  </div>                            
+                </RadioGroup>
+              </template>
             </div>
-            <div class="spec">
+            <!-- <div class="spec">
               <span>颜色：</span>
               <span class="spec-sp2">I-J/淡白
                 <Icon type="ios-checkmark" size="18"/>
@@ -63,18 +89,49 @@
                     <span></span>
                 </div>
               </span>
-            </div>
+            </div> -->
             <div class="number">
               <p>数量：</p>
               <span class="tb-stock" id="J_Stock">
-                <a href="javascript:void(0);" title="减1" hidefocus="" class="tb-reduce J_Reduce tb-iconfont" data-spm-anchor-id="2013.1.iteminfo.18">-</a>
-                <input id="J_IptAmount" type="text" class="tb-text" value="1" maxlength="8" title="请输入购买量">
-                <a href="javascript:void(0);" hidefocus="" class="tb-increase J_Increase tb-iconfont" title="加1" data-spm-anchor-id="2013.1.iteminfo.19">+</a>件
+                <a href="javascript:void(0);" title="减1"  :class="{'tb-reduceActive':reduceActive}" class="tb-reduce J_Reduce tb-iconfont" @click="reduceNumber">-</a>
+                <input id="J_IptAmount" type="text" class="tb-text" v-model="buyNumber"  maxlength="8" title="请输入购买量">
+                <a href="javascript:void(0);"  class="tb-increase J_Increase tb-iconfont" title="加1" @click="addNumber">+</a>件
               </span>
             </div>
             <div class="cost">
               <span>运费：免运费</span>
-              <span>配送及退换</span>
+              <!-- <span style="margin-left:250px">配送及退换</span> -->
+              <Dropdown @mouseenter.native="handleOpen" @mouseleave.native="handleOpen" trigger="custom" placement="top-end"  :visible="visible" style="margin-left: 220px;padding-left:10px;padding-right:6px" :class="{bgColor:bgColor}" >
+                <a href="javascript:void(0)" >
+                    <span>配送及退换</span>
+                    <Icon :type="type" size="16"></Icon>
+                </a>  
+                <DropdownMenu  slot="list" class="cost-detail" >
+                  <div class="left">
+                    <h2>前言</h2>
+                    <p>为了提升您的购物体验，我们提供快递配送/门店自提服务，您可以根据您的个人需要，选择合适的配送方式，如有任何问题，欢迎联系我们的在线客服。</p>
+                  </div>
+                  <div class="right">
+
+                  </div>
+                </DropdownMenu>
+                  <!-- <DropdownMenu slot="list">
+                    <DropdownItem>驴打滚</DropdownItem>
+                    <DropdownItem>炸酱面</DropdownItem>
+                    <DropdownItem>豆汁儿</DropdownItem>
+                    <Dropdown placement="right-start">
+                        <DropdownItem>
+                            北京烤鸭
+                            <Icon type="ios-arrow-forward"></Icon>
+                        </DropdownItem>
+                        <DropdownMenu slot="list">
+                            <DropdownItem>挂炉烤鸭</DropdownItem>
+                            <DropdownItem>焖炉烤鸭</DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+                    <DropdownItem>冰糖葫芦</DropdownItem>
+                </DropdownMenu> -->
+              </Dropdown>
             </div>
             <div class="cart">
               <Button class="btn1">立即购买</Button>
@@ -82,11 +139,23 @@
             </div>
           </div>
         </div>
+        <div style="clear:both"></div>
         <div class="detail-content-bottom">
           <template>
             <Tabs value="name1" size="small" class="ioioi">
-                <TabPane label="产品详情" name="name1">1</TabPane>
-                <TabPane label="规格参数" name="name2">2</TabPane>
+                <TabPane label="产品详情" name="name1">
+                  <pdRichText ref="pdRichText" :spuId="spuId"></pdRichText>
+                </TabPane>
+                <TabPane label="规格参数" name="name2">
+                  <table>
+                    <tbody>
+                      <tr v-for="(item, index) in commonSpecArray" :key="index" v-if="item.specName!=='商品广告词'">
+                        <td class="left-td">{{item.specName}}</td>
+                        <td class="right-td">{{handleSpecValueArray(item.specValueArray)}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </TabPane>
             </Tabs>
         </template>
         </div>
@@ -103,7 +172,7 @@
   import * as mkApi from '@/services/API/marketing.es6'
   import { XHeader, Scroller, Group, CellBox, Cell, TransferDom, Popup, Checker, CheckerItem, XNumber, InlineXNumber, debounce, Tab, TabItem, XTable, Badge } from 'vux'
 //   import pdSwiper from './pdSwiper3.vue'
-//   import pdRichText from './pdRichText.vue'
+  import pdRichText from './pdRichText.vue'
 //   import pdCoupons from '../promotion/pdCoupons.vue'
 //   import pdPromotion from '../promotion/pdPromotion.vue'
   import {getSkuInfo} from '@/services/API/pdServices.es6'
@@ -117,11 +186,21 @@
     // },
     components: {
       header1,
-      header2
+      header2,
+      pdRichText
     },
-    // components: Object.assign({ pdSwiper, pdRichText, pdCoupons, pdPromotion }, { XHeader, Scroller, Group, CellBox, Cell, Popup, Checker, CheckerItem, InlineXNumber, XNumber, debounce, Tab, TabItem, XTable, Badge }),
+    // components: Object.assign({ XHeader, Scroller, Group, CellBox, Cell, Popup, Checker, CheckerItem, InlineXNumber, XNumber, debounce, Tab, TabItem, XTable, Badge }),
     data () {
       return {
+        xoxo:false,
+        reduceActive: false,
+        buyNumber: 1,
+        isShowCheckSpec: 0,
+        button1: 'YM693泰字戒指',
+        button2: '1.5',
+        type:"ios-arrow-down",
+        bgColor:false,
+        visible: false,
         imgUrlLength:1,
         active: 0,
         moveTop:{
@@ -247,19 +326,55 @@
       }, 0)
     },
     methods: {
+      toOtherSpec(name,to){
+        console.log(name)
+        console.log(to.specValueId)
+        // this.handleSpecState()
+        // if(name==to.specValueName){
+          // this.$router.push({path: `/pd/${to.specValueId}`});
+        // }
+      },
+      addNumber(){
+        this.reduceActive = false
+        this.buyNumber = parseInt(this.buyNumber) 
+        this.buyNumber += 1
+      },
+      reduceNumber(){
+        if(this.buyNumber==1){
+          this.reduceActive = true
+        }
+        if(this.buyNumber==0){
+          this.buyNumber = 0
+          
+        }else {
+          this.buyNumber = parseInt(this.buyNumber) 
+          this.buyNumber -= 1
+        }
+      },
+      checkSpec(index,index2){
+        this.xoxo = index
+        this.isShowCheckSpec = index2
+      },
+      handleOpen () {
+        this.bgColor = !this.bgColor
+        this.visible =  !this.visible
+        this.type = this.type === "ios-arrow-down"?"ios-arrow-up":"ios-arrow-down"
+      },
       getIndex(imgUrl,index){
         // this.ImgUrl = imgUrl
         this.$refs.ImgUrl.src = imgUrl
         this.active = index
       },
       handleMove(num){
-        let length = this.imgUrl.length - 4
+        let length = this.swiperData.length - 4
         let imgTop = 70
-        if(num === 1){                  
-          if(length - this.imgUrlLength < 0){
-            this.imgUrlLength -= 1 
-            this.moveTop.top = parseInt(this.moveTop.top) + imgTop + 'px'
-          }       
+        if(num === 1){   
+          if(length>0){
+            if(length - this.imgUrlLength < 0){
+              this.imgUrlLength -= 1 
+              this.moveTop.top = parseInt(this.moveTop.top) + imgTop + 'px'
+            }   
+          }                          
         }else{
           if(length - this.imgUrlLength >= 0){ 
             this.imgUrlLength += 1       
@@ -736,7 +851,7 @@
           }
         }
 
-        console.log('arr')
+        console.log('arr1')
         // debugger
          console.log(arr)
         return arr
@@ -1128,9 +1243,19 @@
 </style>
 
 <style>
-.ioioi .ivu-tabs-nav-wrap{
-  margin-left: 42%
-}                    
+  .ioioi .ivu-tabs-nav-wrap{
+    margin-left: 42%
+  }    
+  #detail .cost .ivu-select-dropdown{
+      padding: 0;
+      margin: 0;
+      /* left: 100px!important */
+  }
+  /* #detail .cost .ivu-select-dropdown{
+      padding: 0;
+      margin: 0;
+      left: 724px!important
+  }                */
 </style>
 
 <style lang="stylus" scoped>
@@ -1178,7 +1303,12 @@
         .ivu-breadcrumb
           font-size 14px
       .detail-content-center
-        overflow hidden
+        // overflow hidden
+        // clear both
+        // display:block;
+        // height 0
+        // visibility:hidden;
+
         .detail-content-left
           width 600px
           .goodDetails_name_img
@@ -1230,6 +1360,11 @@
           .title
             line-height 18px
             $mb(10px)
+          .adv
+            .p-adv
+              line-height 16px
+              font-size 14px
+              color #9B9B9B
           .price
             .sp_1
               color $blue
@@ -1242,12 +1377,34 @@
             span
               $ml(15px)
           .spec
-            .spec-sp2
-              cursor pointer
-              padding 4px 12px 4px 8px
-              $border(1,1px)
-              $mr(20px)
-              position relative
+            .spec-check
+              .ivu-radio-wrapper-checked 
+                color #000
+                border-color $blue
+                box-shadow none
+                position relative
+                &:after
+                  // content ''
+                  // position absolute
+                  // z-index 999
+                  // bottom -20px
+                  // left 50%
+                  // $ml(-20px)
+                  // display inline-block
+                  // width 40px
+                  // height 2px
+                  // background-color $blue
+              div
+                float left
+                height 29px
+                line-height 29px  
+                margin-right 20px 
+                position relative
+                label
+                  border-radius 0px  
+                  height 30px 
+                .ivu-radio-wrapper:after
+                  opacity  1                      
               .triangle_border_left
                 width 0 
                 height 0
@@ -1256,8 +1413,9 @@
                 border-color transparent #333 transparent transparent            
                 position absolute
                 transform rotate(223deg)
-                right -2px
-                top 14px
+                right -21px
+                top 16px
+                z-index 88
                 span                 
                   display block
                   width 0
@@ -1271,9 +1429,41 @@
               i
                 position absolute
                 right -5px
-                bottom -5px
+                bottom -4px
                 color #fff
-                z-index 3
+                z-index 89
+            // .spec-sp2
+            //   cursor pointer
+            //   padding 4px 12px 4px 8px
+            //   $border(1,1px)
+            //   $mr(20px)
+            //   position relative
+            //   .triangle_border_left
+            //     width 0 
+            //     height 0
+            //     border-width 10px 10px 10px 0
+            //     border-style solid
+            //     border-color transparent #333 transparent transparent            
+            //     position absolute
+            //     transform rotate(223deg)
+            //     right -2px
+            //     top 14px
+            //     span                 
+            //       display block
+            //       width 0
+            //       height 0
+            //       border-width 8px 8px 8px 0
+            //       border-style solid
+            //       border-color transparent $blue transparent transparent
+            //       position absolute
+            //       top -8px
+            //       left 1px
+            //   i
+            //     position absolute
+            //     right -5px
+            //     bottom -5px
+            //     color #fff
+            //     z-index 3
 
           .number
             overflow hidden
@@ -1300,7 +1490,10 @@
                 background-color #ededed
                 overflow hidden
               .tb-reduce 
-                border-right 0!important  
+                border-right 0!important
+              .tb-reduceActive
+                background-color #ccc
+                cursor no-drop
               .tb-disable-reduce
                 color #ccc
                 cursor not-allowed
@@ -1321,7 +1514,36 @@
                 border 1px solid #CCC
                 outline 0
                 background #FFF
-                ime-mode disabled       
+                ime-mode disabled  
+          .cost
+            a
+              color #000
+            .bgColor              
+              background-color $blue
+              a 
+                i,span 
+                  color #fff 
+              .cost-detail 
+                padding-left 10px     
+                width 700px
+                height 350px
+                $border(b,1px)
+                $border(border-left,8px)
+                padding 0
+                margin-top -2px   
+                .left
+                  width 55%
+                  height 90%
+                  float left
+                  margin 20px 
+                  $border(border-right,1px) 
+                  h2
+                    color $blue
+                  p
+                    $mt(20px)
+                    font-size 14px
+                    line-height 22px 
+                    width 95%                         
           .cart
             $mt(12px)
             .btn1
@@ -1349,9 +1571,10 @@
 
 
 
-            
-              
-              
+  
+      
+// .ivu-radio-group-button .ivu-radio-wrapper:after
+//   opacity  1          
 
       
                 
