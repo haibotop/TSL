@@ -14,8 +14,8 @@
         </div>
         <div v-else class="contentlist">
             <ul>
-                <li v-for="(item,index) in type" :key="index" :class="{active:active === index}" @click="handleClick(item)">
-                    <router-link tag="a" to="/">
+                <li v-for="(item,index) in type" :key="index" :class="{active:active === index}" >
+                    <router-link tag="a" :to="{ path: `/pl/${item.name}`,query: {type: '珠宝类型',typeName:item.name} }">
                         <div>
                             <img :src="item.img">
                         </div>
@@ -83,9 +83,9 @@
             }
         },
         methods: {
-            handleClick(item){
-                this.$router.push({path: '/pl/' + item.name,query: {type: "珠宝类型",typeName:item.name}})
-            },
+            // handleClick(item){
+            //     this.$router.push({path: '/pl/' + item.name,query: {type: "珠宝类型",typeName:item.name}})
+            // },
         },
         computed: {
             type(){

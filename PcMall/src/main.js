@@ -20,7 +20,14 @@ Vue.prototype.bus = new Vue();
 // 路由配置
 const RouterConfig = {
   // mode: 'history',
-  routes: Routers
+  routes: Routers,
+  // scrollBehavior (to, from, savedPosition) {
+  //   if (savedPosition) {
+  //     return savedPosition
+  //   } else {
+  //     return { x: 0, y: 0 }
+  //   }
+  // },
 }
 const router = new VueRouter(RouterConfig)
 
@@ -43,7 +50,7 @@ router.beforeEach((to, from, next) => {
 
 router.afterEach(() => {
   iView.LoadingBar.finish()
-  window.scrollTo(0, 0)
+  // window.scrollTo(0, 0)
 })
 
 // 配置Ajax拦截器，处理全局异步请求的交互

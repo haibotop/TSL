@@ -214,3 +214,4 @@ var host = [
 
 routers = routers.concat(host,searchModel,activityPage,pdModel)
 export default routers
+

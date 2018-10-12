@@ -11,12 +11,12 @@
 </template>
 <script type="text/ecmascript-6">
   import * as pdAPI from '@/services/API/pdServices.es6'
-  import { Scroller } from 'vux'
+  // import { Scroller } from 'vux'
   let interval
   export default {
     name: 'pdRichText',
     components: {
-      Scroller
+      // Scroller
     },
     data () {
       return {

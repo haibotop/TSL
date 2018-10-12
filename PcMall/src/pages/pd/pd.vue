@@ -46,7 +46,7 @@
             </div>           
             <div class="originalPrice">原价：<span>￥{{skuInfo.sku ? handlePrice(skuInfo.sku.originalPrice) : 0}}</span></div>
             <div class="spec" v-for="(item, index) in specArray" :key="index">
-              <span >{{handleName(item.specName)}}：</span>
+              <span style="float:left">{{handleName(item.specName)}}：</span>
               <!-- <span class="spec-sp2"
                 v-for="(item2, index2) in item.specValueArray"
                 :key="index2"
@@ -58,38 +58,39 @@
                 </div>
               </span> -->
               <template>
-                <RadioGroup class="spec-check" v-model="JSON.stringify(specArrayOn[index])" type="button" @on-change="toOtherSpec($event,specArrayOn[index])">
+                <!-- <RadioGroup class="spec-check" v-model="xoxoxo"  type="button" @on-change="toOtherSpec($event,specArrayOn[index])">
                   <div v-for="(item2, index2) in item.specValueArray" :key="index2">
-                    <Radio                
+                    <Radio             
                     :label="item2.specValueName"
                     :disabled="!item.specValueFlags[index2]"
                     @click.native="checkSpec(index,index2)"
                     :value="JSON.stringify(item2)"
                     >
                     </Radio>  
-                    <!-- <Icon type="ios-checkmark" size="18" v-if="index==xoxo&&index2==isShowCheckSpec"/>
+                    <Icon type="ios-checkmark" size="18" v-if="index==xoxo&&index2==isShowCheckSpec"/>
                     <div class="triangle_border_left" v-if="index==xoxo&&index2==isShowCheckSpec">
                         <span></span>
-                    </div> -->
+                    </div>
                   </div>                            
-                </RadioGroup>
+                </RadioGroup> -->
+
+                <Checker
+                  @on-change="onItemClick"
+                  v-model="specArrayOn[index]"
+                  type="radio"
+                  radio-required
+                  default-item-class="default-item-class"
+                  selected-item-class="selected-item-class"
+                  disabled-item-class="disabled-item-class">
+                  <checker-item
+                    v-for="(item2, index2) in item.specValueArray"
+                    :key="index2"
+                    :value="item2"
+                    :disabled="!item.specValueFlags[index2]">{{item2.specValueName}}
+                  </checker-item>
+                </Checker>
               </template>
             </div>
-            <!-- <div class="spec">
-              <span>颜色：</span>
-              <span class="spec-sp2">I-J/淡白
-                <Icon type="ios-checkmark" size="18"/>
-                <div class="triangle_border_left">
-                    <span></span>
-                </div>
-              </span>
-              <span class="spec-sp2">I-k/淡白
-                <Icon type="ios-checkmark" size="18"/>
-                <div class="triangle_border_left">
-                    <span></span>
-                </div>
-              </span>
-            </div> -->
             <div class="number">
               <p>数量：</p>
               <span class="tb-stock" id="J_Stock">
@@ -108,27 +109,94 @@
                 </a>  
                 <DropdownMenu  slot="list" class="cost-detail" >
                   <div class="left">
-                    <h2>前言</h2>
-                    <p>为了提升您的购物体验，我们提供快递配送/门店自提服务，您可以根据您的个人需要，选择合适的配送方式，如有任何问题，欢迎联系我们的在线客服。</p>
+                    <div v-if="backGoodsArrayIndex==0">
+                      <h2>前言</h2>
+                      <p>为了提升您的购物体验，我们提供快递配送/门店自提服务，您可以根据您的个人需要，选择合适的配送方式，如有任何问题，欢迎联系我们的在线客服。</p>
+                    </div>
+                    <div v-if="backGoodsArrayIndex==1">
+                      <h2>发货时间</h2>
+                      <p>您所订购的商品，将在订单付款成功后1-2周内发出。</p>
+                    </div>
+                    <div v-if="backGoodsArrayIndex==2">
+                      <h2>快递配送服务</h2>
+                      <p>3.1 指定快递：EMS中国邮政速递或顺丰快递，全场免运费（仅限中国大陆地区，不包括港澳台或海外地区）。同时，我们会为商品购买全程运输保险。</p>
+                      <p>3.2 收货提醒：因寄送物为贵重商品，为保障您的合法权益，建议本人当面验货，并签收包裹。如有问题，请及时与在线客服联系，我们将诚挚为您提供服务。</p>
+                    </div>
+                    <div v-if="backGoodsArrayIndex==3">
+                      <h2>门店自提服务（仅限中国大陆地区）</h2>
+                      <p>4.1 目前，我们已在指定门店“门店自提”服务，您可以选择就近的指定门店进行取货；您的订单支付成功后，我们将免费为您配送商品至指定门店。</p>
+                      <p>4.2 商品送达您选定的指定门店后，我们将会发送取货信息通知您提货，自该信息发出之日起，您订购的商品将在指定门店内保存7天，在此期间您应在门店正常营业时间（一般商城营业时间为10:00-22:00）内提取您所订购的全部商品；如您未能于上述期间内提取全部商品，需根据本店退换货政策的规定申请退货并办理相关手续。</p>
+                      <p>4.3 您到指定门店提货时，需向门店店员出示您的身份证原件、下单的订单编号、登记的取货人姓名及取货码等取货信息以提取商品。</p>
+                      <p>4.4 收货提醒：为方便您顺利取货，如非本人取货，请提前联系我们的在线客服修改取货信息，否则，我们保留拒绝接受他人代取商品的权利。</p>
+                      <p>4.5 支持现场验货，我们将为您提供专业的佩戴与保养建议，让您享受门店的尊享服务。</p>
+                      <p>提供“线上下单，线下提货”服务的实体门店如下所列：</p>
+                      <ul>
+                        <li>
+                          1、北京：北京东直门银座<br>
+                          地址：北京市东城区东直门外大街48号银座mall一层<br>
+                          电话：13810530018
+                        </li>
+                        <li>
+                          2、上海：上海五角场万达<br>
+                          地址：上海市万达广场杨浦区淞沪路77号B1层B1022B-B1023谢瑞麟珠宝专柜<br>
+                          电话：021-55660108
+                        </li>
+                        <li>
+                          3、重庆：重庆大都会<br>
+                          地址：重庆市渝中区邹容路68号大都会广场LG层02铺谢瑞麟专柜<br>
+                          电话：023-63719917
+                        </li>
+                        <li>
+                          4、广州：广州天环<br>
+                          地址：广州市天河区天河路天环广场地下二层B247号商铺<br>
+                          电话：020-38559932
+                        </li>
+                      </ul>
+                    </div>
+                    <div v-if="backGoodsArrayIndex==4">
+                      <h2>商品包装</h2>
+                      <p>我们会为每个订单，配备商品保证书、商品清单、精美首饰盒及手提袋等。</p>
+                    </div>
+                    <div v-if="backGoodsArrayIndex==5">
+                      <h2>退换货政策</h2>
+                      <p>............</p>
+                    </div>
                   </div>
                   <div class="right">
-
+                    <ul>
+                      <li v-for="(item,index) in backGoodsArray">
+                        <Icon type="ios-arrow-back" /><span @mouseenter="backGoodsArrayFuc(index)">{{item}}</span>
+                      </li>
+                      <!-- <li><Icon type="ios-arrow-back" /><span>前言</span></li>
+                      <li><Icon type="ios-arrow-back" /><span>发货时间</span></li>
+                      <li><Icon type="ios-arrow-back" /><span>快递配送服务</span></li>
+                      <li><Icon type="ios-arrow-back" /><span>门店自提服务（仅限中国大陆地区）</span></li>
+                      <li><Icon type="ios-arrow-back" /><span>商品包装</span></li>
+                      <li><Icon type="ios-arrow-back" /><span>退换货政策</span></li> -->
+                    </ul>
                   </div>
                 </DropdownMenu>
-                  <!-- <DropdownMenu slot="list">
-                    <DropdownItem>驴打滚</DropdownItem>
-                    <DropdownItem>炸酱面</DropdownItem>
-                    <DropdownItem>豆汁儿</DropdownItem>
-                    <Dropdown placement="right-start">
+                <!-- <DropdownMenu slot="list">
+                    <Dropdown placement="left-start">
                         <DropdownItem>
-                            北京烤鸭
-                            <Icon type="ios-arrow-forward"></Icon>
+                          <Icon type="ios-arrow-back"></Icon>
+                            前言
                         </DropdownItem>
-                        <DropdownMenu slot="list">
-                            <DropdownItem>挂炉烤鸭</DropdownItem>
-                            <DropdownItem>焖炉烤鸭</DropdownItem>
+                        <DropdownMenu slot="list" >
+                            <h2>前言</h2>
+                            <p>为了提升您的购物体验，我们提供快递配送/门店自提服务，您可以根据您的个人需要，选择合适的配送方式，如有任何问题，欢迎联系我们的在线客服。</p>
                         </DropdownMenu>
                     </Dropdown>
+                    <Dropdown placement="left-end">
+                        <DropdownItem>
+                          <Icon type="ios-arrow-back"></Icon>
+                            发货时间
+                        </DropdownItem>
+                        <DropdownMenu slot="list">
+                            erere
+                        </DropdownMenu>
+                    </Dropdown>
+                    
                     <DropdownItem>冰糖葫芦</DropdownItem>
                 </DropdownMenu> -->
               </Dropdown>
@@ -187,17 +255,19 @@
     components: {
       header1,
       header2,
-      pdRichText
+      pdRichText,
+      Checker,
+      CheckerItem,
     },
     // components: Object.assign({ XHeader, Scroller, Group, CellBox, Cell, Popup, Checker, CheckerItem, InlineXNumber, XNumber, debounce, Tab, TabItem, XTable, Badge }),
     data () {
       return {
-        xoxo:false,
-        reduceActive: false,
-        buyNumber: 1,
-        isShowCheckSpec: 0,
-        button1: 'YM693泰字戒指',
-        button2: '1.5',
+        backGoodsArray:['前言','发货时间','快递配送服务','门店自提服务（仅限中国大陆地区）','商品包装','退换货政策'],
+        backGoodsArrayIndex : 0,
+        xoxo:0,
+        reduceActive: false,//商品减到0
+        buyNumber: 1,//商品数量
+        isShowCheckSpec: 0,//三角形样式
         type:"ios-arrow-down",
         bgColor:false,
         visible: false,
@@ -274,10 +344,11 @@
     updated:function(){
         if(this.swiperData!=""){
           this.ImgUrl = this.swiperData[0].src
+          
         }
     },
     mounted: function () {   
-      this.scrollerHeight = document.body.clientHeight - 96
+      // this.scrollerHeight = document.body.clientHeight - 96
       this.skuId = this.$route.params.skuId
       this.getSkuInfo(this.skuId,function(){})     
      // this.getOptimal(this.skuId)
@@ -326,13 +397,22 @@
       }, 0)
     },
     methods: {
-      toOtherSpec(name,to){
-        console.log(name)
-        console.log(to.specValueId)
-        // this.handleSpecState()
-        // if(name==to.specValueName){
-          // this.$router.push({path: `/pd/${to.specValueId}`});
-        // }
+      // toOtherSpec(name,to){
+      //   console.log(name)
+      //   // console.log(to.specValueId)
+      //   // this.handleSpecState()
+      //   // if(name==to.specValueName){
+      //     // this.$router.push({path: `/pd/${to.specValueId}`});
+      //   // }
+      //   this.xoxoxo = JSON.stringify(to)
+      // },
+      backGoodsArrayFuc(index){
+        this.backGoodsArrayIndex = index
+      },
+      onItemClick(){
+        let scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop
+        console.log(scrollTop)
+        document.documentElement.scrollTop = scrollTop;
       },
       addNumber(){
         this.reduceActive = false
@@ -525,7 +605,7 @@
             }
           }
         }
-        this.$vux.loading.hide()
+        // this.$vux.loading.hide()
         if (this.filstLoad === 0) {
           this.filstLoad++
         } else {
@@ -866,6 +946,7 @@
       // 默认规格字符串，判断是否是单品
       specStr () {
         return JSON.stringify(this.specArrayOn)
+        // return this.specArrayOn
       },
       specScrollerHeight () {
         return document.body.clientHeight * 0.75 - 101 - 50 + 'px'
@@ -908,6 +989,10 @@
       }
     },
     watch: {
+//       '$route':function(to,from){
+// 　　　　 document.body.scrollTop = 1330
+//         document.documentElement.scrollTop = 2330
+//       },
       specStr (newV, oldV) {
         if (oldV !== '[]') {
           if (newV !== oldV) {
@@ -1256,6 +1341,19 @@
       margin: 0;
       left: 724px!important
   }                */
+
+  /* #detail .cost .ivu-select-dropdown{
+    width: 385px;
+    padding-left: 10px  ;   
+    height: 350px;
+    border:1px solid red;
+    border-left:8px solid red;
+    padding: 0;
+    margin-top: -2px
+  }
+  #detail .cost .ivu-select-dropdown{
+     width: 315px
+  } */
 </style>
 
 <style lang="stylus" scoped>
@@ -1377,6 +1475,18 @@
             span
               $ml(15px)
           .spec
+            overflow hidden
+            .default-item-class
+              height 30px
+              line-height 30px
+              padding 0px 15px
+              display inline-block
+              border 1px solid #dcdee2
+              margin-right 20px
+              cursor pointer
+            .selected-item-class
+              $border(1,1px)
+              color $blue
             .spec-check
               .ivu-radio-wrapper-checked 
                 color #000
@@ -1525,7 +1635,7 @@
                   color #fff 
               .cost-detail 
                 padding-left 10px     
-                width 700px
+                width 730px
                 height 350px
                 $border(b,1px)
                 $border(border-left,8px)
@@ -1537,13 +1647,35 @@
                   float left
                   margin 20px 
                   $border(border-right,1px) 
+                  overflow auto
                   h2
                     color $blue
                   p
                     $mt(20px)
                     font-size 14px
                     line-height 22px 
-                    width 95%                         
+                    width 95% 
+                  li
+                    $mt(20px)
+                    line-height 22px  
+                .right          
+                  float right
+                  margin 20px 20px 20px 0px
+                  li
+                    margin 10px 0
+                    i
+                      margin-right 10px
+                      color $blue
+                    span
+                      width: 240px;
+                      height inherit
+                      display inline-block
+                      border 1px solid #fff
+                      text-indent 10px
+                      &:hover
+                        border-color $blue
+                      
+                    
           .cart
             $mt(12px)
             .btn1

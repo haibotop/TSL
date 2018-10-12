@@ -73,6 +73,8 @@
             a
                 color #000
                 $mr(60px)
+                // $mr(15px)
+                // padding 0px 15px
                 display inline-block
                 i 
                     color $blue
