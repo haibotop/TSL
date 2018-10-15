@@ -126,6 +126,7 @@
             width 180px
     .contentlist
         $border(border-left,4px)
+        // margin-top 50px
         ul
             // height 60px
             margin 10px 20px

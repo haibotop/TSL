@@ -1,8 +1,8 @@
 <template>
     <div class="header">
         <div class="header-logo">
-            <router-link tag="div" to="/">
-
+            <router-link to="/">
+                <img src="../../assets/images/tsl_logo.png">
             </router-link>
         </div>
         <div class="header-left">
@@ -61,13 +61,15 @@
         line-height 120px
         background-color #fff
         .header-logo
-            div
-               float left
-               width 35%
-               height 120px
-               background url("../../assets/images/tsl_logo.png") no-repeat 60px 
-               background-size 66%
-               cursor pointer
+            float left
+            width 35%
+            height 120px    
+            position relative
+            img 
+                height 44px
+                vertical-align middle
+                $ml(58px)
+                cursor pointer
         .header-left            
             float left
             a
