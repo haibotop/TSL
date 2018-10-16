@@ -203,7 +203,7 @@
                     }
                 ],
                 allPrice:0,  
-                nickName:''
+                nickName:'登录/注册'
             }
         },
         methods: {   
