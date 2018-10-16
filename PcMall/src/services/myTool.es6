@@ -38,56 +38,56 @@ export function handleName (name) {
 // }
 // import * as cartAPI from '@/services/API/shoppingCartServices.es6'
 // // 合并预购物车到购物车(若存在)
-// export function preCartToCart (this_, callback) {
-//   if (localStorage.getItem('cartProductItems')) {
-//     let productItems = JSON.parse(localStorage.getItem('cartProductItems'))
-//     let params = []
-//     for (let i of productItems) {
-//       let product = {
-//         'merchantId': '123',
-//         'productId': i.id,
-//         'productItemId': null,
-//         'quantity': i.amount
-//       }
-//       params.push(product)
-//     }
-//     if (params.length > 0) {
-//       this_.$http.post(...cartAPI.visitorCartItem(params)).then(res => {
-//         if (res.data.code === 200) {
-//           if (this_.$route.path === 'shoppingCart') {
-//             this_.$vux.toast.show({text: '预购物袋合并成功', type: 'text', width: '200px'})
-//           }
-//           if (typeof callback === 'function') {
-//             callback()
-//           }
-//         } else if (res.data.code === 1007) {
-//           if (this_.$route.path === 'shoppingCart') {
-//             this_.$vux.toast.show({text: '购买数量超过库存', type: 'text', width: '200px'})
-//           }
-//           sessionStorage.removeItem('settlementProductItems')
-//           callback()
-//         } else if (res.data.code === 1008) {
-//           if (this_.$route.path === 'shoppingCart') {
-//             this_.$vux.toast.show({text: '商品不可用', type: 'text', width: '200px'})
-//           }
-//           sessionStorage.removeItem('settlementProductItems')
-//           callback()
-//         } else {
-//           if (this_.$route.path === 'shoppingCart') {
-//             this_.$vux.toast.show({text: '预购物袋合并失败', type: 'text', width: '200px'})
-//           }
-//           sessionStorage.removeItem('settlementProductItems')
-//           callback()
-//         }
-//         localStorage.removeItem('cartProductItems')
-//       })
-//     }
-//   } else {
-//     if (typeof callback === 'function') {
-//       callback()
-//     }
-//   }
-// }
+export function preCartToCart (this_, callback) {
+  if (localStorage.getItem('cartProductItems')) {
+    let productItems = JSON.parse(localStorage.getItem('cartProductItems'))
+    let params = []
+    for (let i of productItems) {
+      let product = {
+        'merchantId': '123',
+        'productId': i.id,
+        'productItemId': null,
+        'quantity': i.amount
+      }
+      params.push(product)
+    }
+    if (params.length > 0) {
+      this_.$http.post(...cartAPI.visitorCartItem(params)).then(res => {
+        if (res.data.code === 200) {
+          if (this_.$route.path === 'shoppingCart') {
+            this_.$vux.toast.show({text: '预购物袋合并成功', type: 'text', width: '200px'})
+          }
+          if (typeof callback === 'function') {
+            callback()
+          }
+        } else if (res.data.code === 1007) {
+          if (this_.$route.path === 'shoppingCart') {
+            this_.$vux.toast.show({text: '购买数量超过库存', type: 'text', width: '200px'})
+          }
+          sessionStorage.removeItem('settlementProductItems')
+          callback()
+        } else if (res.data.code === 1008) {
+          if (this_.$route.path === 'shoppingCart') {
+            this_.$vux.toast.show({text: '商品不可用', type: 'text', width: '200px'})
+          }
+          sessionStorage.removeItem('settlementProductItems')
+          callback()
+        } else {
+          if (this_.$route.path === 'shoppingCart') {
+            this_.$vux.toast.show({text: '预购物袋合并失败', type: 'text', width: '200px'})
+          }
+          sessionStorage.removeItem('settlementProductItems')
+          callback()
+        }
+        localStorage.removeItem('cartProductItems')
+      })
+    }
+  } else {
+    if (typeof callback === 'function') {
+      callback()
+    }
+  }
+}
 // 返回是否在线状态 true为在线,false为离线
 export function isOnline () {
   if (navigator.onLine) {

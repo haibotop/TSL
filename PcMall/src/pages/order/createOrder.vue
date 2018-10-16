@@ -1,6 +1,9 @@
 <template>
+<div>
+<header1></header1>
+<header2></header2>
   <div id="createOrder">
-    <x-header v-show="!couponFlag" :left-options="{backText: ''}" title="填写订单"></x-header>
+    <!--<x-header v-show="!couponFlag" :left-options="{backText: ''}" title="填写订单"></x-header>-->
     <scroller v-show="!couponFlag" lock-x height="-96" ref="scroller">
       <div :style="`min-height:${scrollerHeight}px;`">
         <group v-if="address">
@@ -109,8 +112,13 @@
     <cashier v-model="cashierFlag" :price="payAmount" :orderNum="orderNum"></cashier>
     <useCoupons v-show="couponFlag" v-model="couponFlag" ref="useCoupons" :merchants="merchants" @selected="getSelected"></useCoupons>
   </div>
+<v-footer></v-footer>
+</div>
 </template>
 <script type="text/ecmascript-6">
+  import header1 from '../homePages/header1'
+  import header2 from '../homePages/header2'
+  import vFooter from '../homePages/footer.vue'
   import * as tool from '@/services/myTool.es6'
   import * as orderAPI from '@/services/API/orderServices.es6'
   import cashier from '@/components/cashier.vue'
@@ -118,7 +126,10 @@
   import useCoupons from '@/pages/promotion/useCoupons.vue'
   export default {
     name: 'createOrder',
-    components: { cashier, XHeader, Group, Cell, CellBox, XTextarea, Scroller, debounce, useCoupons },
+    components: { cashier, XHeader, Group, Cell, CellBox, XTextarea, Scroller, debounce, useCoupons,
+        header1,
+        header2,
+        vFooter, },
     data () {
       return {
         scrollerHeight: 0,

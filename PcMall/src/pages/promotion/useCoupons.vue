@@ -118,7 +118,7 @@
         // 一开始就调用一次calcCoupon，不满足条件的已置灰无法勾选
         // 当某一张优惠券勾选状态改变时触发
         // 每次勾选优惠券，都会重新计算置灰，所以能够选到的都是可用的
-        this.$vux.loading.show()
+        //this.$vux.loading.show()
         console.log('changeSelected run')
         // this.selected = []
         // 判断触发watch的改变，是否是tab切换导致的
@@ -128,7 +128,7 @@
             this.calcCoupon()
             this.selected = []
           }
-          this.$vux.loading.hide()
+          //this.$vux.loading.hide()
           return
         }
         let news = JSON.parse(newCheck)
@@ -219,7 +219,7 @@
           }
         }
         this.zhihuiFun(zhihui)
-        this.$vux.loading.hide()
+        //this.$vux.loading.hide()
       },
       zhihuiFun (codes) { // 置灰优惠券
         console.log('zhihuiFun run')
