@@ -42,7 +42,12 @@
               </div>
             </div>
             <div class="price">
-              <p>价格：<span class="sp_1">￥{{skuInfo.sku ? handlePrice(skuInfo.sku.price) : 0}}</span><span class="sp_2">添加收藏</span></p>
+              <p>价格：<span class="sp_1">￥{{skuInfo.sku ? handlePrice(skuInfo.sku.price) : 0}}</span>
+                <span class="sp_2" @click="collect">
+                    <span v-show="!isCollected"><img src="../../assets/icons/heart.png"  style="width:20px;float: left;margin-right: 8px;margin-top: 10px;"/>添加收藏</span>
+                    <span v-show="isCollected"><img src="../../assets/icons/heart-fill.png" style="width:20px;float: left;margin-right: 8px;margin-top: 10px;"/>已收藏</span>
+                </span>
+              </p>
             </div>
             <div class="originalPrice">原价：<span>￥{{skuInfo.sku ? handlePrice(skuInfo.sku.originalPrice) : 0}}</span></div>
             <div class="spec" v-for="(item, index) in specArray" :key="index">
@@ -202,6 +207,12 @@
                 </DropdownMenu> -->
               </Dropdown>
             </div>
+            <!-- 领券 -->
+            <!-- <Cell is-link v-show="specStr.length > 0" @click.native="openGetCoupon" v-if="hasCoupon">
+              <div slot="title" class="my-cell-title" style="display: inline-block;">领券</div>
+            </Cell> -->
+            <!-- 促销 -->
+            <pdPromotion ref="pdPromotion" v-if="getSkuCompeleted"></pdPromotion>
             <div class="cart">
               <Button v-show="!disabledBuy && modalmodel === ''" @click="createOrder" class="btn1">立即购买</Button>
               <Button v-show="!disabledBuy && modalmodel === ''" @click="postCartItem" class="btn2" id="signup">加入购物袋</Button>
@@ -249,7 +260,7 @@
 //   import pdSwiper from './pdSwiper3.vue'
   import pdRichText from './pdRichText.vue'
 //   import pdCoupons from '../promotion/pdCoupons.vue'
-//   import pdPromotion from '../promotion/pdPromotion.vue'
+  import pdPromotion from '@/pages/promotion/pdPromotion.vue'
   import {getSkuInfo} from '@/services/API/pdServices.es6'
   let interval
   let getSkuCancel
@@ -265,6 +276,7 @@
       pdRichText,
       Checker,
       CheckerItem,
+      pdPromotion
     },
     // components: Object.assign({ XHeader, Scroller, Group, CellBox, Cell, Popup, Checker, CheckerItem, InlineXNumber, XNumber, debounce, Tab, TabItem, XTable, Badge }),
     data () {
@@ -725,13 +737,15 @@
             this.specFlag = true
             this.num = 1
             if (response.data.code === 200) {
-              this.$vux.toast.show({text: '加入购物袋成功', type: 'text', width: '200px'})
+              // this.$vux.toast.show({text: '加入购物袋成功', type: 'text', width: '200px'})
+              this.$Message.success({content:'加入购物袋成功',duration:3})
               this.getCartItem()
             } else {
               if (response.data.code === 1008) {
                 this.skuInfo.sku.status = 2
               }
-              this.$vux.toast.show({text: response.data.message, type: 'text', width: '200px'})
+              // this.$vux.toast.show({text: response.data.message, type: 'text', width: '200px'})
+              this.$Message.info(response.data.message)
             }
           })
         } else {
@@ -757,7 +771,8 @@
               stock: this.skuInfo.sku.stock
             }]
             localStorage.setItem('cartProductItems', JSON.stringify(arr))
-            this.$vux.toast.show({text: '加入购物袋成功', type: 'text', width: '200px'})
+            // this.$vux.toast.show({text: '加入购物袋成功', type: 'text', width: '200px'})
+            this.$Message.success({content:'加入购物袋成功',duration:3});
             this.num = 1
             this.specFlag = true
             this.getCartItem()
@@ -819,7 +834,8 @@
                this.specFlag = true
                this.num = 1
             } else {
-              this.$vux.toast.show({text: response.data.message, type: 'text', width: '200px'})
+              // this.$vux.toast.show({text: response.data.message, type: 'text', width: '200px'})
+              this.$Message.info(response.data.message)
             }
           })
         } else {
@@ -919,10 +935,10 @@
     },
     computed: {
       heartSvg () {
-        return require('../../assets/icons/heart.svg')
+        return require('../../assets/icons/heart.png')
       },
       heartFillSvg () {
-        return require('../../assets/icons/heart-fill.svg')
+        return require('../../assets/icons/heart-fill.png')
       },
       bagSvg () {
         return require('../../assets/icons/bag.svg')
@@ -1490,6 +1506,7 @@
             .sp_2
               float right
               $mr(30px)
+              cursor pointer
           .originalPrice
             span
               $ml(15px)

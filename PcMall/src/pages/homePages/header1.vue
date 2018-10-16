@@ -62,7 +62,7 @@
             </router-link>
             <router-link tag="a" to="/login">     
                 <Icon type="ios-contact-outline" size="20"/>
-                <span>登录/注册</span>
+                <span>{{nickName}}</span>
             </router-link>
             <router-link tag="a" to="/" >              
                 <Icon type="md-heart-outline" size="20"/>
@@ -203,6 +203,7 @@
                     }
                 ],
                 allPrice:0,  
+                nickName:''
             }
         },
         methods: {   
@@ -228,7 +229,14 @@
             stop(){}
         },
         mounted () {
-            
+            let userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
+            console.log(userInfo)
+            if(userInfo!=null){
+                console.log(userInfo.nickName)
+                this.nickName =  userInfo.nickName
+            }else{
+                this.nickName =  '登录/注册'
+            }
         },
         computed: {
             // allPeice(){

@@ -54,15 +54,59 @@ router.afterEach(() => {
 })
 
 // 配置Ajax拦截器，处理全局异步请求的交互
+// Ajax.$interceptor.requestThen = function (config) {
+//   iView.LoadingBar.start()
+//   if (config.certified) {
+//     if (!sessionStorage.getItem('userInfo')) {
+//       iView.LoadingBar.error()
+//       iView.Message.error({
+//         content: `用户未登录，请重新登录!`
+//       })
+//       router.replace({path: '/home'})
+//       if (config.source) {
+//         config.source.cancel()
+//       }
+//       // Promise.cancel()
+//       return
+//     }
+//   }
+// }
+
 Ajax.$interceptor.requestThen = function (config) {
   iView.LoadingBar.start()
   if (config.certified) {
     if (!sessionStorage.getItem('userInfo')) {
-      iView.LoadingBar.error()
-      iView.Message.error({
-        content: `用户未登录，请重新登录!`
+      // Vue.$vux.confirm.show({
+      //   content: '用户未登录-收藏',//点击收藏的地方 
+      //   confirmText: '去登录-收藏',
+      //   onConfirm: () => {
+      //     router.push({path: '/signin'})
+      //   },
+      //   onCancel: () => {
+      //     if (['mine', 'mySet', 'myAccount', 'myPassword', 'myInfo', 'myNickname', 'myCollection', 'myOrders', 'myOrderDetail'].indexOf(router.history.current.name) !== -1) {
+      //       router.push({path: '/mine'})
+      //     } else {
+      //       localStorage.removeItem('settlementProductItems')
+      //     }
+      //   }
+      // })
+      iView.Modal.confirm({
+        title: '',
+        content: '<p>用户未登录</p>',
+        okText: '去登陆',
+        cancelText: '取消',
+        onOk:()=>{
+          router.push({path: '/login'})
+        },
+        onCancel: () => {
+          if (['mine', 'mySet', 'myAccount', 'myPassword', 'myInfo', 'myNickname', 'myCollection', 'myOrders', 'myOrderDetail'].indexOf(router.history.current.name) !== -1) {
+            router.push({path: '/mine'})
+          } else {
+            localStorage.removeItem('settlementProductItems')
+          }
+        }
       })
-      router.replace({path: '/home'})
+
       if (config.source) {
         config.source.cancel()
       }
@@ -71,6 +115,7 @@ Ajax.$interceptor.requestThen = function (config) {
     }
   }
 }
+
 Ajax.$interceptor.responseThen = function (response) {
   let { method, status, data } = response
   switch (true) {
