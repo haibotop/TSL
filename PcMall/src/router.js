@@ -21,6 +21,9 @@ import pl from '@/pages/search/pl'
 //商品详情
 import pd from '@/pages/pd/pd'
 
+//订单
+import createOrder from '@/pages/order/createOrder.vue'
+
 var routers = [];
 
 // 搜索
@@ -85,6 +88,18 @@ let pdModel = [
     //   ]
     // }
   ]
+
+// 订单
+let order = [
+    {
+        path: '/createOrder',
+        name: 'createOrder',
+        meta: {
+            intercept: true
+        },
+        component: createOrder
+    }
+]
   
   //活动页
   let activityPage = [
@@ -212,6 +227,6 @@ var host = [
     },
 ]
 
-routers = routers.concat(host,searchModel,activityPage,pdModel)
+routers = routers.concat(host,searchModel,activityPage,pdModel,order)
 export default routers
 

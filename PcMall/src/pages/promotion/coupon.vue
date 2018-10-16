@@ -98,7 +98,6 @@
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   background-color: #fff;
-  color: $tsl-color;
   font-family: "Times New Roman", SimSun;
   box-shadow: 0px 0px 5px #aaa;
   .amount {
@@ -217,7 +216,7 @@
     bottom: 10px;
     transform: rotateZ(-45deg);
     background-color: #fff;
-    color: $tsl-color;
+    //color: $tsl-color;
     font-size: 14px;
     width: 80px;
     text-align: center;
