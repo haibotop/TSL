@@ -233,7 +233,7 @@
             console.log(userInfo)
             if(userInfo!=null){
                 console.log(userInfo.nickName)
-                this.nickName =  userInfo.nickName
+                this.nickName = userInfo.nickName === null? 'admin': userInfo.nickName
             }else{
                 this.nickName =  '登录/注册'
             }
