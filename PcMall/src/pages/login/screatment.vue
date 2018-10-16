@@ -1,109 +1,176 @@
 <style lang="scss" rel="stylesheet/scss">
-#screatment {
-  background-color: #FFFFFF;
-  height: 100%;
-  .logo {
-    width: 140px;
-    position: absolute;
-    top: 12px;
-    left: 0px;
-    left: 50%;
-    transform: translateX(-50%);
-    img {
-      display: block;
-      width: 100%;
+    #screatment {
+        padding: 50px 0;
+        background: #fafafa;
+        height: 100%;
+        .logo {
+            width: 140px;
+            position: absolute;
+            top: 12px;
+            left: 0px;
+            left: 50%;
+            transform: translateX(-50%);
+            img {
+                display: block;
+                width: 100%;
+            }
+        }
+        .login-title{
+            height: 80px;
+            text-align: center;
+            .login-t{
+                position: relative;
+                display: inline-block;
+                text-align: center;
+                font-size: 20px;
+                color: #0F0F0F;
+            }
+            .login-t:after{
+                content: '';
+                position: absolute;
+                bottom: -20px;
+                left: 50%;
+                margin-left: -20px;
+                display: inline-block;
+                width: 40px;
+                height: 2px;
+                background-color: #504379;
+            }
+            .xiegang:after{
+                content: '';
+                position: relative;
+                top: 8px;
+                margin: 0 15px;
+                display: inline-block;
+                width: 1px;
+                height: 30px;
+                background-color: #2E0F6E;
+                transform: rotate(30deg);
+            }
+        }
+        .vux-popup-dialog {
+            background: #fff;
+        }
+        .content {
+            margin: 0 10%;
+            padding: 80px 0;
+            width: 80%;
+            height: 600px;
+            background: #fff;
+            font-size: 14px;
+            color: #7F7F7F;
+        }
+        .content-menu {
+            width: 330px;
+            height: 100%;
+            float: left;
+            /*height: calc(100% - 120px);*/
+            overflow-y: scroll;
+        }
+        h6 {
+            color: #000000;
+        }
+        p, h6 {
+            /*margin: 10px 0;*/
+        }
+        .divider {
+            width: 100%;
+            height: 1px;
+            margin-bottom: 20px;
+            margin-top: 10px;
+            display: block;
+        }
+        .slide {
+            padding: 0 50px;
+            li{
+                padding-left: 50px;
+                width: 250px;
+                height: 80px;
+                line-height: 80px;
+                color: #4a4a4a;
+                font-size: 16px;
+            }
+            .divider {
+                margin-bottom: 0;
+                margin-top: 2px;
+            }
+            .slideActive{
+                border: 2px solid #352665;
+            }
+        }
+        .slide-panel {
+            /*padding-top: 15px;*/
+            /*padding-left: 40px;*/
+            /*padding-bottom: 15px;*/
+            /*color: #000;*/
+        }
+        .position-horizontal-demo {
+            margin-right: 60px;
+            padding-right: 30px;
+            float: right;
+            width: 540px;
+            height: 100%;
+            overflow-y: scroll;
+            font-size: 14px;
+            color: #454545;
+            background: #fff;
+            p {
+                margin-bottom: 1.5em;
+                line-height: 1.5em;
+            }
+            ul {
+                margin-top: 0;
+                padding-left: 24px;
+                list-style-type: none;
+            }
+            .vux-close {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translateX(-50%) translateY(-50%) scale(4);
+                color: #000;
+            }
+            .clear {
+                clear: both;
+            }
+        }
+        /*滚动条样式*/
+        .content-menu::-webkit-scrollbar ,.position-horizontal-demo::-webkit-scrollbar{
+            /*滚动条整体样式*/
+            width: 2px; /*高宽分别对应横竖滚动条的尺寸*/
+            height: 2px;
+        }
+        .content-menu::-webkit-scrollbar-thumb ,.position-horizontal-demo::-webkit-scrollbar-thumb{
+            /*滚动条里面小方块样式*/
+            border-radius: 6px;
+            background: #979797;
+        }
+        .content-menu::-webkit-scrollbar-track ,.position-horizontal-demo::-webkit-scrollbar-track{
+            /*滚动条里面轨道样式*/
+            background: transparent;
+        }
     }
-  }
-  .vux-popup-dialog {
-    background: #fff;
-  }
-  .content {
-    margin: 10px auto;
-    font-size: 14px;
-    color: #7F7F7F;
-    padding: 0px 10px 50px 10px;
-  }
-  h6 {
-    color: #000000;
-  }
-  p, h6 {
-    margin: 10px 0;
-  }
-  .divider {
-    width: 100%;
-    height: 1px;
-    margin-bottom: 20px;
-    margin-top: 10px;
-    display: block;
-  }
-  .slide {
-    .divider {
-      margin-bottom: 0;
-      margin-top: 2px;
-    }
-  }
-  .bg-gray-lighter {
-    background-color: #E9E7E8;
-  }
-  .slide-panel {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    padding-left: 40px;
-    color: #000;
-  }
-  .position-horizontal-demo {
-    position: relative;
-    top: 46px;
-    font-size: 14px;
-    color: #454545;
-    background: #fff;
-    &>div {
-      padding: 10px;
-      height: 100%;
-    }
-    p {
-      margin-bottom: 1.5em;
-      line-height: 1.5em;
-    }
-    ul {
-      margin-top: 0;
-      padding-left: 24px;
-      list-style-type: none;
-    }
-    .vux-close {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translateX(-50%) translateY(-50%) scale(4);
-      color: #000;
-    }
-    .clear {
-      clear: both;
-    }
-  }
-}
 </style>
 <template>
+<div>
+<header1></header1>
+<header2></header2>
   <div id="screatment">
-    <XHeader :left-options="headerContent.leftOptions">
-      <!--<div class="logo"><img src="../../assets/icons/logo.png" alt=""></div>-->
-    </XHeader>
+    <div class="login-title">
+      <div class="login-t">普通用户 <span class="xiegang"></span> 隐私协议</div>
+    </div>
     <div class="content">
-      <h1 class="text-headline">隐私协议</h1>
-      <div class="divider bg-gray-lighter">&nbsp;</div>
       <div class="content-menu">
         <ul class="slide">
-          <li v-for="(item, index) in sliderList" :key="index">
+          <li v-for="(item, index) in sliderList" :key="index" :class="{slideActive:sliderIndex==index}">
             <div class="slide-panel" @click="showSlider(index)">
               <span>{{item.title}}</span>
             </div>
-            <div class="divider bg-gray-lighter">&nbsp;</div>
           </li>
         </ul>
       </div>
-    </div>
-    <popup v-model="show" position="right" width="100%" :show-mask="false">
-      <XHeader :left-options="headerContent.slider" :title="sliderTitle" @on-click-back="sliderBack" style="position:fixed;z-index:1;width:100%"></XHeader>
+    <!--<popup v-model="show" position="right" width="100%" :show-mask="false">-->
+      <!--<XHeader :left-options="headerContent.slider" :title="sliderTitle" @on-click-back="sliderBack" style="position:fixed;z-index:1;width:100%"></XHeader>-->
       <div class="position-horizontal-demo" ref="textCon">
         <div v-if="this.sliderIndex === 0">
           <p>隐私权保护政策适用于在中国境内(不包括香港、澳门及台湾)居住的，在TSL | 谢瑞麟 网上珠宝店（网址：http://eshop.tslj.cn，下称“本店”）订购商品之顾客（下称“用户”），本店的各项电子服务的所有权和运作权归谢瑞麟(深圳)商贸有限公司（下称“我们”）。</p>
@@ -189,16 +256,25 @@
         </div>
         <div class="clear"></div>
       </div>
-    </popup>
+    <!--</popup>-->
+    </div>
   </div>
+<v-footer></v-footer>
+</div>
 </template>
 <script type="text/ecmascript-6">
+import header1 from '../homePages/header1'
+import header2 from '../homePages/header2'
+import vFooter from '../homePages/footer.vue'
 import { XHeader, Popup } from 'vux'
 export default {
   name: 'screatment',
   components: {
     XHeader,
-    Popup
+    Popup,
+    header1,
+    header2,
+    vFooter,
   },
   data () {
     return {
@@ -220,7 +296,7 @@ export default {
       // 当前的标题
       sliderTitle: '',
       // 当前的标题Index
-      sliderIndex: '',
+      sliderIndex: 0,
       show: false,
       // 条款数据
       sliderList: [
