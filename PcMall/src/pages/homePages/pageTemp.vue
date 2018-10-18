@@ -1,16 +1,16 @@
 <template>
   <div id="pageTemp">
     <div v-for="(item, index) in domData" :key="index">
-      <template class="mrbt pdl" v-if="item.type === 0"><cube :config="item.config"></cube></template>
-      <richText class="mrbt pdl" v-else-if="item.type === 1" :config="item.config"></richText>
+      <template class="mrbt" v-if="item.type === 0"><cube :config="item.config"></cube></template>
+      <richText class="mrbt" v-else-if="item.type === 1" :config="item.config"></richText>
       <!-- <productBlock class="mrbt pdl" v-else-if="item.type === 2 || item.type === 9" :config="item.config"></productBlock> -->
-      <imgBlock class="mrbt pdl" v-else-if="item.type === 3" :config="item.config"></imgBlock>
+      <imgBlock class="mrbt" v-else-if="item.type === 3" :config="item.config"></imgBlock>
       <iviewswiper class="mrbt" v-else-if="item.type === 4" :config="item.config"></iviewswiper>
       <!-- <vuxswiper v-else-if="item.type === 4" :config="item.config"></vuxswiper> -->
-      <emptySeat class="mrbt pdl" v-else-if="item.type === 5" :height="item.config"></emptySeat>
-      <partingLine class="mrbt pdl" v-else-if="item.type === 6" :config="item.config"></partingLine>
-      <iconNav class="mrbt pdl" v-else-if="item.type === 7" :config="item.config"></iconNav>
-      <videoBlock class="mrbt pdl" v-else-if="item.type === 8" :config="item.config"></videoBlock>   
+      <emptySeat class="mrbt" v-else-if="item.type === 5" :height="item.config"></emptySeat>
+      <partingLine class="mrbt" v-else-if="item.type === 6" :config="item.config"></partingLine>
+      <iconNav class="mrbt" v-else-if="item.type === 7" :config="item.config"></iconNav>
+      <videoBlock class="mrbt" v-else-if="item.type === 8" :config="item.config"></videoBlock>   
       <productBlock v-else-if="item.type === 2 || item.type === 9" :config="item.config"></productBlock>  
     </div> 
   </div>
@@ -52,9 +52,6 @@
   overflow: visible;
   .mrbt{
     margin-bottom: 15px
-  }
-  .pdl{
-    padding-left: 40px
   }
 }
 </style>

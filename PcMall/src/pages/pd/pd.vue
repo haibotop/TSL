@@ -3,15 +3,16 @@
     <header1></header1>
     <header2></header2>
     <div id="detail">
-      <div class="detail-title"><div class="detail-t">珠宝类型 <span class="xiegang"></span> 戒指</div></div>
+      <!-- <div class="detail-title"><div class="detail-t">珠宝类型 <span class="xiegang"></span> 戒指</div></div> -->
+      <v-title :titleTpye="titleTpye"></v-title>
       <div class="detail-content">
         <div class="breadcrumb">
           <template>
               <Breadcrumb separator=">">
                 <BreadcrumbItem to="/" class="color">首页</BreadcrumbItem>
-                <BreadcrumbItem to="/components/breadcrumb">珠宝类型</BreadcrumbItem>
-                <BreadcrumbItem to="/">戒指</BreadcrumbItem>
-                <BreadcrumbItem to="/" class="last">型号</BreadcrumbItem>
+                <BreadcrumbItem to="/components/breadcrumb">{{titleTpye[0]}}</BreadcrumbItem>
+                <BreadcrumbItem to="/">{{titleTpye[1]}}</BreadcrumbItem>
+                <BreadcrumbItem to="/" class="last">{{specValueNameStr}}</BreadcrumbItem>
             </Breadcrumb>
           </template>
         </div>
@@ -42,7 +43,8 @@
               </div>
             </div>
             <div class="price">
-              <p>价格：<span class="sp_1">￥{{skuInfo.sku ? handlePrice(skuInfo.sku.price) : 0}}</span>
+              <p v-if="skuInfo.hasDiscount">价格：<span class="sp_1">￥{{skuInfo.sku ? skuInfo.sku.discountPrice : 0}}</span>
+              <p v-else>价格：<span class="sp_1">￥{{skuInfo.sku ? handlePrice(skuInfo.sku.price) : 0}}</span>
                 <span class="sp_2" @click="collect">
                     <span v-show="!isCollected"><img src="../../assets/icons/heart.png"  style="width:20px;float: left;margin-right: 8px;margin-top: 10px;"/>添加收藏</span>
                     <span v-show="isCollected"><img src="../../assets/icons/heart-fill.png" style="width:20px;float: left;margin-right: 8px;margin-top: 10px;"/>已收藏</span>
@@ -97,9 +99,9 @@
             </div>
             <div class="number">
               <p>数量：</p>
-              <span class="tb-stock" id="J_Stock">
+              <span class="tb-stock">
                 <a href="javascript:void(0);" title="减1"  :class="{'tb-reduceActive':reduceActive}" class="tb-reduce J_Reduce tb-iconfont" @click="reduceNumber">-</a>
-                <input id="J_IptAmount" type="text" class="tb-text" v-model="buyNumber"  maxlength="8" title="请输入购买量">
+                <input id="J_IptAmount" type="text" class="tb-text" v-model="num"  maxlength="8" title="请输入购买量">
                 <a href="javascript:void(0);"  class="tb-increase J_Increase tb-iconfont" title="加1" @click="addNumber">+</a>件
               </span>
             </div>
@@ -182,37 +184,16 @@
                     </div>
                   </div>
                 </DropdownMenu>
-                <!-- <DropdownMenu slot="list">
-                    <Dropdown placement="left-start">
-                        <DropdownItem>
-                          <Icon type="ios-arrow-back"></Icon>
-                            前言
-                        </DropdownItem>
-                        <DropdownMenu slot="list" >
-                            <h2>前言</h2>
-                            <p>为了提升您的购物体验，我们提供快递配送/门店自提服务，您可以根据您的个人需要，选择合适的配送方式，如有任何问题，欢迎联系我们的在线客服。</p>
-                        </DropdownMenu>
-                    </Dropdown>
-                    <Dropdown placement="left-end">
-                        <DropdownItem>
-                          <Icon type="ios-arrow-back"></Icon>
-                            发货时间
-                        </DropdownItem>
-                        <DropdownMenu slot="list">
-                            erere
-                        </DropdownMenu>
-                    </Dropdown>
-
-                    <DropdownItem>冰糖葫芦</DropdownItem>
-                </DropdownMenu> -->
               </Dropdown>
             </div>
-            <!-- 领券 -->
+            <!-- 领券 按钮-->
             <!-- <Cell is-link v-show="specStr.length > 0" @click.native="openGetCoupon" v-if="hasCoupon">
               <div slot="title" class="my-cell-title" style="display: inline-block;">领券</div>
             </Cell> -->
             <!-- 促销 -->
             <pdPromotion ref="pdPromotion" v-if="getSkuCompeleted"></pdPromotion>
+            <!-- 领券 组件-->
+            <pdCoupons v-model="couponFlag" :couponList="couponList"></pdCoupons>
             <div class="cart">
               <Button v-show="!disabledBuy && modalmodel === ''" @click="createOrder" class="btn1">立即购买</Button>
               <Button v-show="!disabledBuy && modalmodel === ''" @click="postCartItem" class="btn2" id="signup">加入购物袋</Button>
@@ -226,7 +207,7 @@
         <div style="clear:both"></div>
         <div class="detail-content-bottom">
           <template>
-            <Tabs value="name1" size="small" class="ioioi">
+            <Tabs value="name1" size="small" class="ioioi" :class="{three:introduction !== ''}">
                 <TabPane label="产品详情" name="name1">
                   <pdRichText ref="pdRichText" :spuId="spuId"></pdRichText>
                 </TabPane>
@@ -240,11 +221,15 @@
                     </tbody>
                   </table>
                 </TabPane>
+                <TabPane label="商品介绍" name="name3" v-if="introduction !== ''">
+                  <p class="introduction">{{introduction}}</p>
+                </TabPane>
             </Tabs>
         </template>
         </div>
       </div>
     </div>
+    <v-footer></v-footer>
   </div>
 </template>
 
@@ -253,6 +238,7 @@
   import header1 from '@/pages/homePages/header1'
   import header2 from '@/pages/homePages/header2'
   import vFooter from '@/pages/homePages/footer.vue'
+  import vTitle from '@/pages/homePages/title.vue'
   import * as tool from '@/services/myTool.es6'
   import * as pdAPI from '@/services/API/pdServices.es6'
   import * as mkApi from '@/services/API/marketing.es6'
@@ -273,6 +259,8 @@
     components: {
       header1,
       header2,
+      vFooter,
+      vTitle,
       pdRichText,
       Checker,
       CheckerItem,
@@ -281,11 +269,11 @@
     // components: Object.assign({ XHeader, Scroller, Group, CellBox, Cell, Popup, Checker, CheckerItem, InlineXNumber, XNumber, debounce, Tab, TabItem, XTable, Badge }),
     data () {
       return {
+        titleTpye: ['珠宝类型','戒指'],//珠宝类型的头部
         backGoodsArray:['前言','发货时间','快递配送服务','门店自提服务（仅限中国大陆地区）','商品包装','退换货政策'],
         backGoodsArrayIndex : 0,
         xoxo:0,
         reduceActive: false,//商品减到0
-        buyNumber: 1,//商品数量
         isShowCheckSpec: 0,//三角形样式
         type:"ios-arrow-down",
         bgColor:false,
@@ -433,21 +421,23 @@
         console.log(scrollTop)
         document.documentElement.scrollTop = scrollTop;
       },
+      //增加数量
       addNumber(){
         this.reduceActive = false
-        this.buyNumber = parseInt(this.buyNumber)
-        this.buyNumber += 1
+        this.num = parseInt(this.num)
+        this.num += 1
       },
+      //减少数量
       reduceNumber(){
-        if(this.buyNumber==1){
+        if(this.num==1){
           this.reduceActive = true
         }
-        if(this.buyNumber==0){
-          this.buyNumber = 0
+        if(this.num==0){
+          this.num = 0
 
         }else {
-          this.buyNumber = parseInt(this.buyNumber)
-          this.buyNumber -= 1
+          this.num = parseInt(this.num)
+          this.num -= 1
         }
       },
       checkSpec(index,index2){
@@ -824,8 +814,8 @@
             memberId: null,
             merchantId: '123',
             productId: this.skuId,
-            productItemId: null,
-            quantity: this.num
+            productItemId: null,//型号
+            quantity: this.num//数量
           }
           this.$http.post(...pdAPI.postCartItem(cartItemData), {certified: true}).then((response) => {
             if (response.data.code === 200) {
@@ -1360,75 +1350,29 @@
     color: #000;
     font-weight: normal;
   }
-</style>
-
-<style>
-  .ioioi .ivu-tabs-nav-wrap{
+  #detail .ioioi .ivu-tabs-nav-wrap{
     margin-left: 42%
+  }  
+  #detail .ioioi.three .ivu-tabs-nav-wrap{
+    margin-left: 37%
   }    
   #detail .cost .ivu-select-dropdown{
       padding: 0;
       margin: 0;
       /* left: 100px!important */
   }
-  /* #detail .cost .ivu-select-dropdown{
-      padding: 0;
-      margin: 0;
-      left: 724px!important
-  }                */
-
-  /* #detail .cost .ivu-select-dropdown{
-    width: 385px;
-    padding-left: 10px  ;   
-    height: 350px;
-    border:1px solid red;
-    border-left:8px solid red;
-    padding: 0;
-    margin-top: -2px
-  }
-  #detail .cost .ivu-select-dropdown{
-     width: 315px
-  } */
 </style>
+
 
 <style lang="stylus" scoped>
 @import "~styles/common/common.styl";
   #detail 
     background #fafafa
-    padding 0 30px
-    .detail-title 
-      padding 30px 0     
-      text-align center
-      .detail-t 
-        position relative
-        display inline-block
-        text-align center
-        font-size 20px
-        color #0f0f0f
-        &:after
-          content ''
-          position absolute
-          bottom -20px
-          left 50%
-          $ml(-20px)
-          display inline-block
-          width 40px
-          height 2px
-          background-color $blue
-        .xiegang:after
-          content ''
-          position relative
-          top 8px
-          margin 0 15px
-          display inline-block
-          width 1px
-          height 30px
-          background-color $blue
-          transform rotate(30deg)
+    padding 0 30px 30px 30px
     .detail-content
       overflow hidden
       background #fff
-      padding 0 50px
+      padding 0 50px 50px 50px
       .breadcrumb
         $mb(20px)
         height 80px
@@ -1751,5 +1695,6 @@
                 
 
 
-
+.ivu-tabs-nav
+  float none
 </style>

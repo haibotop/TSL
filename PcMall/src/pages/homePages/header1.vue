@@ -127,8 +127,8 @@
                             },[
                                 h('img', {
                                     style: {
-                                        // width: '100%',
-                                        height: '80px'
+                                        width: '100%',
+                                        height: '100%'
                                     },
                                     attrs: {
                                         src: params.row.src //图片路径
@@ -373,6 +373,8 @@
                     $mt(9px)
                     i
                         font-size 16px
+                        vertical-align text-bottom
+                        $ml(6px)
                         // $ml(10px)
                 .btn2
                     background-color $blue

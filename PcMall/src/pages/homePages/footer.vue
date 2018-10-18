@@ -65,8 +65,6 @@
             width 100%
             height 1px
             background-color  #727272  
-            position relative
-            left 40px
         ul
             font-size 12px
             float left

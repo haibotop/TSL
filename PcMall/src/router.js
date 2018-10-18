@@ -21,6 +21,10 @@ import pl from '@/pages/search/pl'
 //商品详情
 import pd from '@/pages/pd/pd'
 
+//购物车
+import shoppingCart from '@/pages/shoppingCart/shoppingCart'
+// import checkout from '@/pages/TSLshoppingCart/Checkout.vue'
+
 //订单
 import createOrder from '@/pages/order/createOrder.vue'
 
@@ -100,15 +104,31 @@ let order = [
         component: createOrder
     }
 ]
-  
-  //活动页
-  let activityPage = [
+
+// 购物车模块
+let shopModal = [
+    {
+      path: '/shoppingCart',
+      name: 'shoppingCart',
+      meta: {
+        title: 'shoppingCart'
+      },
+      component: shoppingCart
+    },
+    // {
+    //   path: '/checkout',
+    //   component: checkout
+    // }
+]
+
+//活动页
+let activityPage = [
     {
       path: '/page/:calssify/:pageName/:pageId',
       name: 'page',
       component: activity
     }
-  ]
+]
   
 
 var host = [
@@ -227,6 +247,6 @@ var host = [
     },
 ]
 
-routers = routers.concat(host,searchModel,activityPage,pdModel,order)
+routers = routers.concat(host,searchModel,activityPage,pdModel,order,shopModal)
 export default routers
 
