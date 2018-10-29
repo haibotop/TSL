@@ -221,7 +221,15 @@ let myModal = [
             intercept: true
         },
         component: createAddress
-    }
+    },
+    {
+        path: '/myCollection',
+        name: 'myCollection',
+        meta: {
+          intercept: true
+        },
+        component: myCollection
+    },
 ]
 
 //活动页
