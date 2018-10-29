@@ -52,9 +52,15 @@
         }
     }
 </script>
+<style>
+    .header .header-right .ivu-input-wrapper {
+        z-index: 200
+    }
+</style>
 
 <style lang="stylus" scoped>
 @import "~styles/common/common.styl";
+    
     .header
         position relative
         height 120px
@@ -64,12 +70,13 @@
             float left
             width 35%
             height 120px    
-            position relative
             img 
                 height 44px
                 vertical-align middle
                 $ml(58px)
                 cursor pointer
+                position relative
+                z-index 200
         .header-left            
             float left
             a
@@ -86,10 +93,9 @@
         .headertype
             position absolute
             background-color #fff
-            top 100%
+            top 55.5%
             width 100%
             z-index 99
             float left
-            $border(border-left,8px)
 
 </style>

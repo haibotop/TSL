@@ -36,45 +36,29 @@
                   <div class="detial">
                     <p class="title">{{toolFun('name', product.name)}}</p>
                     <p class="price">￥{{toolFun('price', product.price)}}</p><!--@on-change="onChange(index)"  v-model="product.specs[specIndex].specValueName"  allSpecArrayOn[index][specIndex].specValueName-->
-                    <div v-for="(specs,specIndex) in sortSpecArray[index]" :key="specs.specId" style="float:left">
-                      <Select  @on-change="onChange(index,specIndex)" :label-in-value="true" v-model="allSpecArrayOn[index][specIndex].specValueName" size="small" style="width:120px;margin-right:10px" >
+                    <div v-for="(specs,specIndex) in product.specs" :key="specs.specId" style="float:left">
+                      <Select v-model="specArrayOn[specIndex]" :placeholder="specs.specValueName" @on-change="onChange(index,specIndex)" @on-open-change="onOpenChange(product,$event)" :label-in-value="true" size="small" style="width:120px;margin-right:10px" >
+                        <Option v-for="(specs2, indexSpec) in specArray[specIndex].specValueArray"  
+                          :key="indexSpec" 
+                          :value="specs2"
+                          :disabled="!specs.specValueFlags[indexSpec]"
+                          :data-index="indexSpec"
+                          >{{ specs2.specValueName }}
+                        </Option>
+                      </Select>
+                    </div>
+                    <!--*****-->
+                    <!-- <div v-for="(specs,specIndex) in specArray" :key="specs.specId" style="float:left">
+                      <Select :placeholder="product.specs[specIndex].specValueName" @on-change="onChange(index,specIndex)" @on-open-change="onOpenChange(product,$event)" :label-in-value="true" v-model="allSpecArrayOn[index][specIndex].specValueName" size="small" style="width:120px;margin-right:10px" >
                         <Option v-for="(specs2, indexSpec) in specs.specValueArray"  
                           :key="indexSpec" 
-                          :value="specs2.specValueName"
+                          :value="specs2"
                           :disabled="!specs.specValueFlags[indexSpec]"
-                          :ref="specIndex" 
                           :data-index="indexSpec"
                           
                           >{{ specs2.specValueName }}
                         </Option>
                       </Select>
-                    </div>{{sortSpecArrayOn_}}
-                    <!-- <Select v-model="model2" size="small" style="width:100px;margin-right:10px">
-                      <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                    </Select>
-                     <Select  size="small" style="width:100px;margin-right:10px">
-                      <Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                    </Select> -->
-                    <!-- <span>纯白</span><span>纯白2</span><span>纯白3</span> -->
-                    <!-- <div class="spec" v-for="(item, index) in specArray" :key="item.specId">
-                      <span style="float:left">{{handleName(item.specName)}}：</span>
-                      <template>
-                        <Checker
-                          @on-change="onItemClick"
-                          v-model="specArrayOn[index]"
-                          type="radio"
-                          radio-required
-                          default-item-class="default-item-class"
-                          selected-item-class="selected-item-class"
-                          disabled-item-class="disabled-item-class">
-                          <checker-item
-                            v-for="(item2, index2) in item.specValueArray"
-                            :key="index2"
-                            :value="item2"
-                            :disabled="!item.specValueFlags[index2]">{{item2.specValueName}}
-                          </checker-item>
-                        </Checker>
-                      </template>
                     </div> -->
                   </div>
                   
@@ -140,23 +124,10 @@
     //   pdPromotion
     // },
     components: { header1,header2,vFooter,vTitle,inputNumber,XHeader, Scroller, XButton, CheckIcon, Popup, debounce, Checker, CheckerItem, Group, InlineXNumber, MyInlineXNumber },
-    updated () {
-      // console.log('this.specArray',this.specArray)
-      console.log('this.allSpecsPopupData_bs',this.allSpecsPopupData_bs)
-      // console.log('this.allSpecArrayOn',this.allSpecArrayOn)
-      console.log('this.allSpecArrayOn_',this.allSpecArrayOn_)
-      console.log('allSpecArray',allSpecArray)
-      console.log('this.sortSpecArrayOn_',this.sortSpecArrayOn_)
-    },
     data () {
       return {
-        productIndex: 0,//选择规格的时候对应的第几个商品
-        productSpecIndex: 0,//选择规格的时候对应的第几个商品下的第几个规格
-        titleTpye: ['珠宝类型','戒指'],//珠宝类型的头部
-        num:0,
         list: [], // 原数据
         shoppingCarts: [], // 处理后展示用的数据
-        allSpecsProduct: [],//购物车每款产品的规格
         sum: 0, // 总计价格
         checkedAll: false, // 全选状态
         checkedObj: {}, // 已选项的容器对象 {id: Boolean}
@@ -167,61 +138,52 @@
         // --------------------specs规格选择popup--------------------
         specsPopupFlag: false,
         specsPopupData_bs: {},
-        allSpecsPopupData_bs: [],
         specsPopupData: {}, // 弹窗商品
-        allSpecsPopupData: [], ///所有弹窗商品集合
          // sku
-        specArray: [],//购物车每款产品的规格
-        allSpecArray:[], 
+        specArray: [],
         // ----------已选sku组合[{specId,specName,specValueId,specValueName}]
         specArrayOn: [],
-        allSpecArrayOn: [],
-        allSpecArrayOn_: [],
         usedSpecValueArray: [],
         skuSpecArray: [],
         leftOption: {
           backText: ''
-        },    
-        // cityList: [
-        //   {
-        //       value: 'New York',
-        //       label: 'New York'
-        //   },
-        //   {
-        //       value: 'London',
-        //       label: 'London'
-        //   },
-        //   {
-        //       value: 'Sydney',
-        //       label: 'Sydney'
-        //   } 
-        // ],
-        // cityList1: [
-        //   {
-        //       value: 'New York',
-        //       label: 'New York'
-        //   },
-        //   {
-        //       value: 'London',
-        //       label: 'London'
-        //   },
-        //   {
-        //       value: 'Sydney',
-        //       label: 'Sydney'
-        //   } 
-        // ],
-        // model2: 'London', 
+        },
+        cityList: [
+            {
+                value: 'New York',
+                label: 'New York'
+            },
+            {
+                value: 'London',
+                label: 'London'
+            },
+            {
+                value: 'Sydney',
+                label: 'Sydney'
+            },
+            {
+                value: 'Ottawa',
+                label: 'Ottawa'
+            },
+            {
+                value: 'Paris',
+                label: 'Paris'
+            },
+            {
+                value: 'Canberra',
+                label: 'Canberra'
+            }
+        ],
       }
     },
     methods: {
-      onChange(productIndex,productSpecIndex){
-        this.productIndex = productIndex
-        this.productSpecIndex = productSpecIndex
-        // console.log('$event',$event)
-        console.log('$this',this)
-        // console.log(this.$refs)
-        // this.putSku(index)
-        // this.productSpecIndex = 1
+      onChange(){
+
+      },
+      onOpenChange(product,$event){
+            if($event==true){
+                openSpecsPopup(product)
+            } 
       },
       toolFun (type, value) {
         if (type === 'name') {
@@ -322,18 +284,6 @@
         })
         this.setChecked(datas)
         this.shoppingCarts = datas
-        //新增
-        let allproduct = []
-        this.allSpecArrayOn_.length = 0
-        datas.forEach(shoppingCarts=>{
-          shoppingCarts.promotions.forEach((promotions,index) => {
-            allproduct.push(promotions.productItems)
-            this.openSpecsPopup(promotions.productItems,index)
-          })
-        })
-        console.log('allproduct',datas)
-        //新加
-        // this.allSpec =  
         this.checkedObj = JSON.parse(JSON.stringify(this.checkedObj))
       },
       // 设置check-icon的绑定对象
@@ -363,7 +313,7 @@
       // 计算总价
       getSum () {
         let sum = 0
-        console.log(this.shoppingCarts)
+        console.log('计算总价',this.shoppingCarts)
         for (let i of this.shoppingCarts) {
           for (let j of i.promotions) {
             let iSum = 0
@@ -565,15 +515,14 @@
         }
       },
       // ====================选择规格====================
-      openSpecsPopup (product,index) {
+      openSpecsPopup (product) {
         console.log('openSpecsPopupopenSpecsPopup',product)
         
         this.specsPopupFlag = true //是否弹窗
-        this.specsPopupData_bs = JSON.parse(JSON.stringify(product))[0]
-        this.allSpecsPopupData_bs.push(this.specsPopupData_bs)
-        this.specsPopupData = JSON.parse(JSON.stringify(product))[0]
-        this.allSpecsPopupData.push(this.specsPopupData)
-        this.allSpecArrayOn.push(this.specsPopupData.specs)
+        this.specsPopupData_bs = JSON.parse(JSON.stringify(product))
+        this.specsPopupData = JSON.parse(JSON.stringify(product))
+        console.log('this.specsPopupData',this.specsPopupData)
+        console.log('第一',this.specsPopupData.specs)
         if (this.specsPopupData) {
           // if (this.specsPopupData.specs.length === 0) {
           //   this.$vux.toast.show({
@@ -582,27 +531,17 @@
           //     width: '200px'
           //   })
           // } else {
-            
+            console.log('this.specsPopupData.spuId',this.specsPopupData.spuId)
             this.getSpuInfo(this.specsPopupData.spuId, (res) => {
               this.specArrayOn = this.specsPopupData.specs
-              let arr = [{num:index}]
-              this.skuSpecArray = res.data.spuInfo.skuSpecArray//获取商品的所有规格
-              console.log('000000000000000000',this.skuSpecArray)
-              this.skuSpecArray.push(arr)
-              this.getSpecArray(res.data.spuInfo.specArray,index)
+              console.log('这是原来specArrayOn',this.specsPopupData.specs)
+              // alert(this.specArrayOn)
+              this.skuSpecArray = res.data.spuInfo.skuSpecArray
+              this.getSpecArray(res.data.spuInfo.specArray)
               this.specFlag = true
             })
-          // }
-
-
-            // this.func(this.specsPopupData.spuId).then(function(res){
-            //   this.specArrayOn = this.specsPopupData.specs
-            //   this.skuSpecArray = res.data.spuInfo.skuSpecArray
-            //   this.getSpecArray(res.data.spuInfo.specArray)
-            //   this.specFlag = true
-            //   return func
-            // })
-        }
+          }
+        // }
       },
       // 获取商品所有规格 spu接口
       getSpuInfo (spuId, callback) {
@@ -614,24 +553,11 @@
           }
         })
       },
-      // func (spuId, callback){
-      //   return new Promise(function(resolve,reject){
-      //     this.$http.get(...pdAPI.getSpuInfo(spuId)).then((response) => {
-      //       if (response.data.code === 200) {
-      //         // if (typeof callback === 'function') {
-      //           // callback(response)
-      //           resolve(response)
-      //         // }
-      //       }
-      //     })
-      //   })
-      // },
       // ----------处理spec属性数组，属性值对象加上specId和specName
-      getSpecArray (data,index) {
+      getSpecArray (data) {
         let specArray = []
         for (let i of data) {
           let spec1 = {
-            num: index,
             specId: i.specId,
             specName: i.specName,
             specValueArray: [],
@@ -648,13 +574,12 @@
           }
           specArray.push(spec1)
         }
-        // this.specArray.push(specArray)
-        this.specArray = specArray 
-        this.handleSpecState() 
+        this.specArray = specArray
+        this.handleSpecState()
       },
       // ----------处理spec置灰
       handleSpecState () {
-        // this.$vux.loading.show()
+        this.$vux.loading.show()
         // ----------取出正在使用的sku组合包含的属性值
         let usedSpecValueArray = []
         let qobj = {}
@@ -700,35 +625,21 @@
             }
           }
         }
-        // this.$vux.loading.hide()
-        this.allSpecArray.push(this.specArray)
-        this.allSpecArrayOn_.push(this.skuSpecArray)
+        this.$vux.loading.hide()
       },
       // 获取new skuid
-      postSpuInfo: debounce(function (callback,index) {
-        console.log('postSpuInfo——',this.allSpecArrayOn[this.productIndex])
-        let allSpecArrayOn = this.allSpecArrayOn_[this.productIndex][this.productSpecIndex]
-        // let arr = [
-        //   {specId: "117864464457826304", specName: "颜色", specValueId: "117864464457826305", specValueName: "紫"},
-        //   {specId: "117864464457826306", specName: "WeightOfGold&IsOnly1", specValueId: "117864464457826308", specValueName: "10"}
-        // ]
-        // let xxx = this.allSpecsPopupData_bs[this.productIndex].specs
-        // console.log('xxx',allSpecArrayOn)
-        // console.log('arr',arr)
-        // console.log(JSON.stringify(arr) === JSON.stringify(xxx))
-        console.log('产品',this.allSpecArrayOn_[this.productIndex])
-        console.log('productSpecIndex',this.productSpecIndex)
-        console.log('allSpecArrayOnallSpecArrayOnallSpecArrayOn',allSpecArrayOn)
-        this.$http.post(...pdAPI.specGetSku(allSpecArrayOn).concat({
+      postSpuInfo: debounce(function (callback) {
+        console.log('这是点击specArrayOn',this.specArrayOn)
+        this.$http.post(...pdAPI.specGetSku(this.specArrayOn).concat({
           cancelToken: new this.$http.CancelToken(function (cancel) {
             if (typeof getSkuCancel === 'function') {
               getSkuCancel()
             }
             getSkuCancel = cancel
+            
           })
         })).then((response) => {
           if (response.data.code === 200) {
-            alert('拿到了')
             let skuInfo = response.data.skuInfo
             this.specsPopupData = Object.assign(skuInfo.sku, {specs: skuInfo.spec})
             console.log('Object.assign(skuInfo.sku, {specs: skuInfo.spec})',Object.assign(skuInfo.sku, {specs: skuInfo.spec}))
@@ -743,32 +654,27 @@
         .catch((error) => {
           console.log('new skuid找不到',error.response)
         })
+        
       }, 300),
       // 点击确认
       finishChangeSize () {
-        for (let i in this.quantityParam) {
-          if (this.productMsg[this.index1].productItem[this.index2].id === this.quantityParam[i].oldSkuId) {
-            this.quantityParam[i].skuId = this.popupProduct.id
-          }
-        }
+        // for (let i in this.quantityParam) {
+        //   if (this.productMsg[this.index1].productItem[this.index2].id === this.quantityParam[i].oldSkuId) {
+        //     this.quantityParam[i].skuId = this.popupProduct.id
+        //   }
+        // }
         this.putSku()
       },
       // 修改商品规格接口
       putSku (obj) {
+        console.log('obj',obj)
         if (sessionStorage.getItem('userInfo')) {
-          // let params = {
-          //   oldSkuId: this.specsPopupData_bs.id,
-          //   quantity: this.specsPopupData.amount,
-          //   skuId: this.specsPopupData.id
-          // }
           let params = {
-            oldSkuId: this.allSpecsPopupData_bs[this.productIndex].id,//切换前老产品的型号 
-            quantity: 1,//this.allSpecsPopupData[2].amount//产品数量
-            skuId: obj.id//切换的产品的型号
+            oldSkuId: this.specsPopupData_bs.id,
+            quantity: this.specsPopupData.amount,
+            skuId: this.specsPopupData.id
           }
-          // let params = {oldSkuId: "117864464457826309", quantity: 1, skuId: "117864464457826312"}
           console.log('params.oldSkuId',params.oldSkuId)
-          console.log('obj',obj)
           console.log('params',params)
           this.$http.put(...scAPI.putCartItems([params])).then((response) => {
             if (response.data.code === 200) {
@@ -782,26 +688,21 @@
         } else {
           let productItems = JSON.parse(localStorage.getItem('cartProductItems'))
           for (let i in productItems) {
-            if (productItems[i].id === this.allSpecsPopupData_bs[this.productIndex].id) {
-              productItems[i] = obj
+            if (productItems[i].id === this.specsPopupData_bs.id) {
+              productItems[i] = this.specsPopupData
             }
           }
           localStorage.setItem('cartProductItems', JSON.stringify(productItems))
           this.specsPopupFlag = false
           this.getCartDataLocal()
         }
-        this.allSpecArray.length = 0
-        this.allSpecsPopupData.length = 0
-        this.allSpecsPopupData_bs.length = 0
-        this.allSpecArrayOn.length = 0
-        // this.allSpecArrayOn_.length = 0
       },
       // 点击完成
       finishEdit () {
         this.editFlag = false
       }
     },
-    mounted: function () {
+    mounted: function () {  
       let userInfo = sessionStorage.getItem('userInfo')
       if (userInfo) {
         this.memberId = JSON.parse(userInfo).memberId
@@ -824,28 +725,6 @@
       }
     },
     computed: {
-      sortSpecArray (){
-        // // 排序
-        function compare(num){
-          return function(obj1,obj2){
-            let value1 = obj1[0][num];
-            let value2 = obj2[0][num];
-            return value1 - value2;     
-          }
-        }
-        return this.allSpecArray.sort(compare("num"))
-      },
-      sortSpecArrayOn_ (){
-        // // 排序
-        function compare(num){
-          return function(obj1,obj2){
-            let value1 = obj1[obj1.length-1][0][num];
-            let value2 = obj2[obj2.length-1][0][num];
-            return value1 - value2;     
-          }
-        }
-        return this.sortSpecArrayOn_.sort(compare("num"))
-      },
       checkedStr () {
         return JSON.parse(JSON.stringify(this.checkedObj))
       },
@@ -853,9 +732,7 @@
         return document.body.clientHeight * 0.75 - 101 - 50 + 'px'
       },
       specArrayOnStr () {
-        // return JSON.stringify(this.specArrayOn)
-        console.log("变化了变化了变化了变化了变化了变化了变化了变化了变化了变化了变化了变化了变化了变化了变化了变化了变化了")
-        return JSON.stringify(this.allSpecArrayOn)
+        return JSON.stringify(this.specArrayOn)
       }
     },
     watch: {
@@ -910,8 +787,6 @@
     }
   }
 </script>
-
-
 <style lang="stylus" scoped>
 @import "~styles/common/common.styl";
   #shoppingCart 

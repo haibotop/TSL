@@ -28,6 +28,9 @@ import shoppingCart from '@/pages/shoppingCart/shoppingCart'
 //订单
 import createOrder from '@/pages/order/createOrder.vue'
 
+//我的
+import myCollection from '@/pages/me/myCollection.vue'
+
 var routers = [];
 
 // 搜索
@@ -129,6 +132,95 @@ let activityPage = [
       component: activity
     }
 ]
+
+//我的
+let myModal = [
+    // {
+    //   path: '/mine',
+    //   name: 'mine',
+    //   component: mine
+    // },
+    // {
+    //   path: '/mySet',
+    //   name: 'mySet',
+    //   meta: {
+    //     intercept: true
+    //   },
+    //   component: mySet
+    // },
+    // {
+    //   path: '/myAccount',
+    //   name: 'myAccount',
+    //   meta: {
+    //     intercept: true
+    //   },
+    //   component: myAccount
+    // },
+    // {
+    //   path: '/myPassword',
+    //   name: 'myPassword',
+    //   meta: {
+    //     intercept: true
+    //   },
+    //   component: myPassword
+    // },
+    // {
+    //   path: '/myInfo',
+    //   name: 'myInfo',
+    //   meta: {
+    //     intercept: true
+    //   },
+    //   component: myInfo
+    // },
+    // {
+    //   path: '/myNickname',
+    //   name: 'myNickname',
+    //   meta: {
+    //     intercept: true
+    //   },
+    //   component: myNickname
+    // },
+    {
+      path: '/myCollection',
+      name: 'myCollection',
+      meta: {
+        intercept: true
+      },
+      component: myCollection
+    },
+    // {
+    //   path: '/addressList',
+    //   name: 'addressList',
+    //   meta: {
+    //     intercept: true
+    //   },
+    //   component: addressList
+    // },
+    // {
+    //   path: '/selfAddress',
+    //   name: 'selfAddress',
+    //   meta: {
+    //     intercept: true
+    //   },
+    //   component: selfAddress
+    // },
+    // {
+    //   path: '/editAddress',
+    //   name: 'editAddress',
+    //   meta: {
+    //     intercept: true
+    //   },
+    //   component: editAddress
+    // },
+    // {
+    //   path: '/createAddress',
+    //   name: 'createAddress',
+    //   meta: {
+    //     intercept: true
+    //   },
+    //   component: createAddress
+    // }
+  ]
   
 
 var host = [
@@ -247,6 +339,6 @@ var host = [
     },
 ]
 
-routers = routers.concat(host,searchModel,activityPage,pdModel,order,shopModal)
+routers = routers.concat(host,searchModel,activityPage,pdModel,order,shopModal,myModal)
 export default routers
 

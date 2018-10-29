@@ -105,6 +105,9 @@
         transition opacity .2s
     .content
         color $blue
+        $mt(52px)
+        overflow hidden
+        $border(border-left,8px)
         .content-left
             width 250px
             height 200px
@@ -125,12 +128,13 @@
             margin 20px 0
             width 180px
     .contentlist
-        $border(border-left,4px)
+        $border(border-left,8px)
+        $mt(52px)
         // margin-top 50px
         ul
             // height 60px
-            margin 10px 20px
-
+            padding 10px 20px
+            overflow hidden
             li
                 float left
                 width 25%

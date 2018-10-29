@@ -100,9 +100,10 @@
             <div class="number">
               <p>数量：</p>
               <span class="tb-stock">
-                <a href="javascript:void(0);" title="减1"  :class="{'tb-reduceActive':reduceActive}" class="tb-reduce J_Reduce tb-iconfont" @click="reduceNumber">-</a>
+                <!-- <a href="javascript:void(0);" title="减1"  :class="{'tb-reduceActive':reduceActive}" class="tb-reduce J_Reduce tb-iconfont" @click="reduceNumber">-</a>
                 <input id="J_IptAmount" type="text" class="tb-text" v-model="num"  maxlength="8" title="请输入购买量">
-                <a href="javascript:void(0);"  class="tb-increase J_Increase tb-iconfont" title="加1" @click="addNumber">+</a>件
+                <a href="javascript:void(0);"  class="tb-increase J_Increase tb-iconfont" title="加1" @click="addNumber">+</a>件 -->
+                <input-number v-model="num" :min="1"></input-number>件
               </span>
             </div>
             <div class="cost">
@@ -193,7 +194,7 @@
             <!-- 促销 -->
             <pdPromotion ref="pdPromotion" v-if="getSkuCompeleted"></pdPromotion>
             <!-- 领券 组件-->
-            <pdCoupons v-model="couponFlag" :couponList="couponList"></pdCoupons>
+            <!-- <pdCoupons v-model="couponFlag" :couponList="couponList"></pdCoupons> -->
             <div class="cart">
               <Button v-show="!disabledBuy && modalmodel === ''" @click="createOrder" class="btn1">立即购买</Button>
               <Button v-show="!disabledBuy && modalmodel === ''" @click="postCartItem" class="btn2" id="signup">加入购物袋</Button>
@@ -239,6 +240,7 @@
   import header2 from '@/pages/homePages/header2'
   import vFooter from '@/pages/homePages/footer.vue'
   import vTitle from '@/pages/homePages/title.vue'
+  import inputNumber from '@/pages/shoppingCart/inputNumber.vue'
   import * as tool from '@/services/myTool.es6'
   import * as pdAPI from '@/services/API/pdServices.es6'
   import * as mkApi from '@/services/API/marketing.es6'
@@ -260,6 +262,7 @@
       header1,
       header2,
       vFooter,
+      inputNumber,
       vTitle,
       pdRichText,
       Checker,
@@ -273,7 +276,6 @@
         backGoodsArray:['前言','发货时间','快递配送服务','门店自提服务（仅限中国大陆地区）','商品包装','退换货政策'],
         backGoodsArrayIndex : 0,
         xoxo:0,
-        reduceActive: false,//商品减到0
         isShowCheckSpec: 0,//三角形样式
         type:"ios-arrow-down",
         bgColor:false,
@@ -420,25 +422,6 @@
         let scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop
         console.log(scrollTop)
         document.documentElement.scrollTop = scrollTop;
-      },
-      //增加数量
-      addNumber(){
-        this.reduceActive = false
-        this.num = parseInt(this.num)
-        this.num += 1
-      },
-      //减少数量
-      reduceNumber(){
-        if(this.num==1){
-          this.reduceActive = true
-        }
-        if(this.num==0){
-          this.num = 0
-
-        }else {
-          this.num = parseInt(this.num)
-          this.num -= 1
-        }
       },
       checkSpec(index,index2){
         this.xoxo = index
@@ -1560,51 +1543,12 @@
             p
               float left
             .tb-stock 
-                position relative
-                float left  
-                $mt(6px)
-                $ml(3px)
-              a,a:hover
-                display block
-                _display inline
-                *zoom 1
-                float left
-                width 26px
-                height 26px
-                border 1px solid #ccc
-                line-height 26px
-                padding 0
-                vertical-align top
-                overflow hidden
-                text-align center
-                background-color #ededed
-                overflow hidden
-              .tb-reduce 
-                border-right 0!important
-              .tb-reduceActive
-                background-color #ccc
-                cursor no-drop
-              .tb-disable-reduce
-                color #ccc
-                cursor not-allowed
-                background-color #ededed; 
-              .tb-increase 
-                border-left 0!important
-                margin-right 8px 
-              input
-                float left
-                margin 0
-                padding 0
-                width 48px
-                height 26px
-                font-size 16px
-                line-height 26px
-                text-align center
-                color #666
-                border 1px solid #CCC
-                outline 0
-                background #FFF
-                ime-mode disabled  
+              position relative
+              float left  
+              $mt(6px)
+              $ml(3px)
+              text-indent 4px
+              line-height 26px
           .cost
             a
               color #000
