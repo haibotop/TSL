@@ -256,8 +256,15 @@ export default {
             if (typeof (callback) === 'function') {
               callback(response.data.userInfo)
             }
-            sessionStorage.setItem('userInfo', JSON.stringify(response.data.userInfo))
-              this.$router.replace({path: '/loginSuccess'})
+              sessionStorage.setItem('userInfo', JSON.stringify(response.data.userInfo))
+              if (localStorage.getItem('pormission')) {
+                  this.$router.replace({path: localStorage.getItem('pormission')})
+              } else {
+                  // this.$router.replace({path: 'home'})
+                  this.$router.replace({path: '/loginSuccess'})
+              }
+            // sessionStorage.setItem('userInfo', JSON.stringify(response.data.userInfo))
+            //   this.$router.replace({path: '/loginSuccess'})
           } else {
               if(response.data.code == 6002){
                   this.model1 = true;

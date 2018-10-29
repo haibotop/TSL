@@ -28,10 +28,37 @@ import shoppingCart from '@/pages/shoppingCart/shoppingCart'
 //订单
 import createOrder from '@/pages/order/createOrder.vue'
 
-//我的
+//我的----------
+import mine from '@/pages/me/mine.vue'
+import mySet from '@/pages/me/mySet.vue'
+import myAccount from '@/pages/me/myAccount.vue'
+import myPassword from '@/pages/me/myPassword.vue'
+import myInfo from '@/pages/me/myInfo.vue'
+import myNickname from '@/pages/me/myNickname.vue'
 import myCollection from '@/pages/me/myCollection.vue'
+import addressList from '@/pages/me/addressList.vue'
+import selfAddress from '@/pages/me/selfAddress.vue'
+import editAddress from '@/pages/me/editAddress.vue'
+import createAddress from '@/pages/me/CreateAddress.vue'
+// ----------
 
 var routers = [];
+
+// 购物车模块
+let shopModal = [
+    {
+        path: '/shoppingCart',
+        name: 'shoppingCart',
+        meta: {
+            title: 'shoppingCart'
+        },
+        component: shoppingCart
+    },
+    // {
+    //   path: '/checkout',
+    //   component: checkout
+    // }
+]
 
 // 搜索
 let searchModel = [
@@ -73,15 +100,15 @@ let searchModel = [
 // 商品详情
 let pdModel = [
     {
-      path: '/pd',
-      name: 'pd',
-      component: pd,
-      children: [
-        {
-          path: ':skuId',
-          component: pd
-        }
-      ]
+        path: '/pd',
+        name: 'pd',
+        component: pd,
+        children: [
+            {
+                path: ':skuId',
+                component: pd
+            }
+        ]
     },
     // {
     //   path: '/previewPd',
@@ -94,7 +121,7 @@ let pdModel = [
     //     }
     //   ]
     // }
-  ]
+]
 
 // 订单
 let order = [
@@ -108,120 +135,104 @@ let order = [
     }
 ]
 
-// 购物车模块
-let shopModal = [
+// 我的
+let myModal = [
     {
-      path: '/shoppingCart',
-      name: 'shoppingCart',
-      meta: {
-        title: 'shoppingCart'
-      },
-      component: shoppingCart
+        path: '/mine',
+        name: 'mine',
+        component: mine
     },
-    // {
-    //   path: '/checkout',
-    //   component: checkout
-    // }
+    {
+        path: '/mySet',
+        name: 'mySet',
+        meta: {
+            intercept: true
+        },
+        component: mySet
+    },
+    {
+        path: '/myAccount',
+        name: 'myAccount',
+        meta: {
+            intercept: true
+        },
+        component: myAccount
+    },
+    {
+        path: '/myPassword',
+        name: 'myPassword',
+        meta: {
+            intercept: true
+        },
+        component: myPassword
+    },
+    {
+        path: '/myInfo',
+        name: 'myInfo',
+        meta: {
+            intercept: true
+        },
+        component: myInfo
+    },
+    {
+        path: '/myNickname',
+        name: 'myNickname',
+        meta: {
+            intercept: true
+        },
+        component: myNickname
+    },
+    {
+        path: '/myCollection',
+        name: 'myCollection',
+        meta: {
+            intercept: true
+        },
+        component: myCollection
+    },
+    {
+        path: '/addressList',
+        name: 'addressList',
+        meta: {
+            intercept: true
+        },
+        component: addressList
+    },
+    {
+        path: '/selfAddress',
+        name: 'selfAddress',
+        meta: {
+            intercept: true
+        },
+        component: selfAddress
+    },
+    {
+        path: '/editAddress',
+        name: 'editAddress',
+        meta: {
+            intercept: true
+        },
+        component: editAddress
+    },
+    {
+        path: '/createAddress',
+        name: 'createAddress',
+        meta: {
+            intercept: true
+        },
+        component: createAddress
+    }
 ]
 
 //活动页
 let activityPage = [
     {
-      path: '/page/:calssify/:pageName/:pageId',
-      name: 'page',
-      component: activity
+        path: '/page/:calssify/:pageName/:pageId',
+        name: 'page',
+        component: activity
     }
 ]
 
-//我的
-let myModal = [
-    // {
-    //   path: '/mine',
-    //   name: 'mine',
-    //   component: mine
-    // },
-    // {
-    //   path: '/mySet',
-    //   name: 'mySet',
-    //   meta: {
-    //     intercept: true
-    //   },
-    //   component: mySet
-    // },
-    // {
-    //   path: '/myAccount',
-    //   name: 'myAccount',
-    //   meta: {
-    //     intercept: true
-    //   },
-    //   component: myAccount
-    // },
-    // {
-    //   path: '/myPassword',
-    //   name: 'myPassword',
-    //   meta: {
-    //     intercept: true
-    //   },
-    //   component: myPassword
-    // },
-    // {
-    //   path: '/myInfo',
-    //   name: 'myInfo',
-    //   meta: {
-    //     intercept: true
-    //   },
-    //   component: myInfo
-    // },
-    // {
-    //   path: '/myNickname',
-    //   name: 'myNickname',
-    //   meta: {
-    //     intercept: true
-    //   },
-    //   component: myNickname
-    // },
-    {
-      path: '/myCollection',
-      name: 'myCollection',
-      meta: {
-        intercept: true
-      },
-      component: myCollection
-    },
-    // {
-    //   path: '/addressList',
-    //   name: 'addressList',
-    //   meta: {
-    //     intercept: true
-    //   },
-    //   component: addressList
-    // },
-    // {
-    //   path: '/selfAddress',
-    //   name: 'selfAddress',
-    //   meta: {
-    //     intercept: true
-    //   },
-    //   component: selfAddress
-    // },
-    // {
-    //   path: '/editAddress',
-    //   name: 'editAddress',
-    //   meta: {
-    //     intercept: true
-    //   },
-    //   component: editAddress
-    // },
-    // {
-    //   path: '/createAddress',
-    //   name: 'createAddress',
-    //   meta: {
-    //     intercept: true
-    //   },
-    //   component: createAddress
-    // }
-  ]
-  
 
 var host = [
     {

@@ -15,6 +15,7 @@ Vue.use(iView)
 
 Vue.use(Ajax.default)
 
+
 Vue.prototype.bus = new Vue();
 
 // 路由配置

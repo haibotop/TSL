@@ -171,7 +171,7 @@ export default {
         countDown() {
           this.timeOut_num--;
         },
-        toSignup() {
+        toHome() {
             this.$router.push({path: '/home'})
         }
     },
