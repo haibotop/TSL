@@ -9,6 +9,12 @@ import App from './App'
 
 import store from '@/store/index.js'
 
+//省市区三级联动
+import 'vue-area-linkage/dist/index.css'; // v2 or higher
+import VueAreaLinkage from 'vue-area-linkage';
+
+Vue.use(VueAreaLinkage);
+
 // config custom iconfonts
 Vue.use(VueRouter)
 Vue.use(iView)
@@ -227,9 +233,10 @@ Ajax.$defaultServiceTip.error = function (response) {
     }
   }
 }
-
+Vue.prototype.bus = new Vue()
 new Vue({
   router: router,
   store: store,
   render: h => h(App)
 }).$mount('#app')
+

@@ -42,7 +42,7 @@
             /*height: 600px;*/
             background: #fff;
             font-size: 14px;
-            color: #7F7F7F;
+            color: #111;
             .goodsList{
 
             }
@@ -175,9 +175,10 @@
                 </div>
                 <div v-else class="no-address">
                     <p style="padding-bottom:20px;color: #111;">目前您没有设置配送地址</p>
-                    <p style="color: #4A90E2;" @click="showAddressModel">
+                    <!--<span class="change-address" @click="showAddressModel">更换地址</span>-->
+                    <p style="color: #4A90E2;cursor: pointer;" @click="showCreatAddressModel">
                         <Icon type="ios-add-circle-outline" style="position: relative;top: -3px;margin-right: 5px;font-size: 20px;"/>
-                        地址管理
+                        增加配送地址
                     </p>
                 </div>
             </div>
@@ -235,7 +236,13 @@
         <!--</cell-box>-->
       <!--<create-address></create-address>-->
       <Modal v-model="model1" footerHide :styles="{width: '1000px',top: '275px'}">
-        <address-list ></address-list>
+        <address-list></address-list>
+      </Modal>
+      <Modal v-model="model2" footerHide :styles="{width: '1000px',top: '275px'}">
+        <create-address @hideModelCreat="hideModelCreat"></create-address>
+      </Modal>
+      <Modal v-model="model3" footerHide :styles="{width: '1000px',top: '275px'}">
+          <edit-address></edit-address>
       </Modal>
       </div>
     <!--</scroller>-->
@@ -248,11 +255,14 @@
   import header2 from '../homePages/header2'
   import vFooter from '../homePages/footer.vue'
   import addressList from '../me/addressList'
+  import createAddress from '../me/CreateAddress'
+  import editAddress from '../me/editAddress'
   import * as tool from '@/services/myTool.es6'
   import * as orderAPI from '@/services/API/orderServices.es6'
   import cashier from '@/components/cashier.vue'
   import { XHeader, Group, Cell, CellBox, XTextarea, Scroller, debounce } from 'vux'
   import useCoupons from '@/pages/promotion/useCoupons.vue'
+    import {mapState} from 'vuex'
   export default {
     name: 'createOrder',
     components: { cashier, XHeader, Group, Cell, CellBox, XTextarea, Scroller, debounce, useCoupons,
@@ -260,6 +270,8 @@
         header2,
         vFooter,
         addressList,
+        createAddress,
+        editAddress,
     },
     data () {
       return {
@@ -276,6 +288,8 @@
         selected: [], // 已选优惠券
         sum: 0,
         model1: false,
+        model2: false,
+        model3: false,
       }
     },
       updated(){
@@ -283,20 +297,38 @@
           console.log('vux',this.$store.state.address)
       },
     mounted: function () {
-
+        this.bus.$on('fun',()=>{
+            this.getSettlementDate()
+        })
       if (sessionStorage.getItem('memberRemark')) {
         this.memberRemark = sessionStorage.getItem('memberRemark')
       }
-      this.scrollerHeight = document.body.clientHeight - 66
+      // this.scrollerHeight = document.body.clientHeight - 66
       tool.preCartToCart(this, () => {
         this.getSettlementDate()
       })
 
     },
     methods: {
+      //隐藏编辑收获地址
+      hideModelEdit(){
+          this.model3 = !this.model3
+      },
+      //隐藏新建收获地址
+      hideModelCreat(){
+        this.model2 = !this.model2
+      },
       //配送地址
       showAddressModel(){
           this.model1 = true
+          this.bus.$emit("openAdress")
+      },
+      //增加配送地址
+      showCreatAddressModel(){
+          this.model2 = true
+      },//编辑配送地址
+      showEditAddressModel(){
+          this.model3 = !this.model3
       },
       getSettlementDate () {
         if (sessionStorage.getItem('settlementProductItems')) {
@@ -304,22 +336,23 @@
           this.statements()
         } else {
           this.orderAble = false
-          // setTimeout(() => {
-          //   this.$vux.alert.show({
-          //     title: '提示',
-          //     content: '您未选择商品或所选商品已下单',
-          //     onShow: () => {},
-          //     onHide: () => {
-          //       this.$router.replace({path: '/myOrders/0'})
-          //     }
-          //   })
-          // }, 500)
+          setTimeout(() => {
+            this.$model.warning({
+              title: '提示',
+              content: '您未选择商品或所选商品已下单',
+              onShow: () => {},
+              onOk: () => {
+                this.$router.replace({path: '/myOrders/0'})
+              }
+            })
+          }, 500)
         }
       },
       statements () {
         this.$http.post(...orderAPI.getSettleMent(this.params)).then((response) => {
           if (response.data.code === 200) {
             // this.renderData(response.data.TempOrder)
+              console.log('response.data.TempOrder',response.data.TempOrder)
             this.renderData2(response.data.TempOrder)
           } else {
             this.orderAble = false
@@ -329,9 +362,10 @@
         })
       },
       renderData2 (tempOrder) {
-          console.log(this.$store.state.address)
+          console.log('this.$store.state.address',this.$store.state.address)
         if (this.$store.state.address.id) {
-          this.address = this.$store.state.address
+          // this.address = this.$store.state.address
+            this.address = tempOrder[0].address
         } else {
           this.address = tempOrder[0].address
           if (this.address) {
@@ -499,7 +533,7 @@
       },
       order: debounce(function () {
         if (!this.address.id) {
-          this.$vux.toast.show({type: 'text', text: '请选择收货地址', width: '200px'})
+          // this.$vux.toast.show({type: 'text', text: '请选择收货地址', width: '200px'})
           return
         }
         sessionStorage.removeItem('memberRemark')
@@ -573,7 +607,9 @@
     //     }, 500)
     //   }
     },
+
     computed: {
+        ...mapState(['address.receiverAddress']),
       couponsValue () {
         let sum = 0
         for (let i of this.selected) {
@@ -581,6 +617,7 @@
         }
         return sum
       },
+
       afterPromotion () {
         let afterPromotion = 0
         for (let i of this.merchants) {
@@ -623,7 +660,7 @@
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
 .address {
-  width: calc(100% - 10px);
+  width: 500px;
   .address-bar1 {
     overflow: hidden;
     font-size: 14px;
@@ -631,14 +668,14 @@
       float: left;
     }
     .receiverMobile {
-      float: right;
+      margin-left: 50px;
     }
   }
   .address-bar2 {
     padding: 10px 0px;
     p {
       font-size: 14px;
-      color: #352665;
+      color: #111;
     }
   }
 }

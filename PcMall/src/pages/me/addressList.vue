@@ -30,7 +30,10 @@
                 自提地址
             </MenuItem>
         </Menu>
-
+        <p class="addNewAddress" @click="showCreatAddressModel">
+            <Icon type="ios-add-circle-outline" style="position: relative;top: -3px;margin-right: 5px;font-size: 20px;"/>
+            增加配送地址
+        </p>
       <!--<div class="part-title" v-if="menuName == 1"><span class="title">配送地址</span><span class="control" @click="newAddress">+增加配送地址</span></div>-->
       <!-- If ios -->
       <div class="ifIphone" v-if="menuName == 1" style="margin-top: 5px;">
@@ -122,7 +125,7 @@
       SwipeoutItem,
       SwipeoutButton,
       CheckIcon,
-      XAddress
+      XAddress,
     },
     data () {
       return {
@@ -146,9 +149,30 @@
     mounted () {
       this.getRouter()
       this.memberId = JSON.parse(sessionStorage.getItem('userInfo')).memberId
+      this.bus.$on('addNewAddress',()=>{
+          this.getAddressData((addressInfos) => {
+              this.setDefault(addressInfos)
+          })
+      })
+      this.bus.$on('deleteAddress11',()=>{
+          this.getAddressData((addressInfos) => {
+              this.setDefault(addressInfos)
+          })
+      })
       this.getAddressData((addressInfos) => {
         this.setDefault(addressInfos)
       })
+        this.bus.$on('openAdress',()=>{
+            this.getAddressData((addressInfos) => {
+                this.setDefault(addressInfos)
+            })
+        })
+        this.bus.$on('fun',val=>{
+            console.log('sfsaf',val)
+            this.getAddressData((addressInfos) => {
+                this.setDefault(addressInfos)
+            })
+        })
       this.getSelfLiftingAddress()
     },
     // beforeRouteEnter (to, from, next) {
@@ -162,6 +186,10 @@
     //   })
     // },
     methods: {
+      //增加配送地址
+        showCreatAddressModel(){
+            this.$parent.$parent.showCreatAddressModel()
+        },
       //导航切换
         menuChoose(name){
             this.menuName = name
@@ -180,7 +208,7 @@
       NoAddress () {
         this.ifIphone = false
         this.ifAndroid = false
-        this.noAddress = true
+        // this.noAddress = true
       },
       // ios android 切换
       IosOrAndroid () {
@@ -293,7 +321,8 @@
       // 编辑地址操作
       editAddress (edit) {
         this.catchSession(edit)
-        this.$router.push({path: '/editAddress'})
+        this.$parent.$parent.showEditAddressModel()
+        this.bus.$emit('setSession')
       },
       // 选择地址操作
       chooseAddress (choose) {
@@ -466,6 +495,7 @@
       /*height:47px;*/
     }
     .MAcontent{
+        position: relative;
       .part-title {
         width: calc(100% - 20px);
         height: 40px;
@@ -478,6 +508,15 @@
       }
       .part-title .control {
         float: right;
+      }
+      .addNewAddress{
+          position: absolute;
+          right: 20px;
+          top: 25px;
+          font-size: 14px;
+          color: #4A90E2;
+          z-index: 999;
+          cursor: pointer;
       }
     }
     .addressContent {
