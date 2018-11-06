@@ -1,6 +1,6 @@
 <template>
      <div id="productBlock">
-        <h3>推荐商品</h3>
+        <h3>相关商品</h3>
         <div class="carousel">
             <!-- <Carousel  :radius-dot=true :height="380">
                 <CarouselItem> -->
@@ -17,7 +17,7 @@
                                     <img :src="item.defaultPicture" :alt="handleName(item.skuName)" >
                                   </div>                                  
                                 </div>
-                                <div>
+                                <div class="product-info">
                                     <p class="explain">{{handleName(item.skuName)}}</p>
                                     <p class="price" :style="`color: ${color};`">{{ '￥' + handlePrice(item.price) }}</p>
                                     <p class="price_">￥1.009</p>
@@ -148,28 +148,36 @@
                     margin-top 10px
                 li
                     float left
-                    width 240px
-                    margin 0 10px
+                    width 560px
+                    margin 0 20px 20px
                     .pic
                         height 240px
                         background-color #fff
                         cursor pointer
+                        width 60%
+                        float left
                         .pic-img
                               width 70%
                               display inline-block
                               text-align center
                               img 
                                   width 100%
+                    .product-info
+                        width 40%
+                        float left
+                        text-align left
+                        margin-top 60px
                 .explain
-                    padding 0 36px
+                    padding-right 60px
                     line-height 16px
                     font-size 14px
-                    text-align center 
+                    text-align left 
                     $mb(4px)
                     color #000
                     $mt(15px)
                 .price
-                    color $blue                 
+                    color $blue
+                    margin-top 20px             
                 .price_
                     color #ccc
 
