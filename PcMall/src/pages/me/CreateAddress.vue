@@ -123,7 +123,7 @@
         },
         //选择省
         change(val){
-            console.log('sfdsf',val)
+            // console.log('sfdsf',val)
             this.$refs.select.clearSingleSelect();
             this.$refs.select_.clearSingleSelect();
             this.provinceItem[0] = val;
@@ -131,7 +131,7 @@
             this.areaList = []
             for(var i=0; i<this.provinceArr.length; i++){
                 if(val == this.provinceArr[i].name ){
-                    console.log('this.provinceArr[i].name',this.provinceArr[i].name)
+                    // console.log('this.provinceArr[i].name',this.provinceArr[i].name)
                     this.cities = this.provinceArr[i].cityList;
                 }
             }
@@ -148,7 +148,7 @@
                     // console.log('dsfdsg',this.areaList)
                 }
             }
-            console.log(this.provinceItem)
+            // console.log(this.provinceItem)
         },
         //选择地区
         change3(val){
@@ -156,7 +156,7 @@
             let i = this.provinceItem
             this.personalInfo.province.str = `${i[0]}${i[1]}${i[2]}`
             this.datailAddress = this.personalInfo.province.str
-            console.log(this.datailAddress)
+            // console.log(this.datailAddress)
         },
 
       foucs () {
@@ -165,14 +165,14 @@
       // 地址内容处理 + 是否默认
       detailAddress () {
         this.datailAddress = this.personalInfo.province.str + this.personalInfo.street
-        console.log(this.datailAddress)
-        console.log(this.checkIcon)
+        // console.log(this.datailAddress)
+        // console.log(this.checkIcon)
         if (this.checkIcon) {
           this.default_status = 1
         } else {
           this.default_status = 0
         }
-        console.log(this.default_status)
+        // console.log(this.default_status)
       },
       // 保存
       saveAddress () {
@@ -354,7 +354,7 @@
   #CreateAddress {
     .login-cont{
         width: 650px;
-        margin: 50px auto;
+        margin: 60px auto;
         text-align: center;
         .addressee,.phoneNum,.addressPlace,.account{
             span{

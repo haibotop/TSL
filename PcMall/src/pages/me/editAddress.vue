@@ -75,9 +75,8 @@
         <!--<check-icon  :value.sync="checkIcon" type="plain">设为默认地址</check-icon>-->
       <!--</div>-->
     <!--</div>-->
-    <Group class="deleteBtn">
-      <x-button @click.native="deleteAddress">删除地址</x-button>
-    </Group>
+      <Button class="deleteBtn" @click.native="deleteAddress" >删除地址</Button>
+
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -119,7 +118,7 @@
        ruleValidate:{},
        areaList:[],
        provinceItem:[],
-       readProvince:[]
+       readProvince:[],
       }
     },
       // updated(){
@@ -131,13 +130,19 @@
           this.getAddress()
           this.id = this.sessionAddress.id
       })
-      this.getAddress()
+        if(this.sessionAddress.id != undefined){
+            this.getAddress()
+        }
       // 删除地址param
       this.id = this.sessionAddress.id
       //读取省市区数据
       this.provinceArr = regionList
     },
     methods: {
+        // 隐藏编辑收获地址
+        hideModel(){
+            this.$emit('hideModelEdit')
+        },
         //选择省
         change(val){
             this.$refs.select.clearSingleSelect();
@@ -165,10 +170,14 @@
         //选择地区
         change3(val){
             this.provinceItem = this.personalInfo.province.str
+            // console.log('this.provinceItem',this.provinceItem)
             this.provinceItem[2] = val;
             let i = this.provinceItem
+            let a = ''
+            a = `${i[0]}${i[1]}${i[2]}`
+            this.datailAddress = a
             this.personalInfo.province.str = `${i[0]}${i[1]}${i[2]}`
-            this.datailAddress = this.personalInfo.province.str
+            // this.datailAddress = this.personalInfo.province.str
         },
       warnningTips () {
         let p = this.personalInfo
@@ -253,7 +262,7 @@
       },
       saveAddress () {
         if (this.warnningTips()) {
-          console.log(this.personalInfo)
+          // console.log(this.personalInfo)
           // 默认修改
           if (this.checkIcon === true) {
             this.personalInfo.default_status = 1
@@ -268,10 +277,10 @@
             receiverMobile: this.personalInfo.tel,
             receiverAddress: this.personalInfo.province.str + this.personalInfo.street
           }
-          console.log('param',param)
+          // console.log('param',param)
           this.$http.put(...myAPI.putshippingAddress(param))
             .then((response) => {
-                console.log('response',response)
+                // console.log('response',response)
               if (response.status === 200) {
                   this.$parent.$parent.getSettlementDate()
                   this.$Modal.success({
@@ -279,7 +288,7 @@
                       content: response.data.message,
                       onOk: () =>{
                           this.$parent.$parent.hideModelEdit()
-                          this.bus.$emit("fun",'1111')
+                          this.bus.$emit("fun")
                       }
                   });
                 // setTimeout(() => {
@@ -297,11 +306,11 @@
       },
       getAddress () {
         let b = sessionStorage.getItem('addressInfo')
-          console.log('bbbbbbbb',b)
+          // console.log('bbbbbbbb',b)
         this.sessionAddress = JSON.parse(b)
         this.personalInfo.name = this.sessionAddress.receiverName
         this.personalInfo.tel = this.sessionAddress.receiverMobile
-        console.log('this.sessionAddress',this.sessionAddress)
+        // console.log('this.sessionAddress',this.sessionAddress)
         this.detailAddress()
         if (this.sessionAddress.default_status === 0) {
           this.checkIcon = false
@@ -313,9 +322,9 @@
       },
       detailAddress () {
         let a = this.sessionAddress.receiverAddress
-        console.log(a)
+        // console.log(a)
         let b = this.addressData
-       console.log('bbbbbb',b)
+       // console.log('bbbbbb',b)
         let arr = []
         let str
         for (let i = 0; i < b.length; i++) {
@@ -325,21 +334,21 @@
         }
         if (arr.length > 2) {
           arr = arr.slice(0, 3)
-          console.log(1)
+          // console.log(1)
           str = `${arr[0]}${arr[1]}${arr[2]}`
         } else {
           arr = arr.slice(0, 2)
-          console.log(2)
+          // console.log(2)
           arr.push('--')
           str = `${arr[0]}${arr[1]}`
         }
-        console.log('arrrrrrrrr',arr)
+        // console.log('arrrrrrrrr',arr)
         this.readProvince = arr
         this.personalInfo.province.str = arr
         //初始化省市区数据
         for(var i=0; i<this.provinceArr.length; i++){
             if(arr[0] == this.provinceArr[i].name ){
-                console.log('this.provinceArr[i].name',this.provinceArr[i].name)
+                // console.log('this.provinceArr[i].name',this.provinceArr[i].name)
                 this.cities = this.provinceArr[i].cityList;
             }
         }
@@ -352,9 +361,9 @@
         // console.log('test', arr)
         // console.log(a)
         // 判断存在?
-        console.log(a.indexOf(str))
+        // console.log(a.indexOf(str))
         let detailaddress = a.slice(str.length)
-        console.log(detailaddress)
+        // console.log(detailaddress)
         this.personalInfo.province.ids = arr
 //        this.personalInfo.province.names = arr
         this.personalInfo.street = detailaddress
@@ -365,10 +374,12 @@
           title: '提示',
           content: '是否确定删除该地址',
           onOk: () => {
+              // sessionStorage.setItem('addressInfo',null)
             this.$http.delete(myAPI.deleteshippingAddress(this.id))
               .then((response) => {
                 if (response.status === 200) {
                     this.bus.$emit('deleteAddress11')
+                    this.bus.$emit('fun')
                     this.$parent.$parent.hideModelEdit()
                   this.$defaultServiceTip.success(response)
                     alert('删除成功')
@@ -411,7 +422,7 @@
   #editAddress {
       .login-cont{
           width: 650px;
-          margin: 50px auto;
+          margin: 50px auto 30px;
           text-align: center;
           .addressee,.phoneNum,.addressPlace,.account{
               span{
@@ -450,19 +461,20 @@
           }
       }
     .deleteBtn {
-      margin: 280px 0 0 18px;
-      width: 90%;
-      .weui-btn_default{
+        margin-left: 27%;
+        margin-bottom: 20px;
+        width: 45%;
+        height: 50px;
         background-color: #352665;
-        color: #ffffff;
-      }
+        color: #fff;
+        font-size: 14px;
     }
     .defaultPlace {
       margin-top: 20px;
       position: relative;
       .defaultPosition{
         position: absolute;
-        left: 30%;
+        left: 40%;
       }
     }
     .editPersonalInfo{

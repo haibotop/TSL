@@ -10,6 +10,13 @@
         color: #352665;
         cursor: pointer;
     }
+    .addressEdit .ivu-checkbox-checked .ivu-checkbox-inner{
+        border-color: #352665;
+        background-color: #352665;
+    }
+    .addressEdit .ivu-checkbox-checked:hover .ivu-checkbox-inner{
+        border-color: #352665;
+    }
 </style>
 <template>
   <div id="addressList" ref="addressList">
@@ -36,79 +43,74 @@
         </p>
       <!--<div class="part-title" v-if="menuName == 1"><span class="title">配送地址</span><span class="control" @click="newAddress">+增加配送地址</span></div>-->
       <!-- If ios -->
-      <div class="ifIphone" v-if="menuName == 1" style="margin-top: 5px;">
+      <div class="addressContentBig" v-if="!noAddress && menuName == 1" style="margin-top: 5px;padding-right: 5px;">
         <div v-for="(item, index) in addressInfo" :key="item.id">
-          <div>
-              <!--<div slot="right-menu">-->
-                <!--<swipeout-button background-color="#FC781C" @click.native="deleteAddress(index)">删除</swipeout-button>-->
-              <!--</div>-->
-              <div slot="content" class="addressContent" ref="addressContent">
-                <div class="addressChoose" @click="flag && chooseAddress(index)" :class="addressChooseIndex == index?'addressChooseActive':''">
-                  <div class="addressee">
-                    <span class="name">{{ item.receiverName }}</span>
-                    <span class="tel">{{ item.receiverMobile }}</span>
-                    <p class="addressInfo">{{ item.receiverAddress }}</p>
-                    <div class="addressEdit">
-                        <span class="edit" @click="editAddress(index)"><Icon type="ios-create-outline" />编辑</span>
-                        <span class="setDefault">
-                            <check-icon :value.sync="checkDefault[index]" @click.native.stop="checkClick(index)" class="checkIconFoot"></check-icon>
-                            <span class="defaultAddress">
-                              <span v-if="addressInfo[index].default_status">默认地址</span>
-                              <span v-else>设为默认</span>
-                            </span>
-                        </span>
-                    </div>
-                  </div>
-                  <i class="activeIcon"></i>
-                </div>
-                <!--<div class="addressFooter">-->
-                  <!--<check-icon :value.sync="checkDefault[index]" @click.native.stop="checkClick(index)" class="checkIconFoot"></check-icon>-->
-                  <!--<span class="defaultAddress">-->
-                    <!--<span v-if="addressInfo[index].default_status">默认地址</span>-->
-                    <!--<span v-else>设为默认</span>-->
-                  <!--</span>-->
-                  <!--<span class="editAddress" @click="editAddress(index)">-->
-                    <!--&lt;!&ndash;<img src="../../assets/icons/edit.svg" alt="edit">&ndash;&gt;-->
-                    <!--编辑-->
-                  <!--</span>-->
-                <!--</div>-->
-              </div>
-          </div>
-        </div>
-      </div>
-      <div class="NAfooter" v-if="noAddress  && menuName == 1">
-        无地址数据
-      </div>
-      <div class="part-title" style="margin-top: 1.17647059em;" v-if="menuName == 2">
-        <span class="title">自提地址</span>
-        <x-icon type="ios-help-outline" fill="#F47825" style="transform:translate(2px, 6px)" @click="toselfAddress"></x-icon>
-        <x-icon type="ios-reload" class="control" style="transform:translate(2px, 6px)" @click="clearFilters"></x-icon>
-      </div>
-      <div v-if="menuName == 2">
-        <group gutter="0px"><x-address title="筛选地址" v-model="filters" :list="addressData" hide-district :raw-value="true" @on-shadow-change="changeFilters" @on-hide="doFilters"></x-address></group>
-        <div class="NAfooter" v-if="selfLiftingAddress.length === 0">无自提地址数据</div>
-        <group gutter="0px" v-for="(item, index) in selfLiftingAddress" :key="item.id">
-          <div class="addressContent selfLiftingAddressContent">
-            <div class="addressChoose" @click="flag && chooseSelfLiftingAddress(index)">
+          <div slot="content" class="addressContent" ref="addressContent">
+            <div class="addressChoose" @click="flag && chooseAddress(index)" :class="addressChooseIndex == index?'addressChooseActive':''">
               <div class="addressee">
                 <span class="name">{{ item.receiverName }}</span>
                 <span class="tel">{{ item.receiverMobile }}</span>
                 <p class="addressInfo">{{ item.receiverAddress }}</p>
+                <div class="addressEdit">
+                    <span class="edit" @click="editAddress(index)"><Icon type="ios-create-outline" />编辑</span>
+                    <span class="setDefault">
+                        <Checkbox v-model="checkDefault[index]" @click.native.stop="checkClick(index)"></Checkbox>
+                        <!--<check-icon :value.sync="checkDefault[index]" @click.native.stop="checkClick(index)" class="checkIconFoot"></check-icon>-->
+                        <span class="defaultAddress">
+                          <span v-if="addressInfo[index].default_status">默认地址</span>
+                          <span v-else>设为默认</span>
+                        </span>
+                    </span>
+                </div>
               </div>
-              <!--<div class="addressInfo">-->
-                <!--<span class="addressDetail">{{ item.receiverAddress }}</span>-->
-              <!--</div>-->
+              <i class="activeIcon"></i>
             </div>
           </div>
-        </group>
+        </div>
+        <div class="Mfooter" >
+            <Button @click.native="hideAddressList" style="margin-right: 30px; width: 200px;height: 50px;font-size: 16px;">取消</Button>
+            <Button @click.native="saveAddressList1" style="width: 200px;height: 50px;font-size: 16px; background-color: #352665;color: #fff;">保存</Button>
+        </div>
+      </div>
+      <div class="NAfooter" v-if="noAddress  && menuName == 1">
+          无收货地址信息
+      </div>
+      <div class="addressContentBig" v-if="menuName == 2" style="margin-top: 5px;padding-right: 5px;">
+          <div class="NAfooter" v-if="selfLiftingAddress.length === 0">无自提地址数据</div>
+          <div v-for="(item, index) in selfLiftingAddress" :key="item.id">
+              <div slot="content" class="addressContent" ref="addressContent">
+                  <div class="addressChoose" @click="flag && chooseSelfLiftingAddress(index)" :class="selfaddressChooseIndex == index?'addressChooseActive':''">
+                      <div class="addressee">
+                          <span class="name">{{ item.receiverName }}</span>
+                          <span class="tel">{{ item.receiverMobile }}</span>
+                          <p class="addressInfo">{{ item.receiverAddress }}</p>
+                      </div>
+                      <i class="activeIcon"></i>
+                  </div>
+              </div>
+          </div>
+          <div class="Mfooter" >
+              <Button @click.native="hideAddressList" style="margin-right: 30px; width: 200px;height: 50px;font-size: 16px;">取消</Button>
+              <Button @click.native="saveAddressList2" style="width: 200px;height: 50px;font-size: 16px; background-color: #352665;color: #fff;">保存</Button>
+          </div>
+        <!--<group gutter="0px"><x-address title="筛选地址" v-model="filters" :list="addressData" hide-district :raw-value="true" @on-shadow-change="changeFilters" @on-hide="doFilters"></x-address></group>-->
+        <!--<div class="NAfooter" v-if="selfLiftingAddress.length === 0">无自提地址数据</div>-->
+        <!--<group gutter="0px" v-for="(item, index) in selfLiftingAddress" :key="item.id">-->
+          <!--<div class="addressContent selfLiftingAddressContent">-->
+            <!--<div class="addressChoose" @click="flag && chooseSelfLiftingAddress(index)">-->
+              <!--<div class="addressee">-->
+                <!--<span class="name">{{ item.receiverName }}</span>-->
+                <!--<span class="tel">{{ item.receiverMobile }}</span>-->
+                <!--<p class="addressInfo">{{ item.receiverAddress }}</p>-->
+              <!--</div>-->
+              <!--&lt;!&ndash;<div class="addressInfo">&ndash;&gt;-->
+                <!--&lt;!&ndash;<span class="addressDetail">{{ item.receiverAddress }}</span>&ndash;&gt;-->
+              <!--&lt;!&ndash;</div>&ndash;&gt;-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</group>-->
       </div>
     </div>
-
-    <!-- <div class="MAfooter" v-else="noAddress">
-      <div class="footerBtn" @click="newAddress">
-        <span>+新增地址</span>
-      </div>
-    </div> -->
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -143,49 +145,99 @@
         filters: [],
         filtersNames: [],
         menuName: '1', //地址切换
-        addressChooseIndex: '', //地址选择
+        addressChooseIndex: '-1', //地址选择
+        selfaddressChooseIndex: '-1', //自提地址选择
+        checkClickParam: []//默认地址
       }
     },
     mounted () {
-      this.getRouter()
+      // this.getRouter()
       this.memberId = JSON.parse(sessionStorage.getItem('userInfo')).memberId
       this.bus.$on('addNewAddress',()=>{
+          // console.log(1)
+          this.noAddress = false
           this.getAddressData((addressInfos) => {
               this.setDefault(addressInfos)
           })
       })
       this.bus.$on('deleteAddress11',()=>{
+          // console.log(2)
           this.getAddressData((addressInfos) => {
               this.setDefault(addressInfos)
           })
       })
-      this.getAddressData((addressInfos) => {
-        this.setDefault(addressInfos)
-      })
         this.bus.$on('openAdress',()=>{
+            // console.log(3)
             this.getAddressData((addressInfos) => {
                 this.setDefault(addressInfos)
             })
         })
-        this.bus.$on('fun',val=>{
-            console.log('sfsaf',val)
+        this.bus.$on('fun',()=>{
+            console.log(4)
             this.getAddressData((addressInfos) => {
                 this.setDefault(addressInfos)
             })
         })
       this.getSelfLiftingAddress()
     },
-    // beforeRouteEnter (to, from, next) {
-    //   if (from.name === 'mine') {
-    //     sessionStorage.setItem('chooseAddress', false)
-    //   } else if (from.name === 'createOrder') {
-    //     sessionStorage.setItem('chooseAddress', true)
-    //   }
-    //   next((vm) => {
-    //     console.log(vm)
-    //   })
-    // },
     methods: {
+      //隐藏收获地址
+        hideAddressList(){
+            this.addressChooseIndex = '-1'
+            this.selfaddressChooseIndex = '-1'
+            this.checkClickParam = []
+            this.$parent.$parent.hideAddressModel()
+        },
+        //保存地址
+        saveAddressList2(){
+            console.log("this.selfaddressChooseIndex",this.selfaddressChooseIndex)
+            if(this.selfaddressChooseIndex == '-1'){
+                this.$Modal.warning({
+                    title: "提示",
+                    content: '请选择一个自提地址'
+                })
+                return
+            }
+            let choose = this.selfaddressChooseIndex
+            let data = {
+                'id': this.selfLiftingAddress[choose].id,
+                'receiverName': this.selfLiftingAddress[choose].receiverName,
+                'receiverMobile': this.selfLiftingAddress[choose].receiverMobile,
+                'receiverAddress': this.selfLiftingAddress[choose].receiverAddress,
+                'default_status': this.selfLiftingAddress[choose].default_status
+            }
+            this.$store.commit('setAddress', data)
+            this.$parent.$parent.getSettlementDate()
+            this.$Modal.success({
+                title: "提示",
+                content: "保存成功",
+                onOk: () => {
+                    this.$parent.$parent.hideAddressModel()
+                }
+            })
+        },
+        saveAddressList1(){
+            //默认地址
+            if(this.checkClickParam.length != 0){
+                this.putshippingAddress(this.checkClickParam)
+            }
+            // console.log('this.addressChooseIndex',this.addressChooseIndex)
+            if(this.addressChooseIndex == '-1'){
+                this.$Modal.warning({
+                    title: "提示",
+                    content: '请选择一个收获地址'
+                })
+                return
+            }
+            this.setAddress(this.addressChooseIndex)
+            this.$Modal.success({
+                title: "提示",
+                content: "保存成功",
+                onOk: () => {
+                    this.$parent.$parent.hideAddressModel()
+                }
+            })
+        },
       //增加配送地址
         showCreatAddressModel(){
             this.$parent.$parent.showCreatAddressModel()
@@ -194,22 +246,6 @@
         menuChoose(name){
             this.menuName = name
         },
-      // 识别路由来历
-      getRouter () {
-        if (this.$route.params) {
-          if (this.$route.params.from) {
-            if (this.$route.params.from === 'me') {
-              this.flag = false
-            }
-          }
-        }
-      },
-      // 第一次新增地址
-      NoAddress () {
-        this.ifIphone = false
-        this.ifAndroid = false
-        // this.noAddress = true
-      },
       // ios android 切换
       IosOrAndroid () {
         /* Navigator 是HTML DOM中的内置对象，
@@ -238,7 +274,7 @@
           .then((response) => {
 //            this.$defaultServiceTip.success(response)
             if (response.data.code === 6007 || response.data === null) {
-              this.NoAddress()
+              this.noAddress = true
             } else if (response.status === 200) {
               this.IosOrAndroid()
               if (typeof callback === 'function') {
@@ -267,54 +303,23 @@
       },
       // 请求修改地址内容接口
       putshippingAddress (param) {
-        this.$http.put(...myAPI.putshippingAddress(param))
+            // param = {default_status: 1, id: "ca80b89a688d4a4094f7a201ecfddd27"}
+            console.log('param',param)
+          this.$http.put(...myAPI.putshippingAddress(param))
           .then((response) => {
             if (response.status === 200) {
-              this.$vux.toast.show({
-                text: response.data.message
+              this.$Modal.success({
+                title: '提示',
+                content: response.data.message
               })
             }
           })
           .catch((error) => {
-            if (error.response.status === 404) {
-              console.log(error)
-              window.location.reload()
-            }
-          })
-      },
-      // 删除地址接口
-      deleteshoppingAddress (cancel) {
-        let id = this.addressInfo[cancel].id
-        this.$http.delete(myAPI.deleteshippingAddress(id))
-          .then((response) => {
-            if (response.data.code === 200) {
-              this.$vux.toast.show({
-                text: '删除成功',
-                type: 'text',
-                width: '200px'
-              })
-              this.getAddressData((addressInfos) => {
-                this.setDefault(addressInfos)
-              })
-            }
-          })
-          .catch((error) => {
-//            this.$defaultServiceTip.error(error)
-            console.log(error)
-            if (error.response.status === 404) {
-              this.$vux.confirm.show({
-                title: status,
-                content: '网络异常，请重试',
-                confirmText: '确定',
-                onConfirm () {
-                  window.location.reload()
-                },
-                onCancel () {
-                  window.location.reload()
-                }
-              })
-            }
-            return
+            //   console.log('param22222',param)
+            // if (error.response.status === 404) {
+            //   console.log(error)
+            //   window.location.reload()
+            // }
           })
       },
       // ------------------- <=接口------
@@ -326,36 +331,11 @@
       },
       // 选择地址操作
       chooseAddress (choose) {
-          sessionStorage.setItem('chooseAddress', true)
-            console.log(choose)
-          this.setAddress(choose)
-        // if (sessionStorage.getItem('chooseAddress') === 'true') {
-        //     console.log(2)
-        //   // this.$router.go(-1)
-        // }
+          this.addressChooseIndex = choose
       },
+      // 选择自提地址操作
       chooseSelfLiftingAddress (choose) {
-        // if (sessionStorage.getItem('chooseAddress') === 'true') {
-          let data = {
-            'id': this.selfLiftingAddress[choose].id,
-            'receiverName': this.selfLiftingAddress[choose].receiverName,
-            'receiverMobile': this.selfLiftingAddress[choose].receiverMobile,
-            'receiverAddress': this.selfLiftingAddress[choose].receiverAddress,
-            'default_status': this.selfLiftingAddress[choose].default_status
-          }
-          this.$store.commit('setAddress', data)
-          // this.$emit('createOrder')
-          // this.$router.go(-1)
-        // }
-      },
-      // 删除地址操作
-      deleteAddress (index) {
-        this.$vux.confirm.show({
-          content: '是否确认删除',
-          onConfirm: () => {
-            this.deleteshoppingAddress(index)
-          }
-        })
+            this.selfaddressChooseIndex = choose
       },
       setDefault (addressInfos) {
         // 默认地址首位
@@ -370,12 +350,14 @@
           }
         }
         // 默认地址操作
+        this.checkDefault = []
         for (let i in addressInfos) {
-          console.log(i)
-          console.log(addressInfos[i])
           addressInfos[i].default_status ? this.checkDefault.push(true) : this.checkDefault.push(false)
+            // console.log(addressInfos[i].default_status)
+            // console.log('ddddd',this.checkDefault)
         }
         this.addressInfo = addressInfos
+          // console.log('22222222',addressInfos)
         return this.addressInfo
       },
       // ----------- <=地址操作--------
@@ -398,18 +380,19 @@
           'receiverAddress': this.addressInfo[index].receiverAddress,
           'default_status': this.addressInfo[index].default_status
         }
-        console.log(data)
         this.$store.commit('setAddress', data)
         this.$parent.$parent.getSettlementDate()
-        this.addressChooseIndex = index
+        // this.addressChooseIndex = index
 
       },
 
       // 修改默认地址
       checkClick (index) {
+            console.log('checkDefault',this.checkDefault)
         // 修改default_status状态
-        if (this.checkDefault[index] === true) {
+        if (this.checkDefault[index] === false) {
           for (let i in this.checkDefault) {
+              console.log('this.addressInfo[i]',this.addressInfo)
             this.checkDefault[i] = false
             this.addressInfo[i].default_status = 0
           }
@@ -423,14 +406,14 @@
           default_status: this.addressInfo[index].default_status,
           id: this.addressInfo[index].id
         }
-        this.putshippingAddress(param)
-      },
-      newAddress () {
-        this.$router.push({path: 'CreateAddress'})
+        this.checkClickParam = param
+        console.log('safsafsfsf',param)
+        // this.putshippingAddress(param)
       },
       getSelfLiftingAddress () {
         this.$http.get(myAPI.selfLiftingAddress()).then(res => {
           if (res.data.code === 200) {
+              // console.log('2222222222222222222',res.data.addressInfos)
             this.selfLiftingAddress_bs = res.data.addressInfos
             this.selfLiftingAddress = res.data.addressInfos
           }
@@ -470,7 +453,7 @@
 <style lang="scss" rel="stylesheet/scss" scoped>
   #addressList {
     padding: 0 15px;
-    height: 450px;
+    height: 515px;
     .noAddressContent{
       position: absolute;
       top: 24.3%;
@@ -485,14 +468,6 @@
     .NAfooter{
       text-align: center;
       margin: 10px;
-    }
-    .MAheader{
-      /*position:absolute;*/
-      /*left:0;*/
-      /*right:0;*/
-      /*top:0;*/
-      /*z-index:1;*/
-      /*height:47px;*/
     }
     .MAcontent{
         position: relative;
@@ -518,8 +493,13 @@
           z-index: 999;
           cursor: pointer;
       }
+      .addressContent{
+          cursor: pointer;
+      }
     }
-    .addressContent {
+    .addressContentBig {
+      height: 312px;
+      overflow-y: scroll;
       .addressChoose{
           border: 2px solid transparent;
       }
@@ -616,27 +596,26 @@
         right: 15px;
       }
     }
-    .MAfooter {
-      width: 100%;
-      position:absolute;
-      bottom:0;
-      left:0;
-      right:0;
-      z-index:1;
-      height:49px;
-    }
-    .footerBtn{
-      width: 100%;
-      color: #ffffff;
-      padding:12px 0;
-      text-align: center;
-      background-color: #352665;
-    }
   }
-  .ifIphone, .ifAndroid {
-    .weui-cells {
-      margin-top: 0px;
-      margin-bottom: 1.17647059em;
-    }
+  .Mfooter{
+      position: fixed;
+      bottom: 120px;
+      left: 50%;
+      margin-left: -214px;
+  }
+  /*滚动条样式*/
+  .addressContentBig::-webkit-scrollbar ,.position-horizontal-demo::-webkit-scrollbar{
+      /*滚动条整体样式*/
+      width: 2px; /*高宽分别对应横竖滚动条的尺寸*/
+      height: 2px;
+  }
+  .addressContentBig::-webkit-scrollbar-thumb ,.position-horizontal-demo::-webkit-scrollbar-thumb{
+      /*滚动条里面小方块样式*/
+      border-radius: 6px;
+      background: #979797;
+  }
+  .addressContentBig::-webkit-scrollbar-track ,.position-horizontal-demo::-webkit-scrollbar-track{
+      /*滚动条里面轨道样式*/
+      background: transparent;
   }
 </style>

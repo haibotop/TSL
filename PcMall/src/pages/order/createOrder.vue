@@ -165,10 +165,10 @@
         </div>
       </div>
       <div class="content">
-        <div v-if="address"  class="account">
+        <div class="account">
             <span class="title">配送地址：</span>
             <div >
-                <div v-if="address.id" class="address">
+                <div v-if="address" class="address">
                     <div class="address-bar1"><span class="receiverName">{{address.receiverName}}</span><span class="receiverMobile">{{address.receiverMobile}}</span></div>
                     <div class="address-bar2"><p>{{address.receiverAddress}}</p></div>
                     <span class="change-address" @click="showAddressModel">更换地址</span>
@@ -242,7 +242,7 @@
         <create-address @hideModelCreat="hideModelCreat"></create-address>
       </Modal>
       <Modal v-model="model3" footerHide :styles="{width: '1000px',top: '275px'}">
-          <edit-address></edit-address>
+          <edit-address @hideModelEdit="hideModelEdit"></edit-address>
       </Modal>
       </div>
     <!--</scroller>-->
@@ -298,6 +298,7 @@
       },
     mounted: function () {
         this.bus.$on('fun',()=>{
+            console.log('9999999')
             this.getSettlementDate()
         })
       if (sessionStorage.getItem('memberRemark')) {
@@ -318,7 +319,11 @@
       hideModelCreat(){
         this.model2 = !this.model2
       },
-      //配送地址
+      //隐藏更换地址
+      hideAddressModel(){
+          this.model1 = !this.model1
+      },
+      //显示更换地址
       showAddressModel(){
           this.model1 = true
           this.bus.$emit("openAdress")
@@ -362,17 +367,23 @@
         })
       },
       renderData2 (tempOrder) {
-          console.log('this.$store.state.address',this.$store.state.address)
-        if (this.$store.state.address.id) {
+          console.log('77777',tempOrder[0].address)
+          console.log('88888',this.$store.state.address)
           // this.address = this.$store.state.address
-            this.address = tempOrder[0].address
+        if (this.$store.state.address.id && tempOrder[0].address != null) {
+              // console.log('ppppp')
+          this.address = this.$store.state.address
+          //   this.address = tempOrder[0].address
         } else {
+              // console.log('ooooo')
           this.address = tempOrder[0].address
-          if (this.address) {
+          /*if (this.address) {
+                  console.log('iiiiii')
             this.$store.commit('setAddress', this.address)
           } else {
-            this.address = this.$store.state.address
-          }
+                  console.log('uuuuuu')
+            // this.address = this.$store.state.address
+          }*/
         }
         let merchants = []
         // 重整结构
