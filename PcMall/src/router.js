@@ -40,7 +40,11 @@ import addressList from '@/pages/me/addressList.vue'
 import selfAddress from '@/pages/me/selfAddress.vue'
 import editAddress from '@/pages/me/editAddress.vue'
 import createAddress from '@/pages/me/CreateAddress.vue'
-// ----------
+// 促销、优惠券----------
+// import useCoupons from '@/pages/promotion/useCoupons.vue'
+// import sendCoupons from '@/pages/promotion/sendCoupons.vue'
+import myCoupons from '@/pages/promotion/myCoupons.vue'
+// import pdCoupons from '@/pages/promotion/pdCoupons.vue'
 
 var routers = [];
 
@@ -357,7 +361,28 @@ var host = [
         },
     },
 ]
-
-routers = routers.concat(host,searchModel,activityPage,pdModel,order,shopModal,myModal)
+//促销、优惠券
+let promotion = [
+    // {
+    //   path: '/useCoupons',
+    //   name: 'useCoupons',
+    //   component: useCoupons
+    // },
+    // {
+    //   path: '/sendCoupons',
+    //   component: sendCoupons
+    // },
+    {
+      path: '/myCoupons',
+      name: 'myCoupons',
+      component: myCoupons
+    },
+    // {
+    //   path: '/pdCoupons',
+    //   name: 'pdCoupons',
+    //   component: pdCoupons
+    // }
+]
+routers = routers.concat(host,searchModel,activityPage,pdModel,order,shopModal,myModal,promotion)
 export default routers
 
