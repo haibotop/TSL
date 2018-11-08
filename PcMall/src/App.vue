@@ -16,6 +16,12 @@ export default {
 }
 </script>
 
+<style>
+  .ivu-loading-bar{
+        display: none;
+    }
+</style>
+
 <style lang="less" rel="stylesheet/less">
 @import "styles/index";
 #app{

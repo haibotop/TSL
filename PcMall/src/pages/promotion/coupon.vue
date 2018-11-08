@@ -1,228 +1,164 @@
 <template>
-  <div id="coupon" :style="check ? 'margin-left:40px' : ''">
-    <div class="coupon" :style="couponPadding">
-      <div class="left-part">
-        <p class="amount" :style="amountSize"><i>{{coupon.subtract / 100}}</i>元</p>
-        <span class="condition" v-show="coupon.rules === 2">直减</span>
-        <span class="condition" v-show="coupon.rules === 1">满<i>{{coupon.fullSubtract / 100}}</i>元使用</span>
-      </div>
-      <div class="seat" v-show="status === 2"></div>
-      <div class="right-part" :style="check ? 'width:calc(100% - 151px)' : ''">
-        <p class="name">{{coupon.name}}</p>
-        <p class="date date-title">有效期：</p>
-        <p class="date">{{(coupon.startDate || '').split(' ')[0]}}至{{(coupon.endDate || '').split(' ')[0]}}</p>
-        <button v-show="status === 0 && !check" @click="receiveCoupon(coupon)">立即领取</button>
-        <!-- <a href="javascript:void(0)">查看说明<x-icon type="ios-arrow-down" fill="#ccc" style="font-size:14px;margin-bottom:-6px;"></x-icon></a> -->
-        <button v-show="status === 1 && !check" @click="receiveCoupon(coupon)">去使用</button>
-        <div v-show="status === 2" class="label">已使用</div>
-        <div v-show="status === 3 || status === 4" class="mask"></div>
-        <div v-show="status === 3" class="label">已失效</div>
-        <div v-show="status === 4" class="label">不可用</div>
-      </div>
+    <div class="coupons">
+        <div class="coupons-title">
+            <h2>￥{{coupon.subtract / 100}}</h2>
+            <p v-show="coupon.rules === 2">直减</p>
+            <p v-show="coupon.rules === 1">满{{coupon.fullSubtract / 100}}元使用</p>
+        </div>
+        <div class="coupons-content">
+            <!-- <p>适用范围：全场通用</p> -->
+            <p style="font-size:16px">{{coupon.name}}</p>
+            <p class="p2">有效期：{{(coupon.startDate || '').split(' ')[0]}}至{{(coupon.endDate || '').split(' ')[0]}}</p>
+            <!-- <p>来源：新用户专享</p> -->
+        </div>
+        <div class="coupons-footer">
+            <span v-show="status === 0 && !check" @click="receiveCoupon(coupon)">立即领取</span>
+            <span v-show="status === 1 && !check" @click="receiveCoupon(coupon)">去使用</span>
+            <p v-show="status === 2">已使用</p>
+            <!-- <div v-show="status === 3 || status === 4" class="mask"></div> -->
+            <p v-show="status === 3">已失效</p>
+            <p v-show="status === 4">不可用</p>
+        </div>
     </div>
-  </div>
-</template>
-<script type="text/ecmascript-es6">
-  export default {
-    props: {
-      coupon: {
-        default: function () {
-          return {}
-        },
-        type: Object
-      },
-      status: {
-        type: Number
-      },
-      check: {
-        default: function () {
-          return false
-        },
-        type: Boolean
-      },
-    },
-    data () {
-      return {
-        // status: 0, // 0未领取 1未使用 2已使用 3已失效
-      }
-    },
-    methods: {
-      // 获取优惠券列表,点击领取
-      receiveCoupon (coupon) {
-        console.log('coupon', coupon)
-        this.$emit('eventCoupon', coupon)
-      }
-    },
-    computed: {
-      amountSize () {
-        if (this.amount > 9999) {
-          return 'font-size: 23px;'
-        } else if (this.amount > 999) {
-          return 'font-size: 27px;'
-        } else {
-          return ''
-        }
-      },
-      couponPadding () {
-        if (this.status === 2) {
-          return 'padding: 0px'
-        } else {
-          return this.check ? 'width:100%' : 'padding: 0px 5px;'
-        }
-      }
-    }
-  }
-</script>
-<style lang="scss" rel="stylesheet/scss" scoped>
-.coupon {
-  width: 100%;
-  overflow: hidden;
-  position: relative;
-  // background-color: #fff;
-}
-.check-part {
-  float: left;
-  width: 30px;
-  height: 110px;
-}
-.left-part {
-  float: left;
-  width: 100px;
-  height: 90px;
-  position: relative;
-  top: 1px;
-  padding: 9px 5px;
-  text-align: center;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
-  background-color: #fff;
-  font-family: "Times New Roman", SimSun;
-  box-shadow: 0px 0px 5px #aaa;
-  .amount {
-    font-size: 28px;
-    font-weight: 400;
-  }
-  .condition {
-    font-weight: 400;
-    width: 100%;
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  .mask {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-    background-color: rgba($color: #ccc, $alpha: 0.5);
-  }
-}
-.seat {
-  width: 10px;
-  height: 90px;
-  float: left;
-}
-.right-part:before {
-  content: '';
-  display: block;
-  position: absolute;
-  top: 10px;
-  left: 0px;
-  height: calc(100% - 20px);
-  border-left: 2px dashed #fff;
-  // background: #fff;
-}
-.right-part {
-  float: left;
-  padding: 10px 20px;
-  width: calc(100% - 161px);
-  height: 90px;
-  position: relative;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  background: linear-gradient(left, #4F3D86, #65428E, #7D4896);
-  color: #fff;
-  overflow: hidden;
-  .name {
-    font-size: 16px;
-    letter-spacing: 1px;
-    line-height: 18px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-  }
-  .date.date-title {
-    // position: absolute;
-    // top: 40%;
-  }
-  .date {
-    line-height: 12px;
-    // position: absolute;
-    // left: 20px;
-    // top: 56%;
-    // transform: translateY(-55%);
-    letter-spacing: 1px;
-    font-size: 12px;
-  }
-  button {
-    position: absolute;
-    bottom: 10px;
-    left: 20px;
-    width: 70px;
-    height: 26px;
-    line-height: 22px;
-    background-color: transparent;
-    border: 1px solid #fff;
-    color: #fff;
-    border-radius: 4px;
-    font-size: 14px;
-    letter-spacing: 1px;
-  }
-  .mask {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    width: 100%;
-    height: 100%;
-    border-top-left-radius: 10px;
-    border-bottom-left-radius: 10px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
-    background-color: rgba($color: #ccc, $alpha: 0.5);
-    z-index: 9;
-  }
-  a {
-    color: #ccc;
-    font-size: 14px;
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-  }
-  .label {
-    position: absolute;
-    right: -20px;
-    bottom: 10px;
-    transform: rotateZ(-45deg);
-    background-color: #fff;
-    //color: $tsl-color;
-    font-size: 14px;
-    width: 80px;
-    text-align: center;
-    line-height: 20px;
-    z-index: 10;
-  }
-}
-</style>
 
+</template>
+
+<script>
+    export default {
+        name: 'coupon',
+        props: {
+            coupon: {
+                default: function () {
+                    return {}
+                },
+                type: Object
+            },
+            status: {
+                type: Number
+            },
+            check: {
+                default: function () {
+                    return false
+                },
+                type: Boolean
+            },
+        },
+        data () {
+            return {
+                // status: 0, // 0未领取 1未使用 2已使用 3已失效
+            }
+        },
+        methods: {
+        // 获取优惠券列表,点击领取
+            receiveCoupon (coupon) {
+                console.log('coupon', coupon)
+                this.$emit('eventCoupon', coupon)
+            }
+        },
+        computed: {
+            amountSize () {
+                if (this.amount > 9999) {
+                    return 'font-size: 23px;'
+                } else if (this.amount > 999) {
+                    return 'font-size: 27px;'
+                } else {
+                    return ''
+                }
+            },
+            couponPadding () {
+                if (this.status === 2) {
+                    return 'padding: 0px'
+                } else {
+                    return this.check ? 'width:100%' : 'padding: 0px 5px;'
+                }
+            }
+        }
+    }
+</script>
+
+<style lang="stylus" scoped>
+@import "~styles/common/common.styl";
+    .coupons
+        width 225px
+        font-size 12px
+        overflow hidden
+        $mr(25px)
+        $mb(20px)
+        float left
+        .coupons-title
+            color #fff
+            background-color $blue
+            height 100px
+            font-size 16px
+            text-align center
+            h2
+                line-height 60px
+        .coupons-content
+            width inherit
+            padding 25px 20px 25px 20px 
+            $border(border-left,1px)
+            $border(border-right,1px)
+            position relative
+            p
+                line-height 16px
+            .p2
+                margin 10px 0
+            &::after
+                content ''
+                position absolute
+                width 20px
+                height 40px
+                background-color $blue
+                border-radius 20px 0 0 20px
+                right  -2px
+                bottom  -21px
+            &::before
+                content ''
+                position absolute
+                z-index 2
+                width 18px
+                height 38px
+                background-color #fff
+                border-radius 19px 0 0 19px
+                right -1px
+                bottom -20px
+        .coupons-footer
+            $border(1,1px)
+            border-top 1px dashed $blue
+            height 70px
+            width inherit
+            text-align center
+            display table-cell
+            vertical-align middle
+            position relative
+            span
+                display inline-block
+                text-align center
+                width 150px
+                height 30px
+                line-height 30px
+                border 1px solid #000
+                color #000
+                cursor pointer
+            p
+                color #000
+            &::after
+                content ''
+                position absolute
+                width 20px
+                height 40px
+                background-color $blue
+                border-radius 0 20px 20px 0
+                left -2px
+                top -20px
+            &::before
+                content ''
+                position absolute
+                z-index 2
+                width 18px
+                height 38px
+                background-color #fff
+                border-radius 0 19px 19px 0
+                left -1px
+                top -19px
+</style>

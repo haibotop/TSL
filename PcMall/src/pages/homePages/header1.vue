@@ -64,15 +64,15 @@
                 <Icon type="ios-contact-outline" size="20"/>
                 <span>{{nickName}}</span>
             </router-link>
-            <router-link tag="a" to="/" >              
+            <router-link tag="a" to="/myCollection" >              
                 <Icon type="md-heart-outline" size="20"/>
                 <span>我的收藏</span>
             </router-link>
-            <!-- <router-link tag="a" to="/">              
+            <router-link tag="a" to="/shoppingCart">              
                 <Icon  type="ios-lock-outline" size="20"/>
                 <span>购物袋</span>
-            </router-link> -->  
-            <Dropdown  @mouseenter.native="handleClick" @mouseleave.native="handleClick" trigger="custom" :visible="visible2" style="margin-left: -10px;padding-left:10px" :class="{bgColor:bgColor2}" >
+            </router-link>  
+            <!-- <Dropdown  @mouseenter.native="handleClick" @mouseleave.native="handleClick" trigger="custom" :visible="visible2" style="margin-left: -10px;padding-left:10px" :class="{bgColor:bgColor2}" >
                 <a href="javascript:void(0)" >              
                     <Icon  type="ios-lock-outline" size="20"/>
                     <span>购物袋</span>
@@ -82,14 +82,11 @@
                         <Table height="250" size="small" ref="selection" :show-header=true :columns="columns4" :data="data1"></Table>
                         <span class="checkAll">全选</span>
                         <span class="allPrice">总计：￥{{allPrice.toFixed(2)}}</span>
-                        <Button class="btn1">查看购物袋<Icon type="ios-arrow-forward" color="#352665"/></Button>
+                        <router-link to="/shoppingCart" tag="Button" class="btn1">查看购物袋<Icon type="ios-arrow-forward" color="#352665"/></router-link>
                         <Button class="btn2">结算<Icon type="ios-arrow-forward" /></Button>
                     </div>
-                    <!-- <template>
-                        <Table height="250" :columns="columns1" :data="data2"  size="small" :show-header=true :disabled-hover=true></Table>
-                    </template>      -->
                 </DropdownMenu>
-            </Dropdown>
+            </Dropdown> -->
         </div>
     </div>
 </template>

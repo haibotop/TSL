@@ -13,6 +13,9 @@ import store from '@/store/index.js'
 import 'vue-area-linkage/dist/index.css'; // v2 or higher
 import VueAreaLinkage from 'vue-area-linkage';
 
+//loading
+import VueLoading from 'vue-loading-template'
+
 Vue.use(VueAreaLinkage);
 
 // config custom iconfonts
@@ -20,9 +23,9 @@ Vue.use(VueRouter)
 Vue.use(iView)
 
 Vue.use(Ajax.default)
+Vue.use(VueLoading, {type:'spiningDubbles'})
 
 
-Vue.prototype.bus = new Vue();
 
 // 路由配置
 const RouterConfig = {

@@ -6,16 +6,17 @@
       <!-- <div class="detail-title"><div class="detail-t">珠宝类型 <span class="xiegang"></span> 戒指</div></div> -->
       <v-title :titleTpye="titleTpye"></v-title>
       <div class="shoppingCart-content" >
+        <loading v-if="showLoading"></loading>  
         <!-- 无数据内容 v-show="shoppingCarts.length === 0"-->
-        <div class="no-data-mask"   style="display:none">
+        <div class="no-data-mask" v-if="shoppingCarts.length === 0">
           <img src="../../assets/images/nullShoppingCart.svg" alt="购物袋缺省">
           <p>您的购物袋没有任何物品。</p>
           <Button class="btn" @click.native="$router.push({path: '/home'})">继续购物</Button>
         </div>
-        <div>
+        <div v-else>
           <div class="shoppingCart-content-top">
-            <span class="sp_1">已选择<i>3</i>件商品</span>
-            <span class="sp_2"><Checkbox>只显示有货商品</Checkbox></span>
+            <span class="sp_1">已选择<i>{{checkNum}}</i>件商品</span>
+            <!-- <span class="sp_2"><Checkbox>只显示有货商品</Checkbox></span> -->
           </div>
           <div class="shoppingCart-content-center" > <!--v-show="shoppingCarts-->
             <div v-for="item in shoppingCarts" :key="item.merchantInfo.id">
@@ -34,76 +35,49 @@
                     </div>
                   </div>
                   <div class="detial">
-                    <p class="title">{{toolFun('name', product.name)}}</p>
+                    <p class="title">{{toolFun('name', product.name)}}</p><!-- @on-open-change="onOpenChange(product,$event)"-->
                     <p class="price">￥{{toolFun('price', product.price)}}</p><!--@on-change="onChange(index)"  v-model="product.specs[specIndex].specValueName"  allSpecArrayOn[index][specIndex].specValueName-->
-                    <div v-for="(specs,specIndex) in sortSpecArray[index]" :key="specs.specId" style="float:left">
-                      <Select  @on-change="onChange(index,specIndex)" :label-in-value="true" v-model="allSpecArrayOn[index][specIndex].specValueName" size="small" style="width:120px;margin-right:10px" >
-                        <Option v-for="(specs2, indexSpec) in specs.specValueArray"  
+                    <div v-for="(specs,specIndex) in product.specs" :key="specIndex" style="float:left">
+                      <Select :placeholder="specs.specValueName" @on-open-change="onOpenChange(product,$event)" @on-change="onChange(specIndex,specs.specValueName,$event)"  :label-in-value="true" size="small" style="width:120px;margin-right:10px" >
+                        <Option v-for="(specs2, indexSpec) in sortSpecArray[specIndex]"  
                           :key="indexSpec" 
-                          :value="specs2.specValueName"
-                          :disabled="!specs.specValueFlags[indexSpec]"
-                          :ref="specIndex" 
-                          :data-index="indexSpec"
-                          
+                          :value="JSON.stringify(specs2)"
+                          :disabled="!specs2.specValueFlags"
                           >{{ specs2.specValueName }}
                         </Option>
                       </Select>
-                    </div>{{sortSpecArrayOn_}}
-                    <!-- <Select v-model="model2" size="small" style="width:100px;margin-right:10px">
-                      <Option v-for="item in cityList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                    </Select>
-                     <Select  size="small" style="width:100px;margin-right:10px">
-                      <Option v-for="item in cityList1" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                    </Select> -->
-                    <!-- <span>纯白</span><span>纯白2</span><span>纯白3</span> -->
-                    <!-- <div class="spec" v-for="(item, index) in specArray" :key="item.specId">
-                      <span style="float:left">{{handleName(item.specName)}}：</span>
-                      <template>
-                        <Checker
-                          @on-change="onItemClick"
-                          v-model="specArrayOn[index]"
-                          type="radio"
-                          radio-required
-                          default-item-class="default-item-class"
-                          selected-item-class="selected-item-class"
-                          disabled-item-class="disabled-item-class">
-                          <checker-item
-                            v-for="(item2, index2) in item.specValueArray"
-                            :key="index2"
-                            :value="item2"
-                            :disabled="!item.specValueFlags[index2]">{{item2.specValueName}}
-                          </checker-item>
-                        </Checker>
-                      </template>
-                    </div> -->
+                    </div>
                   </div>
                   
                   <div class="num" >
-                    <span class="tb-stock" id="J_Stock">
-                      <input-number v-model="product.amount" @on-change="putNum(product)"  :min="1" :max="product ? product.stock : 0"></input-number>
-                      <span v-show="!editFlag && product.amount > product.stock">抱歉，该商品最大购买数量为{{product.stock}}件</span>
-                      amount：{{product.amount}}
+                    <span class="tb-stock">
+                      <span v-if="!editFlag && product.amount > product.stock" class="no-stock">暂无库存</span>
+                      <input-number v-else v-model="product.amount" @on-change="putNum(product)" :min="1" :max="product ? product.stock : 0"></input-number>
+                      <!-- <span v-show="!editFlag && product.amount > product.stock">抱歉，该商品最大购买数量为{{product.stock}}件</span> -->
+                      
                     </span>
                     
                   </div>
-                  <div class="no-num" style="display:none">
+                  <!-- <div class="no-num" style="display:block">
                     <p class="p1">暂无库存</p>
                     <p class="p2">添加到收藏</p>
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </div>
           </div>
+          <!-- 底下 -->
           <div class="shoppingCart-content-bottom">
             <div class="shoppingCart-content-bottom-content">
               <div class="left">
-                <Checkbox @click="checkAll" v-model="checkedAll"></Checkbox>全选
-                <span class="delete">删除</span>
-                <span>添加到收藏 </span>
+                <div @click="checkAll"></div>
+                <Checkbox v-model="checkedAll"></Checkbox>全选
+                <span class="delete" @click="deleteConfirm">删除</span>
+                <!-- <span>添加到收藏 </span> -->
               </div>
               <div class="right">
-                <p>总计：<span>￥19989.00</span></p>
-                <Button class="btn">结算<Icon type="ios-arrow-forward" /></Button>
+                <p>总计：<span>￥{{sum}}</span></p>
+                <Button class="btn" @click.native="checkout">结算<Icon type="ios-arrow-forward" /></Button>
               </div>
             </div>
           </div>
@@ -118,6 +92,7 @@
   import header1 from '@/pages/homePages/header1'
   import header2 from '@/pages/homePages/header2'
   import vFooter from '@/pages/homePages/footer.vue'
+  import loading from '@/pages/homePages/loading.vue'
   import vTitle from '@/pages/homePages/title.vue'
   import inputNumber from '@/pages/shoppingCart/inputNumber.vue'
   import res from './data.es6'
@@ -125,6 +100,7 @@
   import * as pdAPI from '@/services/API/pdServices.es6'
   import { XHeader, Scroller, XButton, CheckIcon, TransferDomDirective as TransferDom, Popup, debounce, Checker, CheckerItem, Group, InlineXNumber } from 'vux'
   import MyInlineXNumber from './my-inline-x-number.vue'
+  
   import * as tool from '@/services/myTool.es6'
   let getSkuCancel
   export default {
@@ -139,24 +115,14 @@
     //   CheckerItem,
     //   pdPromotion
     // },
-    components: { header1,header2,vFooter,vTitle,inputNumber,XHeader, Scroller, XButton, CheckIcon, Popup, debounce, Checker, CheckerItem, Group, InlineXNumber, MyInlineXNumber },
-    updated () {
-      // console.log('this.specArray',this.specArray)
-      console.log('this.allSpecsPopupData_bs',this.allSpecsPopupData_bs)
-      // console.log('this.allSpecArrayOn',this.allSpecArrayOn)
-      console.log('this.allSpecArrayOn_',this.allSpecArrayOn_)
-      console.log('allSpecArray',allSpecArray)
-      console.log('this.sortSpecArrayOn_',this.sortSpecArrayOn_)
-    },
+    components: { header1,header2,vFooter,vTitle,loading,inputNumber,XHeader, Scroller, XButton, CheckIcon, Popup, debounce, Checker, CheckerItem, Group, InlineXNumber, MyInlineXNumber },
     data () {
       return {
-        productIndex: 0,//选择规格的时候对应的第几个商品
-        productSpecIndex: 0,//选择规格的时候对应的第几个商品下的第几个规格
+        showLoading: true,//loading
+        checkNum:0,
         titleTpye: ['珠宝类型','戒指'],//珠宝类型的头部
-        num:0,
         list: [], // 原数据
         shoppingCarts: [], // 处理后展示用的数据
-        allSpecsProduct: [],//购物车每款产品的规格
         sum: 0, // 总计价格
         checkedAll: false, // 全选状态
         checkedObj: {}, // 已选项的容器对象 {id: Boolean}
@@ -167,61 +133,39 @@
         // --------------------specs规格选择popup--------------------
         specsPopupFlag: false,
         specsPopupData_bs: {},
-        allSpecsPopupData_bs: [],
         specsPopupData: {}, // 弹窗商品
-        allSpecsPopupData: [], ///所有弹窗商品集合
          // sku
-        specArray: [],//购物车每款产品的规格
-        allSpecArray:[], 
+        specArray: [],
         // ----------已选sku组合[{specId,specName,specValueId,specValueName}]
         specArrayOn: [],
-        allSpecArrayOn: [],
-        allSpecArrayOn_: [],
         usedSpecValueArray: [],
         skuSpecArray: [],
         leftOption: {
           backText: ''
-        },    
-        // cityList: [
-        //   {
-        //       value: 'New York',
-        //       label: 'New York'
-        //   },
-        //   {
-        //       value: 'London',
-        //       label: 'London'
-        //   },
-        //   {
-        //       value: 'Sydney',
-        //       label: 'Sydney'
-        //   } 
-        // ],
-        // cityList1: [
-        //   {
-        //       value: 'New York',
-        //       label: 'New York'
-        //   },
-        //   {
-        //       value: 'London',
-        //       label: 'London'
-        //   },
-        //   {
-        //       value: 'Sydney',
-        //       label: 'Sydney'
-        //   } 
-        // ],
-        // model2: 'London', 
+        },
       }
     },
+    //  updated(){
+    //   console.log('shoppingCarts！！！',this.shoppingCarts)
+    //   console.log('更新之后',this.specArray)
+    //   console.log('sortSpecArray',this.sortSpecArray)
+    //   // this.xxxxx = this.specArray[0].specValueArray
+    // },
     methods: {
-      onChange(productIndex,productSpecIndex){
-        this.productIndex = productIndex
-        this.productSpecIndex = productSpecIndex
-        // console.log('$event',$event)
-        console.log('$this',this)
-        // console.log(this.$refs)
-        // this.putSku(index)
-        // this.productSpecIndex = 1
+      onChange(specIndex,specValueName,$event){
+        let product = JSON.parse($event.value)
+        if(product.specValueName!=specValueName){
+          this.showLoading = !this.showLoading
+          this.specArrayOn[specIndex] = product
+          this.handleSpecState()
+          this.postSpuInfo()
+        }
+      },
+      onOpenChange(product,$event){
+        if($event){
+          console.log('specArrayspecArrayspecArray',this.specArray)
+          this.openSpecsPopup(product)
+        }
       },
       toolFun (type, value) {
         if (type === 'name') {
@@ -250,7 +194,7 @@
           checkedObj[i] = !this.checkedAll
         }
         this.checkedObj = checkedObj
-      }, 150),
+      }, 0),
       // 本地-获取购物车数据
       getCartDataLocal () {
         if (localStorage.getItem('cartProductItems') === '[]') {
@@ -274,6 +218,7 @@
             if (res.data.list) {
               this.list = res.data.list
               this.handleRes(res.data.list)
+              this.showLoading = false
             }
           }
         })
@@ -322,18 +267,6 @@
         })
         this.setChecked(datas)
         this.shoppingCarts = datas
-        //新增
-        let allproduct = []
-        this.allSpecArrayOn_.length = 0
-        datas.forEach(shoppingCarts=>{
-          shoppingCarts.promotions.forEach((promotions,index) => {
-            allproduct.push(promotions.productItems)
-            this.openSpecsPopup(promotions.productItems,index)
-          })
-        })
-        console.log('allproduct',datas)
-        //新加
-        // this.allSpec =  
         this.checkedObj = JSON.parse(JSON.stringify(this.checkedObj))
       },
       // 设置check-icon的绑定对象
@@ -363,7 +296,7 @@
       // 计算总价
       getSum () {
         let sum = 0
-        console.log(this.shoppingCarts)
+        console.log('计算总价',this.shoppingCarts)
         for (let i of this.shoppingCarts) {
           for (let j of i.promotions) {
             let iSum = 0
@@ -446,29 +379,41 @@
           }
         }
         if (checked.length === 0) {
-          this.$vux.toast.show({
-            text: '未选择删除商品',
-            type: 'text',
-            width: '200px'
-          })
+          // this.$vux.toast.show({
+          //   text: '未选择删除商品',
+          //   type: 'text',
+          //   width: '200px'
+          // })
+          this.$Message.error({content:'未选择删除商品',duration:3})
         } else {
-          this.$vux.confirm.show({
-            content: '确认删除该商品?',
-            onConfirm: () => {
+          // this.$vux.confirm.show({
+          //   content: '确认删除该商品?',
+          //   onConfirm: () => {
+          //     this.deleteProduct(checked)
+          //   }
+          // })
+          this.$Modal.confirm({
+            title: '',
+            content: '<p>确认删除该商品 </p>',
+            okText: '确认',
+            cancelText: '取消',
+            onOk:()=>{
               this.deleteProduct(checked)
-            }
+            },
           })
+
         }
       },
       deleteProduct (checked) {
         if (sessionStorage.getItem('userInfo')) {
           this.$http.post(...scAPI.deleteCartItems(checked)).then((response) => {
             if (response.data.code === 200) {
-              this.$vux.toast.show({
-                text: '删除成功',
-                type: 'text',
-                width: '200px'
-              })
+              // this.$vux.toast.show({
+              //   text: '删除成功',
+              //   type: 'text',
+              //   width: '200px'
+              // })
+              this.$Message.error({content:'删除成功',duration:3});
               this.getCartData()
               location.reload()
             }
@@ -497,7 +442,8 @@
           }
         }
         if (checked.length === 0) {
-          this.$vux.toast.show({ text: '未选择结算商品', type: 'text', width: '200px' })
+          // this.$vux.toast.show({ text: '未选择结算商品', type: 'text', width: '200px' })
+          this.$Message.error({content:'未选择结算商品',duration:3});
           return
         } else {
           for (let i of this.shoppingCarts) {
@@ -505,10 +451,12 @@
               for (let k of j.productItems) {
                 if (checked.indexOf(k.id) !== -1) {
                   if (k.status !== 1) {
-                    this.$vux.toast.show({ text: '商品已下架', type: 'text', width: '200px' })
+                    // this.$vux.toast.show({ text: '商品已下架', type: 'text', width: '200px' })
+                    this.$Message.error({content:'商品已下架',duration:3});
                     return
                   } else if (k.amount > k.stock) {
-                    this.$vux.toast.show({ text: '库存不足', type: 'text', width: '200px' })
+                    // this.$vux.toast.show({ text: '库存不足', type: 'text', width: '200px' })
+                    this.$Message.error({content:'库存不足',duration:3});
                     return
                   } else {
                     // params.push({productId: k.id, quantity: k.amount, promotionId: j.promotionInfo.id})
@@ -553,27 +501,44 @@
             sessionStorage.setItem('settlementProductItems', JSON.stringify(params))
             this.$router.push({path: '/createOrder'})
           } else {
-            this.$vux.confirm.show({
-              content: '用户未登录',
-              confirmText: '去登录',
-              onConfirm: () => {
+            // this.$vux.confirm.show({
+            //   content: '用户未登录',
+            //   confirmText: '去登录',
+            //   onConfirm: () => {
+            //     sessionStorage.setItem('settlementProductItems', JSON.stringify(params))
+            //     this.$router.push({path: '/signin'})
+            //   }
+            // })
+            this.$Modal.confirm({
+              title: '',
+              content: '<p>用户未登录</p>',
+              okText: '去登陆',
+              cancelText: '取消',
+              onOk:()=>{
                 sessionStorage.setItem('settlementProductItems', JSON.stringify(params))
-                this.$router.push({path: '/signin'})
+                this.$router.push({path: '/login'})
               }
-            })
+            });
           }
         }
       },
       // ====================选择规格====================
-      openSpecsPopup (product,index) {
+      openSpecsPopup (product) {
+        this.specsPopupData_bs = {}
+        this.specsPopupData = {} // 弹窗商品
+        // sku
+        this.specArray = []
+        // ----------已选sku组合[{specId,specName,specValueId,specValueName}]
+        // this.specArrayOn = []
+        this.usedSpecValueArray = []
+        this.skuSpecArray = []
+
         console.log('openSpecsPopupopenSpecsPopup',product)
         
         this.specsPopupFlag = true //是否弹窗
-        this.specsPopupData_bs = JSON.parse(JSON.stringify(product))[0]
-        this.allSpecsPopupData_bs.push(this.specsPopupData_bs)
-        this.specsPopupData = JSON.parse(JSON.stringify(product))[0]
-        this.allSpecsPopupData.push(this.specsPopupData)
-        this.allSpecArrayOn.push(this.specsPopupData.specs)
+        this.specsPopupData_bs = JSON.parse(JSON.stringify(product))
+        console.log('specsPopupData_bs',product)
+        this.specsPopupData = JSON.parse(JSON.stringify(product))
         if (this.specsPopupData) {
           // if (this.specsPopupData.specs.length === 0) {
           //   this.$vux.toast.show({
@@ -582,27 +547,17 @@
           //     width: '200px'
           //   })
           // } else {
-            
             this.getSpuInfo(this.specsPopupData.spuId, (res) => {
               this.specArrayOn = this.specsPopupData.specs
-              let arr = [{num:index}]
-              this.skuSpecArray = res.data.spuInfo.skuSpecArray//获取商品的所有规格
-              console.log('000000000000000000',this.skuSpecArray)
-              this.skuSpecArray.push(arr)
-              this.getSpecArray(res.data.spuInfo.specArray,index)
+              console.log('这是原来specArrayOn',this.specsPopupData.specs)
+              // alert(this.specArrayOn)
+              this.skuSpecArray = res.data.spuInfo.skuSpecArray
+              this.getSpecArray(res.data.spuInfo.specArray)
               this.specFlag = true
             })
-          // }
-
-
-            // this.func(this.specsPopupData.spuId).then(function(res){
-            //   this.specArrayOn = this.specsPopupData.specs
-            //   this.skuSpecArray = res.data.spuInfo.skuSpecArray
-            //   this.getSpecArray(res.data.spuInfo.specArray)
-            //   this.specFlag = true
-            //   return func
-            // })
-        }
+          }
+        // }
+        console.log('openSpecsPopup点击之后的specArray',this.specArray)
       },
       // 获取商品所有规格 spu接口
       getSpuInfo (spuId, callback) {
@@ -614,24 +569,11 @@
           }
         })
       },
-      // func (spuId, callback){
-      //   return new Promise(function(resolve,reject){
-      //     this.$http.get(...pdAPI.getSpuInfo(spuId)).then((response) => {
-      //       if (response.data.code === 200) {
-      //         // if (typeof callback === 'function') {
-      //           // callback(response)
-      //           resolve(response)
-      //         // }
-      //       }
-      //     })
-      //   })
-      // },
       // ----------处理spec属性数组，属性值对象加上specId和specName
-      getSpecArray (data,index) {
+      getSpecArray (data) {
         let specArray = []
         for (let i of data) {
           let spec1 = {
-            num: index,
             specId: i.specId,
             specName: i.specName,
             specValueArray: [],
@@ -642,19 +584,20 @@
               specId: i.specId,
               specName: i.specName,
               specValueId: j.specValueId,
-              specValueName: j.specValueName
+              specValueName: j.specValueName,
             })
             spec1.specValueFlags.push(false)
           }
           specArray.push(spec1)
         }
-        // this.specArray.push(specArray)
-        this.specArray = specArray 
-        this.handleSpecState() 
+        this.specArray = specArray
+        this.handleSpecState()
+        // console.log('uuuuuuuu',this.specArray[0].specValueArray)
+        // this.xxx = this.specArray[0].specValueArray
       },
       // ----------处理spec置灰
       handleSpecState () {
-        // this.$vux.loading.show()
+        this.$Loading.start()
         // ----------取出正在使用的sku组合包含的属性值
         let usedSpecValueArray = []
         let qobj = {}
@@ -700,35 +643,21 @@
             }
           }
         }
-        // this.$vux.loading.hide()
-        this.allSpecArray.push(this.specArray)
-        this.allSpecArrayOn_.push(this.skuSpecArray)
+        this.$Loading.finish()
       },
       // 获取new skuid
-      postSpuInfo: debounce(function (callback,index) {
-        console.log('postSpuInfo——',this.allSpecArrayOn[this.productIndex])
-        let allSpecArrayOn = this.allSpecArrayOn_[this.productIndex][this.productSpecIndex]
-        // let arr = [
-        //   {specId: "117864464457826304", specName: "颜色", specValueId: "117864464457826305", specValueName: "紫"},
-        //   {specId: "117864464457826306", specName: "WeightOfGold&IsOnly1", specValueId: "117864464457826308", specValueName: "10"}
-        // ]
-        // let xxx = this.allSpecsPopupData_bs[this.productIndex].specs
-        // console.log('xxx',allSpecArrayOn)
-        // console.log('arr',arr)
-        // console.log(JSON.stringify(arr) === JSON.stringify(xxx))
-        console.log('产品',this.allSpecArrayOn_[this.productIndex])
-        console.log('productSpecIndex',this.productSpecIndex)
-        console.log('allSpecArrayOnallSpecArrayOnallSpecArrayOn',allSpecArrayOn)
-        this.$http.post(...pdAPI.specGetSku(allSpecArrayOn).concat({
+      postSpuInfo: debounce(function (callback) {
+        console.log('这是点击specArrayOn',this.specArrayOn)
+        this.$http.post(...pdAPI.specGetSku(this.specArrayOn).concat({
           cancelToken: new this.$http.CancelToken(function (cancel) {
             if (typeof getSkuCancel === 'function') {
               getSkuCancel()
             }
             getSkuCancel = cancel
+            
           })
         })).then((response) => {
           if (response.data.code === 200) {
-            alert('拿到了')
             let skuInfo = response.data.skuInfo
             this.specsPopupData = Object.assign(skuInfo.sku, {specs: skuInfo.spec})
             console.log('Object.assign(skuInfo.sku, {specs: skuInfo.spec})',Object.assign(skuInfo.sku, {specs: skuInfo.spec}))
@@ -743,34 +672,30 @@
         .catch((error) => {
           console.log('new skuid找不到',error.response)
         })
+        
       }, 300),
       // 点击确认
       finishChangeSize () {
-        for (let i in this.quantityParam) {
-          if (this.productMsg[this.index1].productItem[this.index2].id === this.quantityParam[i].oldSkuId) {
-            this.quantityParam[i].skuId = this.popupProduct.id
-          }
-        }
+        // for (let i in this.quantityParam) {
+        //   if (this.productMsg[this.index1].productItem[this.index2].id === this.quantityParam[i].oldSkuId) {
+        //     this.quantityParam[i].skuId = this.popupProduct.id
+        //   }
+        // }
         this.putSku()
       },
       // 修改商品规格接口
       putSku (obj) {
+        console.log('obj',obj)
         if (sessionStorage.getItem('userInfo')) {
-          // let params = {
-          //   oldSkuId: this.specsPopupData_bs.id,
-          //   quantity: this.specsPopupData.amount,
-          //   skuId: this.specsPopupData.id
-          // }
+          console.log('545454545454545',this.specsPopupData_bs)
           let params = {
-            oldSkuId: this.allSpecsPopupData_bs[this.productIndex].id,//切换前老产品的型号 
-            quantity: 1,//this.allSpecsPopupData[2].amount//产品数量
-            skuId: obj.id//切换的产品的型号
+            oldSkuId: this.specsPopupData_bs.id,
+            // quantity: this.specsPopupData.amount,
+            quantity: 1,
+            skuId: this.specsPopupData.id
           }
-          // let params = {oldSkuId: "117864464457826309", quantity: 1, skuId: "117864464457826312"}
-          console.log('params.oldSkuId',params.oldSkuId)
-          console.log('obj',obj)
           console.log('params',params)
-          this.$http.put(...scAPI.putCartItems([params])).then((response) => {
+          this.$http.put(...scAPI.putCartItems([params])).then((response) => {//修改规格与数量
             if (response.data.code === 200) {
               this.specsPopupFlag = false
               this.getCartData()
@@ -782,26 +707,21 @@
         } else {
           let productItems = JSON.parse(localStorage.getItem('cartProductItems'))
           for (let i in productItems) {
-            if (productItems[i].id === this.allSpecsPopupData_bs[this.productIndex].id) {
-              productItems[i] = obj
+            if (productItems[i].id === this.specsPopupData_bs.id) {
+              productItems[i] = this.specsPopupData
             }
           }
           localStorage.setItem('cartProductItems', JSON.stringify(productItems))
           this.specsPopupFlag = false
           this.getCartDataLocal()
         }
-        this.allSpecArray.length = 0
-        this.allSpecsPopupData.length = 0
-        this.allSpecsPopupData_bs.length = 0
-        this.allSpecArrayOn.length = 0
-        // this.allSpecArrayOn_.length = 0
       },
       // 点击完成
       finishEdit () {
         this.editFlag = false
       }
     },
-    mounted: function () {
+    mounted: function () {  
       let userInfo = sessionStorage.getItem('userInfo')
       if (userInfo) {
         this.memberId = JSON.parse(userInfo).memberId
@@ -824,28 +744,6 @@
       }
     },
     computed: {
-      sortSpecArray (){
-        // // 排序
-        function compare(num){
-          return function(obj1,obj2){
-            let value1 = obj1[0][num];
-            let value2 = obj2[0][num];
-            return value1 - value2;     
-          }
-        }
-        return this.allSpecArray.sort(compare("num"))
-      },
-      sortSpecArrayOn_ (){
-        // // 排序
-        function compare(num){
-          return function(obj1,obj2){
-            let value1 = obj1[obj1.length-1][0][num];
-            let value2 = obj2[obj2.length-1][0][num];
-            return value1 - value2;     
-          }
-        }
-        return this.sortSpecArrayOn_.sort(compare("num"))
-      },
       checkedStr () {
         return JSON.parse(JSON.stringify(this.checkedObj))
       },
@@ -853,9 +751,18 @@
         return document.body.clientHeight * 0.75 - 101 - 50 + 'px'
       },
       specArrayOnStr () {
-        // return JSON.stringify(this.specArrayOn)
-        console.log("变化了变化了变化了变化了变化了变化了变化了变化了变化了变化了变化了变化了变化了变化了变化了变化了变化了")
-        return JSON.stringify(this.allSpecArrayOn)
+        return JSON.stringify(this.specArrayOn)
+      },
+      sortSpecArray () {
+        let arr = []
+        for(let i=0;i<this.specArray.length;i++){
+          for(let k=0;k<this.specArray[i].specValueArray.length;k++){
+            this.specArray[i].specValueArray[k].specValueFlags = this.specArray[i].specValueFlags[k]
+          }
+          arr.push(this.specArray[i].specValueArray)
+        }
+
+        return arr
       }
     },
     watch: {
@@ -867,6 +774,7 @@
             num1++
             if (this.checkedObj[i]) { num2++ }
           }
+          this.checkNum = num2
           this.checkedAll = num1 === num2 ? true : false
         }
         this.getSum()
@@ -877,28 +785,29 @@
           this.promotionPopupSkuId = ''
         }
       },
-      specArrayOnStr (newV, oldV) {
-        if (oldV !== '[]' && newV !== '[]') {
-          if (newV !== oldV) {
-            this.handleSpecState()
-            this.postSpuInfo()
-            console.log('newV',newV)
-            console.log('oldV',oldV)
-          }
-        }
-      },
-      specsPopupFlag (flag) {
-        if (flag === false) {
-          this.specsPopupData_bs = {}
-          this.specsPopupData = {} // 弹窗商品
-          // sku
-          this.specArray = []
-          // ----------已选sku组合[{specId,specName,specValueId,specValueName}]
-          this.specArrayOn = []
-          this.usedSpecValueArray = []
-          this.skuSpecArray = []
-        }
-      },
+      // specArrayOnStr (newV, oldV) {
+      //   if (oldV !== '[]' && newV !== '[]') {
+      //     if (newV !== oldV) {
+      //       alert(0)
+      //       // this.handleSpecState()
+      //       // this.postSpuInfo()
+      //       console.log('newV',newV)
+      //       console.log('oldV',oldV)
+      //     }
+      //   }
+      // },
+      // specsPopupFlag (flag) {
+      //   if (flag === false) {
+      //     this.specsPopupData_bs = {}
+      //     this.specsPopupData = {} // 弹窗商品
+      //     // sku
+      //     this.specArray = []
+      //     // ----------已选sku组合[{specId,specName,specValueId,specValueName}]
+      //     // this.specArrayOn = []
+      //     this.usedSpecValueArray = []
+      //     this.skuSpecArray = []
+      //   }
+      // },
       productAmount: {
         get (product) {
           return product.amount
@@ -910,8 +819,11 @@
     }
   }
 </script>
-
-
+<style>
+  #shoppingCart .ivu-select-single .ivu-select-selection .ivu-select-placeholder{
+    color:#515a6e
+  }
+</style>
 <style lang="stylus" scoped>
 @import "~styles/common/common.styl";
   #shoppingCart 
@@ -997,15 +909,6 @@
             .price
               $mb(10px)
               color $blue
-            // span
-            //   width 100px
-            //   height 25px
-            //   line-height 25px
-            //   font-size 14px
-            //   display inline-block
-            //   text-align center
-            //   border 1px solid #e3e3e3
-            //   $mr(10px)
           .num
             float right
             $mt(53px)
@@ -1016,11 +919,13 @@
               $ml(3px)
               span
                 position absolute
-                width 300px
                 top 28px
                 left -42px
                 font-size 12px
                 color red
+              .no-stock
+                top 8px
+                left -75px
           .no-num
             float right
             $mt(20px)
@@ -1041,6 +946,12 @@
           div,p
             float left
           .left
+            div
+              width 52px
+              height 20px
+              position absolute
+              z-index 200
+              cursor pointer
             color #000
             span
               color #66a2e7
