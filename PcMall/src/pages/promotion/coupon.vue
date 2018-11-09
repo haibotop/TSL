@@ -15,12 +15,11 @@
             <span v-show="status === 0 && !check" @click="receiveCoupon(coupon)">立即领取</span>
             <span v-show="status === 1 && !check" @click="receiveCoupon(coupon)">去使用</span>
             <p v-show="status === 2">已使用</p>
-            <!-- <div v-show="status === 3 || status === 4" class="mask"></div> -->
             <p v-show="status === 3">已失效</p>
             <p v-show="status === 4">不可用</p>
         </div>
+        <div v-show="status === 3 || status === 4" class="mask"></div>
     </div>
-
 </template>
 
 <script>
@@ -82,9 +81,10 @@
         width 225px
         font-size 12px
         overflow hidden
-        $mr(25px)
+        $ml(25px)
         $mb(20px)
         float left
+        position relative
         .coupons-title
             color #fff
             background-color $blue
@@ -161,4 +161,14 @@
                 border-radius 0 19px 19px 0
                 left -1px
                 top -19px
+        .mask
+            position absolute
+            width 100%
+            height 100%
+            left 0
+            top 0
+            background-color #ccc
+            opacity 0.5
+
+
 </style>
