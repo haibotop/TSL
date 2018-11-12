@@ -1,15 +1,25 @@
+<style>
+    .coupon-wrapper .ivu-checkbox{
+        display: none;
+    }
+</style>
 <template>
-  <div id="useCoupons">
-    <x-header title="领券" :left-options="{backText: '', preventGoBack: true}" @on-click-back="back"></x-header>
-    <tab v-model="status">
-      <tab-item @on-item-click="init()">可使用优惠券</tab-item>
-      <tab-item @on-item-click="init()">不可用优惠券</tab-item>
-    </tab>
-    <scroller ref="scroller" lock-x height="-90">
-      <div>
-        <div v-for="(couponInfo, index2) in couponUseProductInfos" :key="index2">
-          <div class="coupon-wrapper">
-            <check-icon class="coupon-check" :value.sync="checkObj[couponInfo.code]" type="plain"></check-icon>
+  <div id="useCoupons" style="height: 600px;">
+    <!--<x-header title="领券" :left-options="{backText: '', preventGoBack: true}" @on-click-back="back"></x-header>-->
+    <!--<tab v-model="status">-->
+      <!--<tab-item @on-item-click="init()">可使用优惠券</tab-item>-->
+      <!--<tab-item @on-item-click="init()">不可用优惠券</tab-item>-->
+    <!--</tab>-->
+      <p solt="header" style="margin: 10px 0 20px 30px; font-size: 24px;color: #352665;text-align: left;">本订单可使用的优惠券</p>
+      <div class="couponsBox" >
+        <div v-for="(couponInfo, index2) in couponUseProductInfos" :key="index2" style="display: inline-block">
+          <div class="coupon-wrapper" >
+            <Checkbox class="coupon-check" v-model="checkObj[couponInfo.code]" >
+                <span class="chooseDiscount" v-if="!checkObj[couponInfo.code]">选择</span>
+                <span class="chooseDiscount" v-else>取消选择</span>
+                <span class="chooseStatus" v-if="checkObj[couponInfo.code]"><span>已选择</span></span>
+            </Checkbox>
+            <!--<check-icon class="coupon-check" :value.sync="checkObj[couponInfo.code]" type="plain"></check-icon>-->
             <div v-if="couponInfo.zhihui === 4" class="coupon-check check-mask"></div>
             <coupon
               :status="couponInfo.zhihui"
@@ -18,12 +28,16 @@
               check></coupon>
           </div>
         </div>
-        <div style="height:10px"></div>
+        <!--<div style="height:10px"></div>-->
       </div>
-    </scroller>
+      <div class="Mfooter" >
+          <Button @click.native="hideCoupons" style="margin-right: 30px; width: 200px;height: 50px;font-size: 16px;">取消</Button>
+          <Button @click.native="saveCoupons" style="width: 200px;height: 50px;font-size: 16px; background-color: #352665;color: #fff;">确定</Button>
+      </div>
   </div>
 </template>
-<script type="text/ecmascript-es6">
+<!--<script type="text/ecmascript-es6">-->
+<script >
   import { XHeader, Scroller, Tab, TabItem, CheckIcon } from 'vux'
   import * as mAPI from '@/services/API/marketing.es6'
   import coupon from './coupon.vue'
@@ -53,6 +67,32 @@
       }
     },
     methods: {
+      //隐藏优惠券模态框
+      hideCoupons(){
+          this.$parent.$parent.hideCoupons()
+      },
+      //保存
+      saveCoupons () {
+          if (this.status === 0) {
+              let selected = []
+              for (let i in this.checkObj) {
+                  for (let j = 0; j<this.couponProductUseInfo.length; j++) {
+                      if (i === this.couponProductUseInfo[j].code && this.checkObj[i]) {
+                          selected.push(this.couponProductUseInfo[j])
+                      }
+                  }
+              }
+              this.$emit('selected', selected)
+          }
+          this.$emit('input', false)
+          this.$Modal.success({
+              title: '提示',
+              content: '保存成功',
+              onOk: ()=> {
+                  this.$parent.$parent.hideCoupons()
+              }
+          })
+      },
       init () {
         console.log('couponUseProductInfos', this.couponUseProductInfos)
         if (this.status === 0) {
@@ -70,7 +110,7 @@
           this.checkObj = noUseObj
           this.couponUseProductInfos = this.couponProductNoUseInfo
         }
-        this.$refs.scroller.reset({top: 0})
+        // this.$refs.scroller.reset({top: 0})
       },
       getCouponOrderInfo (ids) {
         this.$http.post(...mAPI.getCouponOrderInfo(ids)).then(res => {
@@ -255,20 +295,6 @@
         }
         this.$emit('selected', bestCouArray)
       },
-      back () {
-        if (this.status === 0) {
-          let selected = []
-          for (let i in this.checkObj) {
-            for (let j = 0; j<this.couponProductUseInfo.length; j++) {
-              if (i === this.couponProductUseInfo[j].code && this.checkObj[i]) {
-                selected.push(this.couponProductUseInfo[j])
-              }
-            }
-          }
-          this.$emit('selected', selected)
-        }
-        this.$emit('input', false)
-      }
     },
     mounted: function () {},
     computed: {
@@ -290,6 +316,11 @@
   }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
+.couponsBox{
+    padding: 0 85px;
+    height: 400px;
+    overflow-y: scroll;
+}
 .coupon-margin {
   margin: 10px;
 }
@@ -298,13 +329,67 @@
 }
 .coupon-check {
   position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
+  left: 50%;
+  top: 230px;
+  transform: translateX(-50%);
+  z-index: 2;
 }
 .check-mask {
   width: 33px;
   height: 27px;
   z-index: 3;
+}
+.chooseDiscount{
+    margin-left: 20px;
+    display: inline-block;
+    width: 180px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border: 1px solid #111;
+}
+.chooseStatus{
+    position: absolute;
+    right: -18px;
+    top: -220px;
+    z-index: 2;
+    display: inline-block;
+
+}
+.chooseStatus span{
+    position: absolute;
+    top: 12px;
+    left: 26px;
+    display: inline-block;
+    transform: rotate(45deg);
+}
+.chooseStatus::before{
+    content: '';
+    display: inline-block;
+    border: 35px solid transparent;
+    border-right-color: #FFCC00;
+    border-top-color: #FFCC00;
+    //transform: rotate(-135deg);
+}
+.Mfooter{
+    position: absolute;
+    bottom: 55px;
+    left: 50%;
+    margin-left: -214px;
+}
+/*滚动条样式*/
+.couponsBox::-webkit-scrollbar{
+    /*滚动条整体样式*/
+    width: 2px; /*高宽分别对应横竖滚动条的尺寸*/
+    height: 2px;
+}
+.couponsBox::-webkit-scrollbar-thumb{
+    /*滚动条里面小方块样式*/
+    border-radius: 6px;
+    background: #979797;
+}
+.couponsBox::-webkit-scrollbar-track{
+    /*滚动条里面轨道样式*/
+    background: transparent;
 }
 </style>

@@ -604,17 +604,17 @@
       margin-left: -214px;
   }
   /*滚动条样式*/
-  .addressContentBig::-webkit-scrollbar ,.position-horizontal-demo::-webkit-scrollbar{
+  .addressContentBig::-webkit-scrollbar{
       /*滚动条整体样式*/
       width: 2px; /*高宽分别对应横竖滚动条的尺寸*/
       height: 2px;
   }
-  .addressContentBig::-webkit-scrollbar-thumb ,.position-horizontal-demo::-webkit-scrollbar-thumb{
+  .addressContentBig::-webkit-scrollbar-thumb{
       /*滚动条里面小方块样式*/
       border-radius: 6px;
       background: #979797;
   }
-  .addressContentBig::-webkit-scrollbar-track ,.position-horizontal-demo::-webkit-scrollbar-track{
+  .addressContentBig::-webkit-scrollbar-track{
       /*滚动条里面轨道样式*/
       background: transparent;
   }

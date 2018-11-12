@@ -125,14 +125,14 @@
         </group> -->
         <div v-for="(merchant, index) in merchants" :key="index" class="goodsList">
           <div v-for="(promotion, index2) in merchant.promotionItems" :key="index2">
-            <div class="promotion-info">
-              <div>
-                <span v-if="promotion.type === 1" v-for="(item, index) in promotion.pdsArray" :key="index">满{{item.fullLimit / 100}}减{{item.subtract / 100}}</span>
-                <span v-if="promotion.type === 2" v-for="(item, index) in promotion.pdsArray" :key="index">满{{item.fullLimit / 100}}折{{item.discount / 10}}</span>
-                <span v-if="promotion.type === 3">打{{promotion.discount / 10}}折</span>
-                <span v-if="promotion.type === 4">直降{{promotion.directAmount / 100}}元</span>
-              </div>
-            </div>
+            <!--<div class="promotion-info">-->
+              <!--<div>-->
+                <!--<span v-if="promotion.type === 1" v-for="(item, index) in promotion.pdsArray" :key="index">满{{item.fullLimit / 100}}减{{item.subtract / 100}}</span>-->
+                <!--<span v-if="promotion.type === 2" v-for="(item, index) in promotion.pdsArray" :key="index">满{{item.fullLimit / 100}}折{{item.discount / 10}}</span>-->
+                <!--<span v-if="promotion.type === 3">打{{promotion.discount / 10}}折</span>-->
+                <!--<span v-if="promotion.type === 4">直降{{promotion.directAmount / 100}}元</span>-->
+              <!--</div>-->
+            <!--</div>-->
             <div v-for="(product, index3) in promotion.productItems" :key="index3">
               <div class="goodsLi">
                 <div class="default-picture">
@@ -140,12 +140,14 @@
                 </div>
                 <div class="text-info">
                   <p>{{handleName(product.name)}}</p>
-                  <!--<span class="price">￥{{ handlePrice(product.price) }}</span>-->
-                  <!--<span class="quantity">×{{product.quantity}}</span>-->
+                  <p class="price">￥{{ handlePrice(product.price) }} ×{{product.quantity}}</p>
+                    <!--<span class="quantity">×{{product.quantity}}</span>-->
+                  <p  class="specs">{{toolFun('specValues', product.specValues)}}</p>
                 </div>
                 <div class="text-info-right">
                     <p class="price">价格：￥{{ handlePrice(product.price) }}</p>
-                    <p>运费：免运费</p>
+                    <p style="margin:20px 0;">运费：免运费</p>
+                    <p>（新客户免运费）</p>
                 </div>
               </div>
             </div>
@@ -203,7 +205,7 @@
               <span class="price">￥ {{handlePrice(couponsValue) * -1}}
                   <span v-for="item in selected" :key="item.code">（已使用{{item.rules === 1 ? `满${item.fullSubtract / 100}减${item.subtract / 100}` : `直减${item.subtract / 100}`}}）</span>
               </span>
-              <span class="change-coupon" @click="openCoupon">更换优惠券</span>
+              <span class="change-coupon" @click="showDiscountModel">更换优惠券</span>
             </div>
             <div class="account">
                 <span class="discount">促销优惠：</span>
@@ -216,17 +218,18 @@
         </div>
       </div>
       <div class="footer">
-          <div v-show="!couponFlag" class="sub-bar">
+          <div class="sub-bar">
               <div class="amount" v-for="(merchant, index) in merchants" :key="index">
                 <span>共{{calcQuantity2(merchant)}}件商品，</span>
-                <span>待付款:<span class="price">￥{{merchant.afterPromotion}}</span></span>
+                <span>待付款:<span class="price">￥{{calcAmount}}</span></span>
+                <p style="color: #352665">优惠已抵扣：￥{{-Number(calcDiscountedPrice) + Number(handlePrice(couponsValue) * -1)}}</p>
               </div>
               <!--<div class="amount">合计:<span class="price">￥{{calcAmount}}</span></div>-->
               <div id="percreateorder" v-show="orderAble" class="order-btn" @click="order">结算</div>
-              <div v-show="!orderAble" class="order-btn-disable">下单</div>
+              <!--<div v-show="!orderAble" class="order-btn-disable">下单</div>-->
           </div>
           <cashier v-model="cashierFlag" :price="payAmount" :orderNum="orderNum"></cashier>
-          <useCoupons v-show="couponFlag" v-model="couponFlag" ref="useCoupons" :merchants="merchants" @selected="getSelected"></useCoupons>
+          <!--<useCoupons v-show="couponFlag" v-model="couponFlag" ref="useCoupons" :merchants="merchants" @selected="getSelected"></useCoupons>-->
       </div>
         <!-- <pdCoupons v-model="couponFlag"></pdCoupons> -->
         <!--<cell-box v-if="merchants.length > 0">-->
@@ -243,6 +246,10 @@
       </Modal>
       <Modal v-model="model3" footerHide :styles="{width: '1000px',top: '275px'}">
           <edit-address @hideModelEdit="hideModelEdit"></edit-address>
+      </Modal>
+      <Modal v-model="model4" footerHide :styles="{width: '1000px',top: '200px'}">
+          <!--<edit-address @hideModelEdit="hideModelEdit"></edit-address>-->
+          <useCoupons ref="useCoupons" :merchants="merchants" @selected="getSelected"></useCoupons>
       </Modal>
       </div>
     <!--</scroller>-->
@@ -281,7 +288,7 @@
         tempOrders: [],
         merchants: [], // 商家-》促销-》商品
         cashierFlag: false,
-        couponFlag: false,
+        // couponFlag: false,
         orderNum: '',
         orderAble: true,
         memberRemark: '',
@@ -290,6 +297,7 @@
         model1: false,
         model2: false,
         model3: false,
+        model4: false,
       }
     },
       updated(){
@@ -311,9 +319,35 @@
 
     },
     methods: {
+        toolFun (type, value) {
+            if (type === 'specValues') {
+                // 拼接商品规格字符串
+                let specValues = value || []
+                let msg = []
+                specValues.forEach(e => {
+                    // msg = msg + (msg || ' ') + ((e.specName === '重量' ? e.specValueName + 'g' : e.specValueName) || '')+'fsdf'
+                    msg.push(e.specValueName)
+                })
+                // msg = `${msg[0]}-${msg[1]}-${msg[2]}`
+                let msg_=''
+                msg.forEach((item,index)=>{
+                    msg_+=item
+                    if(index<msg.length-1){
+                        msg_+='-'
+                    }
+
+                })
+                console.log('1111',msg)
+                return msg_
+            }
+        },
       //隐藏编辑收获地址
       hideModelEdit(){
           this.model3 = !this.model3
+      },
+      //隐藏编辑收获地址
+      hideCoupons(){
+          this.model4 = !this.model4
       },
       //隐藏新建收获地址
       hideModelCreat(){
@@ -322,6 +356,10 @@
       //隐藏更换地址
       hideAddressModel(){
           this.model1 = !this.model1
+      },
+      //显示更换优惠券
+      showDiscountModel(){
+          this.model4 = true
       },
       //显示更换地址
       showAddressModel(){
@@ -432,6 +470,7 @@
             }
           }
           merchants.push(merchantInfo)
+            console.log('qqqqqqqqqq',merchants)
         }
         // 计算促销优惠
         for (let [i, index] of new Map(merchants.map((i, index) => [i, index]))) {
@@ -517,10 +556,10 @@
       },
       // ---------------------------------  弹起优惠券窗口
       openCoupon () {
-        this.couponFlag = true
-        setTimeout(() => {
-          this.$refs.useCoupons.$refs.scroller.reset()
-        }, 100)
+        // this.couponFlag = true
+        // setTimeout(() => {
+        //   this.$refs.useCoupons.$refs.scroller.reset()
+        // }, 100)
       },
       // 在结算页根据商品获取优惠券的接口
       getCoupon () {
@@ -754,9 +793,11 @@
     overflow: hidden;
   }
   .price {
-    position: absolute;
-    bottom: 0px;
-    color: red;
+    margin: 10px 0;
+    color: #352665;
+  }
+  .specs{
+      color: #352665;
   }
   .quantity {
     position: absolute;
@@ -767,8 +808,8 @@
 .text-info-right{
     float: right;
     margin-right: 20px;
+    text-align: center;
     .price{
-        margin-bottom: 15px;
         color: #352665;
     }
     p{
@@ -817,9 +858,9 @@
   color: #352665;
   background-color: #fff;
   .amount {
+    margin-top: 20px;
     width: calc(100% - 150px);
     text-align: right;
-    line-height: 80px;
     padding: 0px 50px 0px 0px;
     float: left;
     .price {
