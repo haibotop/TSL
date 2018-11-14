@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="90px" height="106px" viewBox="0 0 90 106" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48 (47235) - http://www.bohemiancoding.com/sketch -->
+    <title>Group 2</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="订单页为空" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-142.000000, -221.000000)">
+        <g id="Group-2" transform="translate(142.000000, 221.000000)">
+            <path d="M62.7875482,105.5 L89.5,77.7981981 L89.5,8 C89.5,3.85786438 86.1421356,0.5 82,0.5 L8,0.5 C3.85786438,0.5 0.5,3.85786438 0.5,8 L0.5,98 C0.5,102.142136 3.85786438,105.5 8,105.5 L62.7875482,105.5 Z" id="Rectangle-2" stroke="#C8C8C8"></path>
+            <rect id="Rectangle-4" fill="#C8C8C8" x="20" y="27" width="53" height="1" rx="0.5"></rect>
+            <rect id="Rectangle-4" fill="#C8C8C8" x="20" y="48" width="53" height="1" rx="0.5"></rect>
+            <rect id="Rectangle-4" fill="#C8C8C8" x="20" y="69" width="40" height="1" rx="0.5"></rect>
+            <path d="M89,78 L70,78 C67.7901235,78.2098765 66.1234568,78.8765432 65,80 C63.8765432,81.1234568 63.2098765,82.7901235 63,85 L63,106" id="Path-2" stroke="#C8C8C8"></path>
+        </g>
+    </g>
+</svg>

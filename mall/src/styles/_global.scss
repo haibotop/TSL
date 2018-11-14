@@ -1,0 +1,149 @@
+@import "compass";
+@import "variables";
+
+body {
+  background-color: $page-bg-color;
+  font-size: $font-size-default;
+  font-family: $font-family;
+  font-weight: $font-weight-default;
+}
+
+b, strong,
+h1, h2, h3 {
+  font-weight: $font-weight-bold;
+}
+
+a, [onclick], .clickable {
+  -webkit-tap-highlight-color: rgba(#ddd, 0.5);
+}
+
+input, textarea {
+  font-size: $font-size-small;
+}
+
+.clearfix {
+  @include clearfix();
+}
+
+.icon {
+  display: inline-block;
+  transform: scale(2);
+}
+
+.router-loading {
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: center;
+  line-height: 20px;
+
+  span {
+    vertical-align: middle;
+  }
+}
+
+html, body, #app {
+  height: 100%;
+  // 处理 popup model-open
+  width:100%;
+}
+
+#pd-popup-group {
+  .weui-cell {
+    padding: 0px;
+  }
+  .weui-cells:before, .weui-cells:after {
+    display: none;
+  }
+}
+
+#mine .weui-cell:before,
+#myOrders .weui-cell:before,
+#createOrder .weui-cell:before {
+  left: 0px;
+}
+#mySet {
+  .weui-cell:before {
+    left: 0px;
+  }
+  .vux-label {
+    font-size: 14px;
+    color: #4d4d4d;
+    letter-spacing: .16px;
+  }
+}
+#myInfo {
+  .weui-cell:before {
+    left: 0px;
+  }
+  .vux-label {
+    font-size: 14px;
+    color: #4d4d4d;
+    letter-spacing: .16px;
+  }
+}
+#sex-popup {
+  .weui-cell:before {
+    left: 0px;
+  }
+}
+
+#shoppingCart .calculate{
+  //购物车编辑calculate样式
+  .vux-number-input {
+    font-size: 16px;
+    width: 30px !important;
+    height: 18px !important;
+    padding: 0 !important;
+    margin-top: 7px !important;
+  }
+  .vux-number-selector-sub,.vux-number-selector-plus {
+    width: 18px !important;
+    height: 18px !important;
+    margin-top: 7px !important;
+  }
+  .vux-number-selector svg{
+    width: 18px !important;
+    height: 18px !important;
+  }
+  //左边加减
+  .vux-number-selector-sub {
+    padding: 0px !important;
+  }
+  //右边加减
+  .vux-number-selector-plus {
+    padding: 0px !important;
+  }
+}
+
+#mine .weui-cell:before{
+  border:1px solid transparent;
+}
+
+#mine {
+  #discount {
+    .weui-cell{
+      padding:0;
+      height:45px;
+    }
+
+    .weui-cell__hd{
+      margin: 0 15px;
+    }
+
+    .vux-cell-primary{
+      height: 45px;
+      line-height: 45px;
+      border-bottom: 1px solid #D9D9D9;
+    }
+    .weui-cell__ft{
+      height: 45px;
+      line-height: 45px;
+      border-bottom: 1px solid #D9D9D9;
+    }
+
+    .weui-cell_access .weui-cell__ft:after{
+      margin-right:15px;
+    }
+  }
+}
