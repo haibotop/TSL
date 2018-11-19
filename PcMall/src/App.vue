@@ -5,7 +5,7 @@
 </template>
 <script>
 
-import './assets/js/webchat7moor.js' //客服
+// import './assets/js/webchat7moor.js' //客服
 
 export default {
   data () {

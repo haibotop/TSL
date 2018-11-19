@@ -32,6 +32,7 @@ import myPassword from '@/pages/me/myPassword.vue'
 import myInfo from '@/pages/me/myInfo.vue'
 import myNickname from '@/pages/me/myNickname.vue'
 import myCollection from '@/pages/me/myCollection.vue'
+import myDiscountCard from '@/pages/me/myDiscountCard.vue'
 import addressList from '@/pages/me/addressList.vue'
 import selfAddress from '@/pages/me/selfAddress.vue'
 import editAddress from '@/pages/me/editAddress.vue'
@@ -145,6 +146,14 @@ let myModal = [
       intercept: true
     },
     component: myCollection
+  },
+  {
+    path: '/myDiscountCard',
+    name: 'myDiscountCard',
+    meta: {
+      intercept: true
+    },
+    component: myDiscountCard
   },
   {
     path: '/addressList',

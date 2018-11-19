@@ -5,12 +5,17 @@
   bottom: 0px;
   width: 100%;
 }
-#home .content .ivu-row,
-#home .content .ivu-row .left-nav {
+#home .content .left-nav {
+  width: 220px;
+  float: left;
   height: 100%;
+  position: relative
 }
-#home .content .ivu-row .right-con {
+#home .content .right-con {
   height: 100%;
+  width: calc(100% - 220px);
+  float: left;
+  position: relative;
 }
 #home .my-tabs {
   margin-top: 10px;
@@ -28,62 +33,38 @@
 </style>
 <template>
   <div id="home">
-    <topNav select="productManage"></topNav>
+    <topNav></topNav>
     <div class="content">
-      <Row>
-        <Col span="4" class-name="left-nav">
-          <div style="overflow-y: scroll; position: absolute; top: 0px; bottom: 0px; width: 100%">
-            <leftNav1 :activeName="activeName" :openNames="openNames" @clickItem="clickItem"></leftNav1>
-          </div>
-        </Col>
-        <Col span="20" class-name="right-con">
-          <!-- <Tabs type="card" closable :animated="false" @on-click="clickTab" @on-tab-remove="removeTab" class="my-tabs" v-model="activeName">
-            <TabPane :label="item.title" class="my-tabPane" v-for="(item, index) in activeName" :key="index" :name="item.currentView">
-            </TabPane>
-          </Tabs> -->
-          <div class="subpage">
-              <router-view></router-view>
-          </div>
-        </Col>
-      </Row>
+      <div class="left-nav">
+        <div style="overflow-y: scroll; position: absolute; top: 0px; bottom: 0px; width: 100%">
+          <leftNav1></leftNav1>
+        </div>
+      </div>
+      <div class="right-con">
+        <div class="subpage">
+          <router-view></router-view>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import topNav from '../components/topNav.vue'
   import leftNav1 from '../components/leftNav1.vue'
-  import subPages from '../services/subPages.js'
-
+//  import cryptoJs from 'crypto-js'
+  //  import Loading from '../components/loading.vue'
   export default {
     name: 'home',
-    components: Object.assign({
+    components: {
       topNav,
       leftNav1
-    }, subPages),
+    },
     data () {
       return {
-        theme: 'dark',
-        activeName: sessionStorage.getItem('activeName') || '',
-        openNames: ['0', '1', '2', '3', '4', '5']
+        theme: 'dark'
       }
     },
     methods: {
-      // 主动操作
-      // 点击左侧目录
-      clickItem (val) {
-        console.log(`click menuItem: ${val.currentView}`)
-        this.openTab(val)
-      },
-      // 封装Tab标签会打开这个过程
-      openTab (val) {
-        // console.log('open-*-*-*-*-*-*-*-*-*' + val)
-        // console.log(val)
-        sessionStorage.setItem('activeName', val.currentView)
-        this.activeName = val.currentView
-        this.$router.push({path: val.currentView})
-      }
-    },
-    mounted: function () {
     }
   }
 </script>

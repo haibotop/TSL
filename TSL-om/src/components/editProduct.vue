@@ -37,10 +37,17 @@
       border: 1px solid #d3d3d3;
       position: relative;
       .close {
-        cursor: pointer;
         position: absolute;
-        top: -9px;
-        right: -9px;
+        padding: 0px;
+        width: 20px;
+        height: 20px;
+        top: -10px;
+        right: -8px;
+        font-size: 18px;
+      }
+      img {
+        display: block;
+        width: 100%;
       }
     }
     .select-p {
@@ -68,7 +75,7 @@
 </style>
 <template>
   <div id="editProduct">
-    <RadioGroup v-model="pStyle">
+    <RadioGroup v-model="pStyleC">
       <Radio label="0">
         <div class="my-radio">
           <div class="label">
@@ -103,31 +110,90 @@
 
     <div class="select-p-box">
       <div class="label">选择商品：</div>
-      <div class="selected-p" v-for="(item, index) in pList" :key="index">
-        <Icon type="close-circled" :size="18" class="close"></Icon>
+      <div class="selected-p" v-for="(item, index) in pListC" :key="index">
+        <Button type="text" icon="close-circled" class="close" @click="deleteP(index)"></Button>
+        <img :src="item.defaultPicture" alt="">
       </div>
-      <div class="select-p">
+      <div class="select-p" @click="openSelectModal">
         <Icon type="plus-circled" :size="18" color="#2d8cf0" class="plus"></Icon>
       </div>
     </div>
-
-    <Modal v-model="selecting">
-
-    </Modal>
+    <selectProduct v-model="selecting" :pNum="pList.length" @on-select="addP"></selectProduct>
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import selectProduct from './selectProduct.vue'
   export default {
     name: 'editProduct',
+    components: {
+      selectProduct
+    },
     data () {
       return {
         pStyle: '1',
-        pList: [{}],
+        pList: [],
         selecting: false
       }
     },
     props: {
-      config: [String, Array, Object]
+      config: [String, Object]
+    },
+    methods: {
+      // 打开选择商品的弹窗
+      openSelectModal () {
+        if (this.pList.length >= 4) {
+          this.$Message.warning('最多选择4个商品')
+          return
+        }
+        this.selecting = true
+      },
+      addP (pList) {
+        this.pListC = this.pList.concat(pList)
+        console.log(pList)
+      },
+      // 从pList删除商品
+      deleteP (index) {
+        console.log(index)
+        this.pListC.splice(index, 1)
+      }
+    },
+    computed: {
+      pStyleC: {
+        get () {
+          if (this.config) {
+            this.pStyle = this.config.pStyle
+            return this.pStyle
+          } else {
+            return 1
+          }
+        },
+        set (pStyle) {
+          if (pStyle !== this.pStyle) {
+            this.$emit('config', {
+              pStyle: pStyle,
+              pList: this.pList
+            })
+          }
+        }
+      },
+      pListC: {
+        get () {
+          if (this.config) {
+            this.pList = this.config.pList
+            return this.pList
+          } else {
+            return []
+          }
+        },
+        set (pList) {
+          if (JSON.stringify(this.pList) !== JSON.stringify(pList)) {
+            this.$emit('config', {
+              pStyle: this.pStyle,
+              pList: pList
+            })
+          }
+        }
+      }
     }
   }
 </script>

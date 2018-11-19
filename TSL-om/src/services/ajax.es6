@@ -3,36 +3,34 @@ import * as config from './config.es6'
 
 let interceptor = {
   defaultRequestThen: function (config) {
-    console.info('-------------- Ajax Request --------------')
-    console.log(config)
+    // console.info('-------------- Ajax Request --------------')
+    // console.log(config)
     if (interceptor.requestThen && typeof interceptor.requestThen === 'function') {
       interceptor.requestThen(config)
     }
     return config
   },
   defaultRequestCatch: function (error) {
-    console.info('-------------- Ajax Error --------------')
-    console.log(error)
+    // console.info('-------------- Ajax Error --------------')
+    // console.log(error)
     if (interceptor.requestCatch && typeof interceptor.requestCatch === 'function') {
       interceptor.requestCatch(error)
     }
     return Promise.reject(error)
   },
   defaultResponseThen: function (response) {
-    console.info('-------------- Ajax Response --------------')
-    console.log(response)
+    // console.info('-------------- Ajax Response --------------')
+    // console.log(response)
     if (interceptor.responseThen && typeof interceptor.responseThen === 'function') {
       interceptor.responseThen(response)
     }
     return response
   },
   defaultResponseCatch: function (error) {
-    // develblock:start
     console.info('-------------- Ajax Error --------------')
     if (error.response) {
       console.log(error.response)
     }
-    // develblock:end
     if (interceptor.responseCatch && typeof interceptor.responseCatch === 'function') {
       interceptor.responseCatch(error)
     }

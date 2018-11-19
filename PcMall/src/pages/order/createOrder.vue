@@ -225,10 +225,10 @@
                 <p style="color: #352665">优惠已抵扣：￥{{-Number(calcDiscountedPrice) + Number(handlePrice(couponsValue) * -1)}}</p>
               </div>
               <!--<div class="amount">合计:<span class="price">￥{{calcAmount}}</span></div>-->
-              <div id="percreateorder" v-show="orderAble" class="order-btn" @click="order">结算</div>
+              <div id="percreateorder" class="order-btn" @click="order">结算<Icon type="ios-arrow-forward" style="position: absolute;top: 33px;right: 30px;font-size: 15px;"/></div>
               <!--<div v-show="!orderAble" class="order-btn-disable">下单</div>-->
           </div>
-          <cashier v-model="cashierFlag" :price="payAmount" :orderNum="orderNum"></cashier>
+          <!--<cashier v-model="cashierFlag" :price="payAmount" :orderNum="orderNum"></cashier>-->
           <!--<useCoupons v-show="couponFlag" v-model="couponFlag" ref="useCoupons" :merchants="merchants" @selected="getSelected"></useCoupons>-->
       </div>
         <!-- <pdCoupons v-model="couponFlag"></pdCoupons> -->
@@ -248,8 +248,11 @@
           <edit-address @hideModelEdit="hideModelEdit"></edit-address>
       </Modal>
       <Modal v-model="model4" footerHide :styles="{width: '1000px',top: '200px'}">
-          <!--<edit-address @hideModelEdit="hideModelEdit"></edit-address>-->
           <useCoupons ref="useCoupons" :merchants="merchants" @selected="getSelected"></useCoupons>
+      </Modal>
+      <Modal v-model="cashierFlag" footerHide :styles="{width: '1000px',top: '200px'}">
+          <!--<useCoupons ref="useCoupons" :merchants="merchants" @selected="getSelected"></useCoupons>-->
+          <cashier v-model="cashierFlag" :price="payAmount" :orderNum="orderNum"></cashier>
       </Modal>
       </div>
     <!--</scroller>-->
@@ -380,7 +383,7 @@
         } else {
           this.orderAble = false
           setTimeout(() => {
-            this.$model.warning({
+            this.$Modal.warning({
               title: '提示',
               content: '您未选择商品或所选商品已下单',
               onShow: () => {},
@@ -598,32 +601,42 @@
             code: i.code
           })
         }
+        // this.goPay()
+        console.log('params',params)
         this.$http.patch(...orderAPI.order(params)).then(res => {
+            console.log('1211111',res.data)
           if (res.data.code === 200) {
-            this.$vux.toast.show({type: 'text', text: '下单成功', width: '200px'})
+          //   // this.$vux.toast.show({type: 'text', text: '下单成功', width: '200px'})
+          //     this.$Modal.success({
+          //         title: '提示',
+          //         content: '下单成功'
+          //     })
             this.goPay(res.data.orderItems[0])
             sessionStorage.removeItem('settlementProductItems')
           } else if (res.data.code === 2016) {
-            this.$vux.alert.show({
-              content: `商品不可用`,
-              onHide: () => {
-                this.$router.go(-1)
-              }
+            this.$Modal.warning({
+                title: '提示',
+                content: '商品不可用',
+                onOk: ()=> {
+                    this.$router.go(-1)
+                }
             })
           } else if (res.data.code === 2008) {
-            this.$vux.alert.show({
-              content: `库存不足`,
-              onHide: () => {
-                this.$router.go(-1)
-              }
-            })
+              this.$Modal.warning({
+                  title: '提示',
+                  content: '库存不足',
+                  onOk: ()=> {
+                      this.$router.go(-1)
+                  }
+              })
           } else if (res.data.code === 404) {
-            this.$vux.alert.show({
-              content: res.data.message,
-              onHide: function () {
-                this.$router.go(-1)
-              }
-            })
+              this.$Modal.warning({
+                  title: '提示',
+                  content: res.data.message,
+                  onOk: ()=> {
+                      this.$router.go(-1)
+                  }
+              })
           }
           this.orderAble = false
         })
@@ -637,25 +650,7 @@
         console.log(order, 'gopay')
         this.orderNum = order.number
         this.cashierFlag = true
-      },
-    //   // ----------踩上软键盘
-    //   onTheSoftKeyboard () {
-    //     if (tool.isIOS()) {
-    //       return
-    //     }
-    //     let h = document.body.clientHeight
-    //     setTimeout(() => {
-    //       this.scrollerHeight = h / 2 * 3
-    //       this.$refs.scroller.reset({top: h / 2})
-    //     }, 500)
-    //   },
-    //   // ----------收起软键盘
-    //   killTheSoftKeyboard () {
-    //     setTimeout(() => {
-    //       this.scrollerHeight = document.body.clientHeight - 66
-    //       this.$refs.scroller.reset({top: 0})
-    //     }, 500)
-    //   }
+      }
     },
 
     computed: {
@@ -876,6 +871,7 @@
     float: left;
     color: #fff;
     background: #352665;
+    cursor: pointer;
   }
   .order-btn-disable {
     margin-top: 10px;

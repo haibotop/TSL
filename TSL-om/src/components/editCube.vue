@@ -1,4 +1,4 @@
-<style rel="scss" rel="stylesheet/scss">
+<style lang="scss" rel="stylesheet/scss">
   #editCube .edit-block .ivu-form-item {
     margin: 10px 0px
   }
@@ -40,6 +40,7 @@
   .tips {
     color: #80848f;
     font-size: 12px;
+    margin: 0px 0px 0px 10px;
   }
 </style>
 <template>
@@ -54,7 +55,7 @@
       @mouseenter="enterBlock(item.xy)"></div>
       <div
       class="selected-block"
-      v-for="(item, index) in selectedBlock"
+      v-for="(item, index) in selectedBlock1"
       :key="index"
       :style="item.style"
       @click="editBlock(item)"
@@ -65,16 +66,25 @@
 
     <div class="edit-block" v-if="editObj !== ''">
       <Button type="text" icon="close" class="close-icon" @click="deleteBlock"></Button>
-      <Form :label-width="90">
-        <FormItem label="选择图片："><Button>选择图片</Button><span class="tips" style="margin: 0px 0px 0px 10px">建议尺寸：{{`${editObj.w * 160}X${editObj.h * 160}`}}像素</span></FormItem>
-        <FormItem label="链接地址："></FormItem>
+      <Form :label-width="90">      
+        <FormItem label="选择图片：">
+          <uploadImg1 v-model="img"></uploadImg1>
+          <!-- <span class="tips">建议尺寸：{{`${editObj.w * 160}X${editObj.h * 160}`}}像素</span> -->
+        </FormItem>
+        <selectLink v-model="linkObj"></selectLink>
       </Form>
     </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import uploadImg1 from './uploadImg1.vue'
+  import selectLink from './selectLink/selectLink.vue'
   export default {
     name: 'editCube',
+    components: {
+      uploadImg1,
+      selectLink
+    },
     data () {
       return {
         defaultBlock: [
@@ -103,7 +113,7 @@
       }
     },
     props: {
-      values: [Array, String]
+      config: [Array, String]
     },
     methods: {
       isEmpty (val) {
@@ -120,15 +130,19 @@
         }
       },
       selectBlock (block) {
+        console.log(block)
         let xy = block.xy
         if (this.isEmpty(this.clicked1)) {
+          // 第一下点击
           this.clicked1 = xy
+          // 设置起点方块临时选择的颜色样式
           for (let i of this.defaultBlock) {
             if (i.xy === xy) {
               i.style = this.overStyle
             }
           }
         } else if (!this.isEmpty(block.style)) {
+          // 第二下点击
           let x1 = parseInt(this.clicked1.split(',')[0])
           let y1 = parseInt(this.clicked1.split(',')[1])
           let x2 = parseInt(xy.split(',')[0])
@@ -145,7 +159,14 @@
             xyArr: [],
             w: x2 - x1 + 1,
             h: y2 - y1 + 1,
-            style: `top: ${(y1 - 1) * 81}px;left: ${(x1 - 1) * 81}px;width: ${(x2 - x1) ? (x2 - x1 + 1) * 81 - 1 : 80}px;height: ${(y2 - y1) ? (y2 - y1 + 1) * 81 - 1 : 80}px;background: ${this.colors[ci]}`
+            style: `top: ${(y1 - 1) * 81}px;left: ${(x1 - 1) * 81}px;width: ${(x2 - x1) ? (x2 - x1 + 1) * 81 - 1 : 80}px;height: ${(y2 - y1) ? (y2 - y1 + 1) * 81 - 1 : 80}px;background: ${this.colors[ci]}`,
+            linkObj: {
+              linkModel: '1',
+              linkName: '',
+              optionName: '',
+              link: 'javascript:'
+            },
+            img: []
           }
           for (let x = x1; x <= x2; x++) {
             for (let y = y1; y <= y2; y++) {
@@ -214,24 +235,67 @@
           }
         }
         this.selectedBlock = selectedBlock
+        this.editObj = ''
       }
     },
     computed: {
-      selectBlockStr () {
+      selectedBlockStr () {
+        console.log('变化')
         return JSON.stringify(this.selectedBlock)
+      },
+      selectedBlock1 () {
+        if (this.config) {
+          this.selectedBlock = this.config
+          return this.selectedBlock
+        } else {
+          return []
+        }
+      },
+      img: {
+        get () {
+          if (this.editObj) {
+            return this.editObj.img
+          } else {
+            return []
+          }
+        },
+        set (img) {
+          this.editObj.img = img
+          for (let i in this.selectedBlock) {
+            if (this.selectedBlock[i].id === this.editObj.id) {
+              this.selectedBlock[i] = this.editObj
+            }
+          }
+        }
+      },
+      linkObj: {
+        get () {
+          if (this.editObj) {
+            return this.editObj.linkObj
+          } else {
+            return {
+              linkModel: '1',
+              linkName: '',
+              optionName: '',
+              link: 'javascript:'
+            }
+          }
+        },
+        set (linkObj) {
+          console.log(linkObj)
+          this.editObj.linkObj = linkObj
+          for (let i in this.selectedBlock) {
+            if (this.selectedBlock[i].id === this.editObj.id) {
+              this.selectedBlock[i] = this.editObj
+            }
+          }
+        }
       }
     },
     watch: {
-      selectBlockStr (newV, oldV) {
+      selectedBlockStr (newV, oldV) {
         if (newV !== oldV) {
           this.$emit('config', JSON.parse(newV))
-        }
-      },
-      values (newV) {
-        if (newV) {
-          this.selectedBlock = newV
-        } else {
-          this.selectedBlock = []
         }
       }
     }
