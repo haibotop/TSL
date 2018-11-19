@@ -128,7 +128,7 @@
         </Row>
       </Form>
       <div  style="margin: 30px 0; text-align: center;" >
-          <Button @click="pwdModel = false" style="margin-right: 30px; width: 200px;height: 50px;font-size: 16px;">返回</Button>
+          <Button @click="pwdModal = false" style="margin-right: 30px; width: 200px;height: 50px;font-size: 16px;">返回</Button>
           <Button @click.native="updatePw" :disabled="isLoad" style="width: 200px;height: 50px;font-size: 16px; background-color: #352665;color: #fff;">确认修改</Button>
       </div>
     </Modal>
@@ -510,7 +510,7 @@ export default {
                 this.pwdItem.currPwd = ''
                 this.pwdItem.newPwd = ''
                 this.pwdItem.confNewPwd = ''
-                this.pwdModel = false
+                this.pwdModal = false
               }
             })
           } else if (res.data.code === 6013 || res.data.message === '密码不正确') {
