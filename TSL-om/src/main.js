@@ -2,16 +2,20 @@ import Vue from 'vue'
 import iView from 'iview'
 import VueRouter from 'vue-router'
 import Routers from './router'
-import store from './store/index'
+import store from './store/store'
 import Util from './libs/util'
 import * as Ajax from './services/ajax.es6'
 import App from './App'
-
+import cryptoJs from 'crypto-js'
+import * as tool from './services/tool.es6'
 // 富文本
 import VueQuillEditor from 'vue-quill-editor'
-// config custom iconfonts
-import './assets/fonts/Iconfont.font'
+import BabelPoly from 'babel-polyfill'
+// 引入工具
+Vue.prototype.$tool = tool
 
+Vue.use(BabelPoly)
+// config custom iconfonts
 Vue.use(VueRouter)
 Vue.use(iView)
 
@@ -29,15 +33,57 @@ const router = new VueRouter(RouterConfig)
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   Util.title(to.meta.title)
-  if (!from.meta['keepAlive']) {
-    // from.$destory()
-    from.meta['keepAlive'] = true
-    console.log('destory')
+  // 路由拦截
+  let sessionInfo = sessionStorage.getItem('userInfo')
+  if (to.meta.requireAuth) {
+    if (sessionInfo === null) {
+      next({ path: '/' })
+    } else if (sessionInfo.length > 0) {
+      let us = cryptoJs.AES.decrypt(sessionInfo, 'key', 'conf')
+      let qxstr = us.toString(cryptoJs.enc.Utf8)
+      let qxContent = JSON.parse(qxstr)
+      let ok = 0
+      // console.log(qxContent)
+      for (let i of qxContent.menuVoList) {
+        if (to.path === i.url || to.path === '/home/default') {
+          ok++
+        } else if ((to.path === '/home/pageTemplate' || /\/home\/setPage/.test(to.path)) && /\/home\/pageList/.test(qxContent) !== -1) {
+          ok++
+        } else if (/\/home\/vipInfo/.test(to.path) && /\/home\/buyerList/.test(qxstr)) {
+          ok++
+        } else if ((/\/home\/orderDetail/.test(to.path) || /\/home\/orderStore/.test(to.path)) && /\/home\/orderManager/.test(qxstr)) {
+          ok++
+        } else if (/\/home\/fullReductionPromotion/.test(to.path) && /\/home\/fullReductionPromotion/.test(qxstr)) {
+          ok++
+        } else if (/\/home\/discountPromotion/.test(to.path) && /\/home\/discountPromotion/.test(qxstr)) {
+          ok++
+        } else if (/\/home\/directDropPromotion/.test(to.path) && /\/home\/directDropPromotion/.test(qxstr)) {
+          ok++
+        }
+      }
+      // ----------离开发布商品页拦截
+      let config = {
+        title: '提示',
+        content: '将离开发布商品页面，是否继续',
+        onOk: () => {
+          next()
+        }
+      }
+      if (ok > 0) {
+        from.path === '/home/addProduct' ? iView.Modal.confirm(config) : next()
+      } else {
+        // from.path === '/home/addProduct' ? iView.Modal.confirm(config) : next({ path: '/home/default' })
+        from.path === '/home/addProduct' ? iView.Modal.confirm(config) : next()
+      }
+    } else {
+      next({ path: '/' })
+    }
+  } else {
+    next()
   }
-  next(vm => {
-    console.log('-----------------------------vm----------------------------')
-    console.log(vm)
-  })
+  if (to.name === 'login') {
+    sessionStorage.setItem('userInfo', '')
+  }
 })
 
 router.afterEach(() => {
@@ -51,7 +97,6 @@ Ajax.$interceptor.requestThen = function (config) {
 }
 Ajax.$interceptor.responseThen = function (response) {
   let { method, status, data } = response
-
   switch (true) {
     case /^20\d$/.test(status):
       if (data.code !== undefined) {
@@ -65,7 +110,13 @@ Ajax.$interceptor.responseThen = function (response) {
             title: `错误：${data.code}`,
             content: data.message
           })
-        } else {
+        } else if (data.code > 1000) {
+          iView.LoadingBar.error()
+          iView.Modal.warning({
+            title: `错误：${data.code}`,
+            content: data.message
+          })
+          // && [].indexOf(data.code) === -1
           // 其它一般性业务处理错误（调用Vue.$defaultServiceTip.error）
         }
       } else {
@@ -101,6 +152,15 @@ Ajax.$interceptor.responseCatch = function (error) {
       let status = error.response.status
 
       switch (true) {
+        case /^401$/.test(status):
+          iView.Message.error({
+            content: `登录超时，请重新登录!`
+          })
+          router.replace({path: '/login'})
+          break
+        case /^403$/.test(status):
+          router.replace({path: '/home/noPowerPage'})
+          break
         case /^502|504$/.test(status):
           iView.Message.error({
             content: `网络状况不佳，请重试：${status}！`,

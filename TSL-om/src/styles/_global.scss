@@ -29,3 +29,20 @@ input, textarea {
   display: inline-block;
   transform: scale(2);
 }
+.pop-loading .ivu-spin-fix {
+  z-index: 2000;
+  top: 50px;
+  bottom: 10px;
+  height: inherit;
+}
+.btn-w {
+  width: 80px;
+}
+
+// 查询重置按钮
+.searchAndResetBtn {
+  width: 100px;
+}
+.margin-right-10 {
+  margin-right: 10px;
+}

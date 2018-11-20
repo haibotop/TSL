@@ -8,32 +8,37 @@
 </style>
 <template>
   <div id="richText">
-    <quill-editor :options="editorOption" disabled :value="showText" class="editor"></quill-editor>
+    <ueditor :id="ueditor.id" :value="config" :config="ueditor.config" ref="ueditor"></ueditor>
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import { quillEditor } from 'vue-quill-editor'
+  import ueditor from './ueditor.vue'
   export default {
     name: 'richText',
     components: {
-      quillEditor
+      ueditor
     },
+    props: {config: String},
     data () {
       return {
-        editorOption: {
-          placeholder: ' ',
-          theme: 'bubble'
+        ueditor: {
+          id: `ueditor${new Date().getTime()}`,
+          config: {
+            autoHeightEnabled: true,
+            autoFloatEnabled: true,
+            initialFrameWidth: 600,
+            initialFrameHeight: 300,
+            enableAutoSave: false
+          }
         }
       }
     },
-    props: {text: String},
-    computed: {
-      showText () {
-        if (this.text) {
-          return this.text
-        } else {
-          return ''
-        }
+    mounted: function () {
+      setTimeout(() => { this.$refs.ueditor.init() }, 100)
+    },
+    methods: {
+      getText () {
+        return this.$refs.ueditor.getUEContent()
       }
     }
   }

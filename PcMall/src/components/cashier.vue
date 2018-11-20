@@ -1,16 +1,95 @@
+<style lang="scss">
+    #cashier{
+        .choosePayList{
+            padding: 0 94px;
+            width: 100%;
+            height: 340px;
+            text-align: center;
+            .payLi{
+                position: relative;
+                margin-right: 15px;
+                float: left;
+                width: 250px;
+                height: 230px;
+                border: 1px solid #DBDBDB;
+                cursor: pointer;
+                img{
+                    margin: 55px auto 20px;
+                    display: block;
+                    width: 70px;
+                    height: 70px;
+                }
+                span{
+                    font-size: 16px;
+                    color: #111;
+                }
+            }
+            .payLi:last-child{
+                margin-right: 0;
+            }
+            .payLi.checked{
+                border: 1px solid #352665;
+            }
+            .payLi.checked .activeIcon{
+                position: absolute;
+                top: 0;
+                right: 0;
+                display: inline-block;
+                border: 20px solid transparent;
+                border-top-color: #352665;
+                border-right-color: #352665;
+            }
+            .payLi.checked .activeIcon::before{
+                position: absolute;
+                top: -10px;
+                left: 4px;
+                content: '';
+                display: inline-block;
+                width: 2px;
+                height: 7px;
+                background-color: #fff;
+                transform: rotate(-45deg);
+            }
+            .payLi.checked .activeIcon::after{
+                position: absolute;
+                top: -14px;
+                left: 10px;
+                content: '';
+                display: inline-block;
+                width: 2px;
+                height: 10px;
+                background-color: #fff;
+                transform: rotate(45deg);
+            }
+        }
+        .cashier-popup{
+            .pay-btn{
+                margin: 40px auto;
+                width: 250px;
+                cursor: pointer;
+            }
+        }
+    }
+</style>
 <template>
   <div id="cashier">
-    <div v-transfer-dom>
-      <popup v-model="flag" id="cashier-popup">
-        <div class="title">收银台</div>
-        <x-icon @click="flag = false" type="ios-close-empty" size="40" class="close-icon"></x-icon>
-        <div class="price">￥{{handlePrice(price)}}</div>
-        <group title="付款方式" class="pay-group">
-          <radio v-model="payway" :options="options" class="pay-item"></radio>
-          <cell-box><div style="height:15px;"></div></cell-box>
+    <div >
+      <div v-model="flag" class="cashier-popup">
+        <p solt="header" style="margin: 10px 0 0 30px; font-size: 24px;color: #352665;text-align: left;">收银台</p>
+        <div class="price">支付金额：￥{{handlePrice(price)}}</div>
+        <div class="choosePayList" >
+            <div>
+                <div v-for="item in options" @click="payway=item.key" :class="payway==item.key?'checked':''" class="payLi">
+                    <img :src="item.icon" alt="">
+                    <span>{{item.value}}</span>
+                    <i class="activeIcon"></i>
+                </div>
+            </div>
+          <!--<radio v-model="payway" :options="options" class="pay-item"></radio>-->
+            <div style="clear: both;"></div>
           <x-button class="pay-btn" @click.native="pay">立即支付</x-button>
-        </group>
-      </popup>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -25,20 +104,8 @@
     props: { value: Boolean, price: Number, orderNum: String },
     data () {
       return {
-        payway: ''
-        // options: [{
-        //   icon: require('../assets/icons/payway/aliLogo.svg'),
-        //   key: 'alipay',
-        //   value: '支付宝支付'
-        // }, {
-        //   icon: require('../assets/icons/payway/wxLogo.svg'),
-        //   key: 'wxpay',
-        //   value: '微信支付'
-        // }, {
-        //   icon: require('../assets/icons/payway/unionLogo.svg'),
-        //   key: 'unionpay',
-        //   value: '银联支付'
-        // }]
+        payway: '',
+        // choosePayStatus: ''
       }
     },
     methods: {
@@ -51,7 +118,7 @@
           } else if (this.payway === 'unionpay') {
             this.unionPay()
           } else {
-            this.$vux.toast.show({ type: 'text', text: '请选择付款方式', width: '200px' })
+            this.$Modal.warning({ title: '提示', content: '请选择付款方式'})
           }
         }
       },
@@ -130,32 +197,32 @@
       },
       options () {
         if (this.isWeiXin()) {
+          // return [
+          //   {
+          //     icon: require('../assets/icons/payway/wxLogo.png'),
+          //     key: 'wxpay',
+          //     value: '微信支付'
+          //   },
+          //   {
+          //     icon: require('../assets/icons/payway/unionLogo.png'),
+          //     key: 'unionpay',
+          //     value: '银联支付'
+          //   }
+          // ]
+        } else {
           return [
             {
-              //icon: require('../assets/icons/payway/wxLogo.svg'),
+              icon: require('../assets/icons/payway/aliLogo.png'),
+              key: 'alipay',
+              value: '支付宝支付'
+            },
+            {
+              icon: require('../assets/icons/payway/wxLogo.png'),
               key: 'wxpay',
               value: '微信支付'
             },
             {
-              //icon: require('../assets/icons/payway/unionLogo.svg'),
-              key: 'unionpay',
-              value: '银联支付'
-            }
-          ]
-        } else {
-          return [
-            // {
-            //   icon: require('../assets/icons/payway/aliLogo.svg'),
-            //   key: 'alipay',
-            //   value: '支付宝支付'
-            // },
-            // {
-            //   icon: require('../assets/icons/payway/wxLogo.svg'),
-            //   key: 'wxpay',
-            //   value: '微信支付'
-            // },
-            {
-              //icon: require('../assets/icons/payway/unionLogo.svg'),
+              icon: require('../assets/icons/payway/unionLogo.png'),
               key: 'unionpay',
               value: '银联支付'
             }
@@ -166,7 +233,7 @@
   }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-#cashier-popup {
+.cashier-popup {
   overflow: hidden;
   background-color: #FFF;
   .title {
@@ -182,11 +249,10 @@
     fill: #b1b1b1;
   }
   .price {
-    line-height: 20px;
-    text-align: center;
-    //color: $tsl-color;
+    margin:40px 0 30px 30px;
     font-size: 18px;
     font-weight: 400;
+    color: #352665;
   }
   .pay-item {
     background-color: #FFF;
@@ -197,19 +263,19 @@
     line-height: 45px;
     border-radius: 0px;
     color: rgb(255, 255, 255);
-    //background-color: $tsl-color;
+    background-color: #352665;
   }
 }
 </style>
 <style rel="stylesheet/scss" lang="scss">
-.pay-group {
-  .weui-cells__title {
-    position: relative;
-    margin: 0px;
-    line-height: 24px;
-    font-size: 12px;
-    color: #000;
-  }
+/*.pay-group {*/
+  /*.weui-cells__title {*/
+    /*position: relative;*/
+    /*margin: 0px;*/
+    /*line-height: 24px;*/
+    /*font-size: 12px;*/
+    /*color: #000;*/
+  /*}*/
   // .weui-cells__title:before {
   //   content: " ";
   //   position: absolute;
@@ -227,6 +293,6 @@
   // .weui-cell:before {
   //   left: 0px;
   // }
-}
+/*}*/
 </style>
 

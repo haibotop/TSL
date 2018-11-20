@@ -1,3 +1,10 @@
+<style lang="scss">
+  .memberBox{
+    .weui-cells:after{
+      border: none;
+    }
+  }
+</style>
 <template>
   <div id="createOrder">
     <x-header v-show="!couponFlag" :left-options="{backText: ''}" title="填写订单"></x-header>
@@ -77,6 +84,27 @@
               </span>
             </div>
           </cell-box>
+          <cell-box is-link class="coupon" title="折扣码" @click.native="openCoupon">
+            <div class="account" >
+              <span class="title">
+                <span class="dis-coupon">折扣码</span>
+                <span class="discount" v-for="item in selected" :key="item.code">{{item.rules === 1 ? `满${item.fullSubtract / 100}减${item.subtract / 100}` : `直减${item.subtract / 100}`}}</span>
+              </span>
+            </div>
+          </cell-box>
+        </group>
+        <group v-if="merchants.length > 0" class="memberBox" @click.native="memberStatus = true">
+          <cell-box title="员工编号">
+            <div class="account" >
+              <span class="title">
+                <span class="dis-coupon">员工编号</span>
+                <input type="text" class="memberNum" v-model="memberNumber" v-if="memberStatus">
+              </span>
+            </div>
+          </cell-box>
+          <cell-box class="memberExplain" v-if="memberStatus">
+            <span>尊敬的谢瑞麟会员，请输入为您服务的员工编号，感谢您对我们服务的支持！</span>
+          </cell-box>
         </group>
         <group v-if="merchants.length > 0">
           <cell-box>
@@ -132,7 +160,9 @@
         orderAble: true,
         memberRemark: '',
         selected: [], // 已选优惠券
-        sum: 0
+        sum: 0,
+        memberNumber: '', // 员工编号
+        memberStatus: false
       }
     },
     mounted: function () {
@@ -559,6 +589,11 @@
 .coupon {
   background: #fff;
 }
+.memberExplain{
+  background-color: #eee;
+  font-size: 14px;
+  color: #a3a3a3;
+}
 .account {
   width: 100%;
   text-align: right;
@@ -581,6 +616,13 @@
   .price {
     font-size: 16px;
     color: red;
+  }
+  .memberNum{
+    width: 75%;
+    height: 26px;
+    background: #fafafa;
+    outline: none;
+    border: 1px solid #979797;
   }
 }
 .sub-bar {

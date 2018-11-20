@@ -6,23 +6,29 @@
 <template>
   <div id="editEmptySeat">
     空白高度：
-    <slider v-model="height"></slider>
-    <InputNumber :min="0" :max="100" v-model="height"></InputNumber >
-    </Row>
-    
+    <slider v-model="height" show-input :min="1" :max="100"></slider>
   </div>
 </template>
 <script type="text/ecmascript-6">
   export default {
     name: 'editEmptySeat',
-    data () {
-      return {
-        height: 30
-      }
+    props: {
+      value: [String, Number]
     },
-    watch: {
-      height (newV) {
-        this.$emit('change', newV)
+    computed: {
+      height: {
+        get () {
+          if (this.value) {
+            return this.value
+          } else {
+            this.height = 30
+            return 30
+          }
+        },
+        set (val) {
+          this.$emit('change', val)
+          this.$emit('input', val)
+        }
       }
     }
   }

@@ -24,6 +24,10 @@
         <div slot="icon"><img src="../../assets/icons/myDiscount.svg"  style="fill:#352665;margin:0px 5px -6px 0px;width:27px;"></div>
         <div slot="title">我的优惠券<badge v-show="existCoupons" style="margin:-10px 0 0 1px;"></badge></div>
       </cell>
+      <cell is-link link="/myDiscountCard">
+        <div slot="icon"><img src="../../assets/icons/icon_coupon_normal.png"  style="fill:#352665;margin:0px 5px -6px 0px;width:27px;"></div>
+        <div slot="title">我的折扣码<badge v-show="existCoupons" style="margin:-10px 0 0 1px;"></badge></div>
+      </cell>
       <cell title="我的收藏" is-link link="/myCollection">
         <div slot="icon"><img src="../../assets/icons/mycollect.svg"  style="fill:#352665;margin:0px 5px -6px 0px;width:27px;"></div>
       </cell>
@@ -133,7 +137,7 @@
 <style>
   #discount .weui-cells.vux-no-group-title {
     overflow: scroll;
-  }  
+  }
 </style>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
