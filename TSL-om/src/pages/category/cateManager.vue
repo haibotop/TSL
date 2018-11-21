@@ -1,4 +1,7 @@
 <style scoped>
+#cateManager {
+  position: relative;
+}
 .my-breadcrumb {
   margin: 0px 10px;
 }
@@ -6,12 +9,22 @@
   margin: 10px;
   border: 1px solid #dddee1;
   padding: 0px 10px;
+  width: 200px;
+  position: absolute;
+  top: 20px;
+  left: 0px;
+}
+.my-content {
+  width: 900px;
+  position: absolute;
+  top: 20px;
+  left: 220px;
 }
 .add-btn {
   margin: 10px 0px;
 }
 .my-table {
-  margin-right: 10px;
+  margin: 0px 10px 10px 0px;
 }
 .my-label {
   width: 20%;
@@ -36,22 +49,18 @@
       <BreadcrumbItem>运营类目管理</BreadcrumbItem>
       <BreadcrumbItem>类目管理</BreadcrumbItem>
     </Breadcrumb>
-    <Row>
-      <Col span="4">
-        <Tree :data="cateData" class="my-tree" @on-select-change="selectTree" ref="tree1"></Tree>
-      </Col>
-      <Col span="20">
-        <Button class="add-btn" @click="edit" :disabled="addCateDisable">新增</Button>
-        <Table :columns="columns1" :data="data1" class="my-table" v-if="currCate.length"></Table>
-      </Col>
-    </Row>
+    <Tree :data="cateData" class="my-tree" @on-select-change="selectTree" ref="tree1"></Tree>
+    <div class="my-content" v-show="currCate.length !== 0">
+      <Button class="add-btn" @click="edit">新增</Button>
+      <Table :columns="columns1" :data="data1" class="my-table" v-if="currCate.length"></Table>
+    </div>
     <Modal v-model="editing" :title="modalTitle" width="700">
       <Form :label-width="100" :model="editObj" :rules="ruleValidate1" ref="form1">
         <FormItem label="类目名称：" prop="name">
           <Input v-model="editObj.name"></Input>
         </FormItem>
-        <FormItem label="排序号：" prop="code" v-show="editObj.id.length === 0">
-          <InputNumber  v-model="editObj.code" :min="1"></InputNumber >
+        <FormItem label="排序号：" prop="code">
+          <Input  ref="code" v-model.trim="code" :maxlength="4" style="width: 80px;"></Input>
         </FormItem>
       </Form>
       <div slot="footer">
@@ -63,6 +72,7 @@
 </template>
 <script type="text/ecmascript-6">
   import * as cateAPI from '../../services/operationCate.es6'
+  import * as pmAPI from '../../services/productManager.es6'
   export default {
     name: 'cateManager',
     data () {
@@ -78,6 +88,7 @@
           }
         ],
         // table
+        blurTimeout: '',
         columns1: [
           {title: '类目名称', key: 'name'},
           {
@@ -102,13 +113,49 @@
                     props: {type: 'checkmark-circled'}
                   }),
                   h('Input', {
-                    props: {value: params.row.code, size: 'small'},
+                    props: {value: params.row.code, size: 'small', maxlength: 4},
+                    style: {width: '60px', 'margin-left': '2px'},
                     on: {
                       'on-change': (val) => {
-                        params.row.tempcode = val.srcElement.value
+                        params.row.tempcode = val.target.value.replace(/[' ']/g, '')
+                        params.row.changed = true
                       },
                       'on-blur': () => {
-                        if (!params.row.tempcode) {
+                        this.blurTimeout = setTimeout(() => {
+                          if (this.data1[params.index].codeEditing === false) {
+                            return
+                          }
+                          if (!params.row.changed) {
+                            this.data1[params.index].codeEditing = false
+                          } else if (params.row.tempcode.length === 0) {
+                            this.$Message.warning({content: '请输入排序数值'})
+                          } else if (!/^\d+$/.test(params.row.tempcode)) {
+                            this.$Message.warning({content: '排序值应为数字'})
+                          } else {
+                            let params1 = {
+                              id: params.row.id,
+                              name: params.row.name,
+                              level: params.row.level,
+                              code: params.row.tempcode
+                            }
+                            if (params.row.parentId) {
+                              params1.parentId = params.row.parentId
+                            }
+                            this.editCate(params1, (response) => {
+                              if (response.data.code === 200) {
+                                this.data1[params.index].code = params.row.tempcode
+                                this.data1[params.index].codeEditing = false
+                                this.$Message.success({content: '操作成功'})
+                                this.afterOperate()
+                              } else {
+                                this.$Message.success({content: '操作失败'})
+                              }
+                            })
+                          }
+                        }, 300)
+                      },
+                      'on-enter': () => {
+                        if (!params.row.changed) {
                           this.data1[params.index].codeEditing = false
                         } else if (params.row.tempcode.length === 0) {
                           this.$Message.warning({content: '请输入排序数值'})
@@ -129,14 +176,14 @@
                               this.data1[params.index].code = params.row.tempcode
                               this.data1[params.index].codeEditing = false
                               this.$Message.success({content: '操作成功'})
+                              this.afterOperate()
                             } else {
                               this.$Message.success({content: '操作失败'})
                             }
                           })
                         }
                       }
-                    },
-                    style: {width: '40px', 'margin-left': '2px'}
+                    }
                   })
                 ])
               } else {
@@ -160,64 +207,110 @@
           {
             title: '操作',
             render: (h, params) => {
-              return h('div', [
+              let om = [
                 h('Button', {
-                  props: {type: 'text', size: 'small'},
-                  on: {click: () => {
-                    this.edit(params)
-                  }}
+                  props: {
+                    type: 'text',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      this.edit(params)
+                    }
+                  }
                 }, '修改'),
-                h('Button', {
-                  props: {type: 'text', size: 'small'},
-                  on: {click: () => {
-                    let config = {
-                      title: '删除',
-                      content: '确定删除类目？',
-                      onOk: () => {
-                        this.$http.delete(cateAPI.deleteCate(params.row.id)).then(response => {
-                          if (response.data.code === 200) {
-                            this.$Message.success('删除成功')
-                            this.afterOperate()
-                          } else {
-                            this.$Message.error('删除失败')
-                          }
-                        })
-                      }
-                    }
-                    if (params.row.status === 1) {
-                      this.$Message.warning('该类目正在使用无法删除')
-                    } else {
-                      this.$Modal.confirm(config)
-                    }
-                  }}
-                }, '删除'),
                 h('Button', {
                   props: {type: 'text', size: 'small'},
                   on: {
                     click: () => {
                       if (parseInt(params.row.status) === 1) {
-                        this.$http.put(cateAPI.offCate(params.row.id)).then(response => {
-                          if (response.data.code === 200) {
-                            this.data1[params.index].status = 2
-                            this.$Message.success({content: '操作成功'})
-                          } else {
-                            this.$Message.error({content: '操作失败'})
-                          }
-                        })
+                        this.$http.put(cateAPI.offCate(params.row.id))
+                            .then(response => {
+                              if (response.data.code === 200) {
+                                this.data1[params.index].status = 2
+                                this.$Message.success({content: '操作成功'})
+                                this.afterOperate()
+                              } else {
+                                this.$Message.error({content: '操作失败'})
+                              }
+                            })
                       } else if (parseInt(params.row.status) === 2) {
-                        this.$http.post(cateAPI.onCate(params.row.id)).then(response => {
-                          if (response.data.code === 200) {
-                            this.data1[params.index].status = 1
-                            this.$Message.success({content: '操作成功'})
-                          } else {
-                            this.$Message.error({content: '操作失败'})
-                          }
-                        })
+                        this.$http.post(cateAPI.onCate(params.row.id))
+                            .then(response => {
+                              if (response.data.code === 200) {
+                                this.data1[params.index].status = 1
+                                this.$Message.success({content: '操作成功'})
+                                this.afterOperate()
+                              } else {
+                                this.$Message.error({content: '操作失败'})
+                              }
+                            })
                       }
                     }
                   }
                 }, parseInt(params.row.status) === 1 ? '停用' : '启用')
-              ])
+              ]
+              let delCate = [
+                h('div', [
+                  h('Button', {
+                    props: {type: 'text', size: 'small'},
+                    on: {click: () => {
+                      if (params.row.status === 1) {
+                        this.$Message.warning('该类目正在使用,无法删除')
+                      } else {
+                        this.deleteCate(params)
+                      }
+                    }}
+                  }, '删除')
+                ])]
+              om.push(delCate)
+              return h('div', {}, om)
+//              return h('div', [
+//                h('Button', {
+//                  props: {type: 'text', size: 'small'},
+//                  on: {click: () => {
+//                    this.edit(params)
+//                  }}
+//                }, '修改'),
+//                h('Button', {
+//                  props: {type: 'text', size: 'small'},
+//                  on: {click: () => {
+//                    if (params.row.status === 1) {
+//                      this.$Message.warning('该类目正在使用,无法删除')
+//                    } else {
+//                      this.deleteCate(params)
+//                    }
+//                  }}
+//                }, '删除'),
+//                h('Button', {
+//                  props: {type: 'text', size: 'small'},
+//                  on: {
+//                    click: () => {
+//                      if (parseInt(params.row.status) === 1) {
+//                        this.$http.put(cateAPI.offCate(params.row.id)).then(response => {
+//                          if (response.data.code === 200) {
+//                            this.data1[params.index].status = 2
+//                            this.$Message.success({content: '操作成功'})
+//                            this.afterOperate()
+//                          } else {
+//                            this.$Message.error({content: '操作失败'})
+//                          }
+//                        })
+//                      } else if (parseInt(params.row.status) === 2) {
+//                        this.$http.post(cateAPI.onCate(params.row.id)).then(response => {
+//                          if (response.data.code === 200) {
+//                            this.data1[params.index].status = 1
+//                            this.$Message.success({content: '操作成功'})
+//                            this.afterOperate()
+//                          } else {
+//                            this.$Message.error({content: '操作失败'})
+//                          }
+//                        })
+//                      }
+//                    }
+//                  }
+//                }, parseInt(params.row.status) === 1 ? '停用' : '启用')
+//              ])
             }
           }
         ],
@@ -258,6 +351,10 @@
         })
       },
       handleToCateData (val, callback) {
+        let expands = []
+        for (let i of this.cateData[0].children) {
+          if (i.expand) { expands.push(i.id) }
+        }
         let arr = JSON.parse(JSON.stringify(val))
         let operateCategory = []
         for (let i in arr) {
@@ -267,7 +364,9 @@
             level: arr[i].level,
             status: arr[i].status,
             code: arr[i].code,
-            children: []
+            children: [],
+            expand: expands.indexOf(arr[i].id) !== -1,
+            selected: (this.currCate[0] || {id: ''}).id === arr[i].id
           }
           for (let j in arr[i].secondCategory) {
             let cate2 = {
@@ -278,7 +377,8 @@
               status: arr[i].secondCategory[j].status,
               code: arr[i].secondCategory[j].code,
               children: [],
-              children1: []
+              children1: [],
+              selected: (this.currCate[0] || {id: ''}).id === arr[i].secondCategory[j].id
             }
             for (let k in arr[i].secondCategory[j].threeCategory) {
               let cate3 = {
@@ -300,12 +400,14 @@
           callback()
         }
       },
+      // 操作后刷新数据
       afterOperate () {
         this.getCate((response) => {
           this.handleToCateData(response.data.operateCategory, () => {
-            let newCate = JSON.parse(JSON.stringify(this.currCate))
+            // let newCate = JSON.parse(JSON.stringify(this.currCate))
+            let newCate = []
             if (this.currCate[0].level === 0) {
-              newCate = JSON.parse(JSON.stringify(this.cateData[0]))
+              newCate[0] = JSON.parse(JSON.stringify(this.cateData[0]))
             } else if (this.currCate[0].level === 1) {
               for (let i of this.cateData[0].children) {
                 if (this.currCate[0].id === i.id) {
@@ -326,10 +428,9 @@
         })
       },
       selectTree (val) {
-        console.log(val)
+//        console.log(val)
         if (val.length) {
-          this.currCate = val
-          // 手动高亮
+          // 设置表格数据
           let arr = []
           if (val[0].children) {
             if (val[0].level === 2) {
@@ -343,11 +444,13 @@
             delete arr[i].title
             arr[i].codeEditing = false
           }
+          this.currCate = val
           this.data1 = arr
         } else {
           this.currCate = []
           this.data1 = []
         }
+        console.log(this.data1)
       },
       edit (params) {
         if (params.row) {
@@ -369,6 +472,13 @@
         this.$refs.form1.validate((valid) => {
           console.log(valid)
           if (valid) {
+            for (let i of this.data1) {
+              if (i.name === this.editObj.name && i.id !== this.editObj.id) {
+                this.loading = false
+                this.$Message.warning({content: '名称已存在'})
+                return
+              }
+            }
             if (this.isEmpty(this.editObj.id)) {
               console.log('addCate')
               this.addCate((response) => {
@@ -434,6 +544,115 @@
             }
           }
         })
+      },
+      deleteCate (params) {
+        this.$Modal.remove()
+        console.log(params)
+        if (params.row.level === 1) {
+          if (params.row.children.length > 0) {
+            console.log('1')
+            this.$Modal.warning({title: '提示', content: '请确保该类目下没有子类目、通用参数、SKU属性、商品后重试'})
+            return
+          }
+        }
+        if (params.row.level === 2) {
+          if (params.row.children1.length > 0) {
+            console.log('2')
+            this.$Modal.warning({title: '提示', content: '请确保该类目下没有子类目、通用参数、SKU属性、商品后重试'})
+            return
+          }
+        }
+        this.getCommonAttr(params.row.id, (response) => {
+          if (response.data.catalogAttr.length > 0) {
+            console.log('3')
+            this.$Modal.warning({title: '提示', content: '请确保该类目下没有子类目、通用参数、SKU属性、商品后重试'})
+          } else {
+            this.getSkuAttr(params.row.id, (response) => {
+              if (response.data.catalogAttr.length > 1) {
+                console.log('4')
+                this.$Modal.warning({title: '提示', content: '请确保该类目下没有子类目、通用参数、SKU属性、商品后重试'})
+                return
+              } else if (response.data.catalogAttr.length === 1) {
+                if (response.data.catalogAttr[0].name === '颜色' && response.data.catalogAttr[0].values.length !== 1 && response.data.catalogAttr[0].values[0] !== '默认') {
+                  console.log('5')
+                  this.$Modal.warning({title: '提示', content: '请确保该类目下没有子类目、通用参数、SKU属性、商品后重试'})
+                  return
+                }
+              }
+              this.getForSell(1, 1, {categoryId: params.row.id}, (response) => {
+                if (response.data.pageInfo.list.length > 0) {
+                  console.log('6')
+                  this.$Modal.warning({title: '提示', content: '请确保该类目下没有子类目、通用参数、SKU属性、商品后重试'})
+                } else {
+                  this.getOnSell(1, 1, {categoryId: params.row.id}, (response) => {
+                    if (response.data.pageInfo.list.length > 0) {
+                      console.log('7')
+                      this.$Modal.warning({title: '提示', content: '请确保该类目下没有子类目、通用参数、SKU属性、商品后重试'})
+                    } else {
+                      this.$Modal.confirm({
+                        title: '删除',
+                        content: '是否删除类目',
+                        onOk: () => {
+                          this.deleteCate1(params.row.id, (response) => {
+                            if (response.data.code === 200) {
+                              this.$Message.success('删除成功')
+                              this.afterOperate()
+                            } else {
+                              this.$Message.error('删除失败')
+                            }
+                          })
+                        }
+                      })
+                    }
+                  })
+                }
+              })
+            })
+          }
+        })
+      },
+      getCommonAttr (id, callback) {
+        this.$http.get(cateAPI.getCommonAttr(id)).then(response => {
+          if (typeof callback === 'function') {
+            callback(response)
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+      },
+      getSkuAttr (id, callback) {
+        this.$http.get(cateAPI.getSkuAttr(id)).then(response => {
+          if (typeof callback === 'function') {
+            callback(response)
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+      },
+      getForSell (pageNum, pageSize, params, callback) {
+        this.$http.post(...pmAPI.forSell(pageNum, pageSize, params)).then(response => {
+          if (typeof callback === 'function') {
+            callback(response)
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+      },
+      getOnSell (pageNum, pageSize, params, callback) {
+        this.$http.post(...pmAPI.onsell(pageNum, pageSize, params)).then(response => {
+          if (typeof callback === 'function') {
+            callback(response)
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+      },
+      deleteCate1 (id, callback) {
+        this.$http.delete(cateAPI.deleteCate(id)).then(response => {
+          if (typeof callback === 'function') {
+            callback(response)
+          }
+        })
       }
     },
     computed: {
@@ -445,16 +664,18 @@
           return '编辑类目'
         }
       },
-      // 新增类目的按钮FLAG
-      addCateDisable () {
-        if (this.currCate.length) {
-          if (this.currCate[0].level >= 0 && this.currCate[0].level < 3) {
-            return false
-          } else {
-            return true
+      // ----------排序号-弹窗
+      code: {
+        get () {
+          return this.editObj.code
+        },
+        set (code) {
+          this.editObj.code = code.replace(/[^0-9]/g, '') || 1
+          if (this.$refs.code) {
+            setTimeout(() => {
+              this.$refs.code.currentValue = code.replace(/[^0-9]/g, '') || 1
+            }, 60)
           }
-        } else {
-          return true
         }
       }
     },

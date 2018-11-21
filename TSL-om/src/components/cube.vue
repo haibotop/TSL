@@ -1,16 +1,26 @@
 <style lang="scss" rel="stylesheet/scss" scoped>
  #cube {
    width: 100%;
+   min-height: 30px;
    position: relative;
    .block {
+     display: block;
      position: absolute;
+     overflow: hidden;
+     img {
+       display: block;
+       width: 100%;
+       height: 100%;
+     }
    }
  }
 </style>
 <template>
   <div id="cube">
     <div class="blocks" :style="`height:${boxHeight}px;width:100%;`">
-      <div v-for="(block, index) in blocks" :key="index" :style="block.style" class="block"></div>
+      <a :href="imgs[index].link" v-for="(block, index) in blocks" :key="index" :style="block.style" class="block">
+        <img :src="imgs[index].img" alt="">
+      </a>
     </div>
   </div>
 </template>
@@ -119,13 +129,28 @@
             let top = (parseInt(i.xyArr[0].split(',')[1]) - 1) * this.clientWidth / 4
             let left = (parseInt(i.xyArr[0].split(',')[0]) - 1) * this.clientWidth / 4
             let block = {
-              style: `width:${width - 2}px;height:${height - 2}px;left:${left}px;top:${top}px;border: 1px solid #000`
+              style: `width:${width - 2}px;height:${height - 2}px;left:${left}px;top:${top}px;`
             }
             blocks.push(block)
           }
           return blocks
         } else {
           return ''
+        }
+      },
+      imgs () {
+        if (this.config) {
+          let imgs = []
+          for (let i of this.config) {
+            let imgObj = {
+              img: i.img.length > 0 ? i.img[0].url : '',
+              link: i.linkObj.link
+            }
+            imgs.push(imgObj)
+          }
+          return imgs
+        } else {
+          return []
         }
       },
       boxHeight () {

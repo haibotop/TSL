@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="95px" height="116px" viewBox="0 0 95 116" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48 (47235) - http://www.bohemiancoding.com/sketch -->
+    <title>购物袋</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="购物袋为空" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-140.000000, -211.000000)">
+        <g id="购物袋" transform="translate(140.000000, 212.000000)">
+            <path d="M0.500049081,114.5 L94.4999509,114.5 C94.4873332,58.7530589 92.3632055,28.9299961 88.3713638,26.0084092 L88.2852209,25.9281923 C82.1515926,18.6906026 12.8484074,18.6906026 6.71477912,25.9281923 L6.6286362,26.0084092 C2.63679448,28.9299961 0.512666766,58.7530589 0.500056476,114.5 Z" id="Rectangle-2" stroke="#C8C8C8"></path>
+            <circle id="Oval-3" fill="#C8C8C8" cx="27" cy="45" r="5"></circle>
+            <circle id="Oval-3" fill="#C8C8C8" cx="68" cy="45" r="5"></circle>
+            <path d="M27.9003128,46 C24.3899346,15.3333333 31.1449514,2.28291351e-15 48.1653633,0 C65.1857752,0 71.7778403,15.3333333 67.9415588,46" id="Path-4" stroke="#C8C8C8"></path>
+        </g>
+    </g>
+</svg>

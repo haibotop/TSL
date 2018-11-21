@@ -141,7 +141,7 @@
                     props: {value: params.row.sortNo, size: 'small'},
                     on: {
                       'on-change': (val) => {
-                        params.row.tempSortNo = val.srcElement.value
+                        params.row.tempSortNo = val.target.value
                         console.log(params.row.tempSortNo)
                       },
                       'on-blur': () => {

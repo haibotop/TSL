@@ -1,4 +1,7 @@
-<style scoped>
+<style rel="stylesheet/scss" lang="scss" scoped>
+  #cateSKUset {
+    position: relative;
+  }
   .my-breadcrumb {
     margin: 0px 10px;
   }
@@ -6,9 +9,19 @@
     margin: 10px;
     border: 1px solid #dddee1;
     padding: 0px 10px;
+    width: 200px;
+    position: absolute;
+    top: 20px;
+    left: 0px;
+  }
+  .my-content {
+    width: 900px;
+    position: absolute;
+    top: 20px;
+    left: 220px;
   }
   .color-bar {
-    margin: 10px;
+    margin: 10px 0px;
     line-height: 32px;
   }
   .color-checker>span.ivu-checkbox {
@@ -31,7 +44,7 @@
   .sku-Model .skuValues {
     border: 1px solid #CCC;
   }
-  .sku-Modal .skuValues>div {
+  .sku-Modal .skuValues .tips {
     height: 20px;
     background-color: #CCC;
     text-indent: 5%;
@@ -55,30 +68,28 @@
       <BreadcrumbItem>运营类目管理</BreadcrumbItem>
       <BreadcrumbItem>类目SKU属性设置</BreadcrumbItem>
     </Breadcrumb>
-    <Row>
-      <Col span="4">
-      <Tree :data="cateData" class="my-tree" @on-select-change="selectTree"></Tree>
-      </Col>
-      <Col span="20" v-if="currCate.length !== 0">
+    <Tree :data="cateData" class="my-tree" @on-select-change="selectTree"></Tree>
+    <div class="my-content" v-if="currCate.length !== 0">
       <div class="color-bar">
-        <Checkbox v-model="colorObj.isShow" :true-value="1" :false-value="0" class="color-checker" @on-change="showColor">是否支持颜色属性</Checkbox>
-        <a href="javascript:" @click="editing3 = true">颜色设置</a>
+        <Checkbox v-if="currCate[0].level !== 3" disabled class="color-checker">是否支持颜色属性</Checkbox>
+        <Checkbox v-else v-model="colorObj.isShow" :disabled="!check" :true-value="1" :false-value="0" class="color-checker" @on-change="showColor">是否支持颜色属性</Checkbox>
+        <a href="javascript:" @click="openColorModal" :disabled="currCate[0].level !== 3">颜色设置</a>
+        <span v-if="currCate[0].level !== 3" style="margin: 0px 0px 0px 10px;color: #bbbec4;"><Icon type="information-circled"></Icon>请在三级目录设置属性</span>
       </div>
-      <Button type="primary" @click="editSku">添加自定义属性</Button>
+      <Button type="primary" @click="editSku" :disabled="currCate[0].level !== 3">添加自定义属性</Button>
       <Table :columns="column1" :data="data1" class="my-table"></Table>
-      </Col>
-    </Row>
+    </div>
 
     <Modal v-model="editing2" :title="modalTitle" width="700" class="sku-Modal">
       <Form :model="editObj" :rules="rules1" ref="form1">
         <FormItem label="属性名称：" prop="name" :label-width="100">
-          <Input v-model.trim="editObj.name"></Input>
+          <Input v-model.trim="editObj.name" :maxlength="20" :disabled="banEditSkuName"></Input>
         </FormItem>
       </Form>
       <div class="skuValues">
-        <div>编辑参数值</div>
+        <div class="tips">编辑参数值</div>
         <Button type="primary" size="small" class="add-btn" @click="addValue">添加</Button>
-        <Table :columns="column2" :data="editObj.values" height="200" class="skuValues-table"></Table>
+        <Table :columns="column2" :data="editObj.values" height="200"></Table>
       </div>
       <div slot="footer">
         <Button type="primary" :loading="loading2" @click="editOk">确定</Button>
@@ -87,19 +98,20 @@
     </Modal>
 
     <Modal v-model="editing3" title="颜色管理" width="700" class="color-Modal">
-      <label for="color">颜色：</label><Input size="small" class="my-input" v-model="colorName_"></Input>
+      <label for="color">颜色：</label><Input size="small" class="my-input" v-model.trim="colorName_"></Input>
       <Button type="primary" size="small" @click="searchColor">查询</Button>
       <Button type="primary" size="small" @click="cancelSearch">重置</Button>
       <div><Button type="primary" size="small" class="add-color-btn" @click="addColor">添加颜色</Button></div>
       <Table height="300" :columns="column3" :data="colorObj.values"></Table>
       <div slot="footer">
-        <Button type="primary" @click="saveColor" :loading="loading3">保存</Button>
+        <Button type="primary" @click="saveColor" :loading="loading3">保存编辑</Button>
       </div>
     </Modal>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import * as cateAPI from '../../services/operationCate.es6'
+  import * as pmAPI from '../../services/productManager.es6'
   let last
   export default {
     name: 'cateSKUset',
@@ -107,6 +119,7 @@
       return {
         cateData: [],
         currCate: [],
+        check: false, // 判断类目下有无子类目及商品 false:有 true:无
         // sku属性表
         column1: [
           {title: '属性名称', key: 'name'},
@@ -139,14 +152,14 @@
             render: (h, params) => {
               return h('div', {}, [
                 h('Button', {
-                  props: {type: 'primary', size: 'small'},
+                  props: {type: 'primary', size: 'small', disabled: this.currCate[0].level !== 3 && this.currCate[0].children.length > 0},
                   style: {'margin-right': '10px'},
                   on: {click: () => {
                     this.editSku(params)
                   }}
                 }, '修改'),
                 h('Button', {
-                  props: {type: 'error', size: 'small'},
+                  props: {type: 'error', size: 'small', disabled: this.currCate[0].level !== 3 && this.currCate[0].children.length > 0},
                   on: {click: () => {
                     let config = {
                       title: '删除属性',
@@ -162,7 +175,11 @@
                         })
                       }
                     }
-                    this.$Modal.confirm(config)
+                    if (!this.check) {
+                      this.$Message.warning('类目下有商品，不可删除')
+                    } else {
+                      this.$Modal.confirm(config)
+                    }
                   }}
                 }, '删除')
               ])
@@ -195,10 +212,10 @@
               if (this.editObj.values[params.index].editing) {
                 return h('Input', {
                   style: {width: '60%'},
-                  props: {value: params.row.name, size: 'small'},
+                  props: {value: params.row.name, size: 'small', maxlength: 10},
                   on: {
                     'on-change': (val) => {
-                      params.row.tempName = val.srcElement.value.replace(/(^\s*)|(\s*$)/g, '')
+                      params.row.tempName = val.target.value.replace(/(^\s*)|(\s*$)/g, '')
                     },
                     'on-focus': () => {
                       params.row.tempName = this.editObj.values[params.index].name
@@ -206,24 +223,7 @@
                     'on-blur': (val) => {
                       console.log(params.row.tempName)
                       if (params.row.tempName) {
-                        if (!this.isEmpty(this.editObj.id) && !params.row.id) {
-                          this.loading2 = true
-                          let params1 = {productCategoryAttrId: this.editObj.id, name: params.row.tempName}
-                          this.addAttrValue(params1, (response) => {
-                            if (response.data.code === 200) {
-                              this.afterSkuAttrValueChange()
-                              this.loading2 = false
-                            } else {
-                              this.$Message.error(`新增属性值 '${params.row.tempName}' 失败`)
-                              this.loading2 = false
-                              val.srcElement.focus()
-                            }
-                          })
-                        } else {
-                          this.editObj.values[params.index].name = params.row.tempName
-                          this.editObj.values[params.index].editing = false
-                          this.editObj.values = JSON.parse(JSON.stringify(this.editObj.values))
-                        }
+                        this.editObj.values[params.index].name = params.row.tempName.replace(/[: | ,]/g, '')
                       }
                     }
                   }
@@ -231,8 +231,12 @@
               } else {
                 return h('div', {
                   on: {dblclick: () => {
-                    this.editObj.values[params.index].editing = true
-                    this.editObj.values = JSON.parse(JSON.stringify(this.editObj.values))
+                    if (!this.check && params.row.id) {
+                      this.$Message.warning('类目下有商品，不可修改旧属性')
+                    } else {
+                      this.editObj.values[params.index].editing = true
+                      this.editObj.values = JSON.parse(JSON.stringify(this.editObj.values))
+                    }
                   }}
                 }, params.row.name)
               }
@@ -262,7 +266,12 @@
                       }
                     }
                   }
-                  this.$Modal.confirm(config)
+                  if (!this.check && params.row.id) {
+                    this.$Message.warning('类目下有商品，不可删除')
+                    return
+                  } else {
+                    this.$Modal.confirm(config)
+                  }
                 }}
               }, '删除')
             }
@@ -277,33 +286,21 @@
             render: (h, params) => {
               return h('Input', {
                 style: {width: '100px'},
-                props: {size: 'small', value: params.row.name},
+                props: {
+                  size: 'small',
+                  disabled: !this.check && params.row.id !== '',
+                  value: params.row.name
+                },
                 on: {
                   'on-change': (val) => {
                     clearTimeout(last)
-                    params.row.tempValue = val.srcElement.value.replace(/(^\s*)|(\s*$)/g, '')
+                    params.row.tempValue = val.target.value.replace(/(^\s*)|(\s*$)/g, '')
                   },
                   'on-focus': () => {
                     params.row.tempValue = params.row.name
                   },
                   'on-blur': (val) => {
-                    if (!params.row.id) {
-                      this.loading3 = true
-                      let params1 = {productCategoryAttrId: this.colorObj.id, name: params.row.tempValue}
-                      this.addAttrValue(params1, (response) => {
-                        if (response.data.code === 200) {
-                          this.afterSkuAttrValueChange()
-                          this.loading3 = false
-                          this
-                        } else {
-                          this.$Message.error('新增颜色失败')
-                          this.loading3 = false
-                          val.srcElement.focus()
-                        }
-                      })
-                    } else {
-                      this.colorObj.values[params.index].name = params.row.tempValue
-                    }
+                    this.colorObj.values[params.index].name = params.row.tempValue.replace(/[: | ,]/g, '')
                   }
                 }
               })
@@ -311,6 +308,7 @@
           },
           {
             title: '操作',
+            width: 100,
             render: (h, params) => {
               return h('Button', {
                 props: {size: 'small', type: 'error'},
@@ -319,7 +317,14 @@
                     title: '删除颜色',
                     content: '确定要删除颜色吗？',
                     onOk: () => {
+                      if (this.colorObj.values) {
+                        if (this.colorObj.values.length === 1) {
+                          this.$Message.warning('至少存有1个颜色值')
+                          return
+                        }
+                      }
                       if (params.row.id) {
+                        // 编辑-数据删除
                         this.deleteAttrValue(params.row.id, (response) => {
                           if (response.data.code) {
                             this.$Message.success('删除成功')
@@ -329,11 +334,16 @@
                           }
                         })
                       } else {
+                        // 新增-视图删除
                         this.colorObj.values.splice(params.index, 1)
                       }
                     }
                   }
-                  this.$Modal.confirm(config)
+                  if (!this.check) {
+                    this.$Message.warning('类目下有商品，不可删除')
+                  } else {
+                    this.$Modal.confirm(config)
+                  }
                 }}
               }, '删除')
             }
@@ -420,6 +430,8 @@
       getSkuAttr (callback) {
         this.$http.get(cateAPI.getSkuAttr(this.currCate[0].id)).then(response => {
           if (typeof callback === 'function') {
+            // let res = response
+            // res.data = JSON.parse(`{"code":200,"message":"操作成功","catalogAttr":[{"id":"119663878681427968","productCategoryId":"118844769274183680","attrType":2,"name":"颜色","code":1,"type":2,"isWrite":0,"isShow":0,"values":null,"newValues":null}]}`)
             callback(response)
           }
         })
@@ -427,20 +439,57 @@
       selectTree (val) {
         // 遍历类目数据，判断所选类目级别
         if (val.length) {
-          this.currCate = val
-          this.renderData1((catalogAttr) => {
-            for (let i of catalogAttr) {
-              if (i.name === '颜色') {
-                this.colorObj = JSON.parse(JSON.stringify(i))
+          if (val[0].level !== 3) {
+            this.data1 = []
+            this.currCate = val
+            return
+          }
+          this.colorObj = {
+            id: '',
+            productCategoryId: '',
+            attrType: 2,
+            code: 1,
+            type: 2,
+            isWrite: 0,
+            isShow: 0,
+            name: '',
+            values: []
+          }
+          // 在this.check得到值后再渲染数据
+          this.ifControl(val[0], () => {
+            this.currCate = val
+            this.renderData1((catalogAttr) => {
+              // for (let i of catalogAttr) {
+              //   if (i.name === '颜色') {
+              //     this.colorObj = JSON.parse(JSON.stringify(i))
+              //     if (!this.colorObj.values) {
+              //       this.colorObj.values = []
+              //     }
+              //   }
+              // }
+              // 打开的时候才判断创建
+              // if (this.isEmpty(this.colorObj.id)) {
+              //   // 新增颜色SKU
+              //   this.colorObj.productCategoryId = this.currCate[0].id
+              //   this.colorObj.name = '颜色'
+              //   this.colorObj.values = []
+              //   this.addAttr(this.colorObj)
+              // }
+              let exist = 0
+              for (let i of catalogAttr) {
+                if (i.name === '颜色') {
+                  exist++
+                  if (!i.values) { i.values = [] }
+                  this.colorObj = i
+                }
               }
-            }
-            if (this.isEmpty(this.colorObj.id)) {
-              // 新增颜色SKU
-              this.colorObj.productCategoryId = this.currCate[0].id
-              this.colorObj.name = '颜色'
-              this.colorObj.values.push({name: '默认'})
-              this.addAttr(this.colorObj)
-            }
+              if (exist === 0) {
+                this.colorObj.productCategoryId = this.currCate[0].id
+                this.colorObj.name = '颜色'
+                this.colorObj.values = [{name: '默认'}]
+                this.addAttr(this.colorObj)
+              }
+            })
           })
         } else {
           this.currCate = []
@@ -458,6 +507,10 @@
               if (i.name !== '颜色') {
                 arr.push(i)
               }
+              //  else {
+              //   this.colorObj = i
+              //   if (!i.value) { this.colorObj.values = [] }
+              // }
             }
             this.data1 = arr
             if (typeof callback === 'function') {
@@ -469,6 +522,7 @@
       // 打开SKU编辑窗
       editSku (params) {
         if (params.row) {
+          // 编辑窗口
           this.editObj = JSON.parse(JSON.stringify(params.row))
           for (let i of this.editObj.values) {
             i.editing = false
@@ -477,32 +531,67 @@
             i.editing = false
           }
         } else {
+          // 新增窗口
           this.editObj.values.push({name: '', editing: true})
         }
         this.editing2 = true
       },
+      // 新增编辑
       editOk () {
         this.loading2 = true
         setTimeout(() => {
+          let editObj = JSON.parse(JSON.stringify(this.editObj))
           this.$refs.form1.validate((valid) => {
             if (valid) {
-              if (this.editObjValues.length === 0) {
-                this.$Message.warning('至少存有一条属性')
-              } else {
-                let editObj = JSON.parse(JSON.stringify(this.editObj))
-                for (let i of editObj.values) {
-                  delete i.editing
-                }
-                let temp = []
-                for (let i of editObj.values) {
-                  if (!this.isEmpty(i.name)) {
-                    temp.push(i)
+              if (this.editObj.name === '颜色') {
+                this.$Message.warning('请在‘颜色设置’设置颜色')
+                this.loading2 = false
+                return
+              }
+              for (let i of this.data1) {
+                if (this.editObj.id) {
+                  // 编辑
+                  if (i.name === editObj.name && i.id !== editObj.id) {
+                    this.$Message.warning('同类目下，属性名唯一')
+                    this.loading2 = false
+                    return
+                  }
+                } else {
+                  // 新增
+                  if (i.name === editObj.name) {
+                    this.$Message.warning('同类目下，属性名唯一')
+                    this.loading2 = false
+                    return
                   }
                 }
-                editObj.values = temp
-                console.log(editObj)
+              }
+              for (let i of editObj.values) { delete i.editing }
+              // ----------去空
+              let values = []
+              for (let i of editObj.values) {
+                if (!this.isEmpty(i.name)) { values.push(i) }
+              }
+              editObj.values = values
+              if (editObj.values.length < 2 || editObj.values.length > 50) {
+                this.$Message.warning('属性值最少2个最多50个')
+                this.loading2 = false
+              } else {
+                let qobj = {}
+                let values = []
+                let newValues = []
+                for (let i of editObj.values) {
+                  if (!qobj[i.name]) {
+                    i.id ? values.push(i) : newValues.push(i)
+                    qobj[i.name] = 1
+                  } else {
+                    this.$Message.warning('属性值必须唯一')
+                    this.loading2 = false
+                    return
+                  }
+                }
                 if (this.isEmpty(editObj.id)) {
                   // add
+                  editObj.values = newValues
                   editObj.productCategoryId = this.currCate[0].id
                   this.addAttr(editObj, (response) => {
                     if (response.data.code === 200) {
@@ -516,6 +605,8 @@
                   })
                 } else {
                   // edit
+                  editObj.values = values
+                  editObj.newValues = newValues
                   this.editAttr(editObj, (response) => {
                     if (response.data.code === 200) {
                       this.$Message.success('编辑成功')
@@ -528,6 +619,8 @@
                   })
                 }
               }
+            } else {
+              this.loading2 = false
             }
           })
         }, 300)
@@ -535,11 +628,15 @@
       editCancel () {
         this.editing2 = false
       },
+      // ----------接口------------
       addAttr (params, callback) {
         this.$http.post(...cateAPI.addAttr(params)).then(response => {
           if (typeof callback === 'function') {
             callback(response)
           }
+        }).catch(() => {
+          this.loading2 = false
+          this.loading3 = false
         })
       },
       editAttr (params, callback) {
@@ -547,6 +644,9 @@
           if (typeof callback === 'function') {
             callback(response)
           }
+        }).catch(() => {
+          this.loading2 = false
+          this.loading3 = false
         })
       },
       deleteAttr (attrId, callback) {
@@ -570,7 +670,8 @@
           }
         })
       },
-      afterSkuAttrValueChange () {
+      // ---------------------------
+      afterSkuAttrValueChange (callback) {
         this.getSkuAttr((response) => {
           let arr = JSON.parse(JSON.stringify(response.data.catalogAttr))
           let values = []
@@ -588,74 +689,222 @@
             }
             this.editObj.values = values
           }
-          if (this.colorObj.id && this.editing3) {
-            for (let i of arr) {
-              if (this.colorObj.id === i.id) {
-                for (let j of i.values) {
-                  values.push({
-                    id: j.id,
-                    name: j.name
-                  })
-                }
+          // if (this.colorObj.id) {
+          //   for (let i of arr) {
+          //     if (this.colorObj.id === i.id) {
+          //       if (!i.values) {
+          //         return
+          //       }
+          //       for (let j of i.values) {
+          //         if (this.name === '') {
+          //           this.deleteAttrValue(i.id)
+          //         } else {
+          //           values.push({
+          //             id: j.id,
+          //             name: j.name
+          //           })
+          //         }
+          //       }
+          //     }
+          //   }
+          //   this.colorObj.values = values
+          // } else {
+          for (let i of response.data.catalogAttr) {
+            if (i.name === '颜色') {
+              this.colorObj = JSON.parse(JSON.stringify(i))
+              if (!this.colorObj.values) {
+                this.colorObj.values = []
               }
             }
-            this.colorObj.values = values
+          }
+          // }
+          if (typeof callback === 'function') {
+            callback(response)
           }
         })
       },
       // 新增sku属性值输入框
       addValue () {
+        if (this.editObj.values.length >= 50) {
+          this.$Message.warning('参数值最少2个最多50个')
+          return
+        }
         this.editObj.values.unshift({
           name: '',
           editing: true
         })
       },
-      // 新增颜色
-      addColor () {
-        this.colorObj.values.unshift({name: ''})
+      // 打开颜色编辑窗
+      openColorModal () {
+        if (!this.check) {
+          this.$Message.warning('类目下有商品，不可修改')
+          return
+        }
+        this.afterSkuAttrValueChange(() => {
+          this.editing3 = true
+        })
       },
+      // 新增颜色输入框
+      addColor () {
+        if (this.colorName_) {
+          this.$Message.warning('正在搜索颜色，不可添加颜色')
+        } else {
+          this.colorObj.values.unshift({name: ''})
+        }
+      },
+      // 是否支持颜色属性
       showColor (flag) {
         clearTimeout(last)
         if (this.colorObj.id) {
           last = setTimeout(() => {
-            this.editAttr(this.colorObj)
-          }, 1000)
+            let colorObj = JSON.parse(JSON.stringify(this.colorObj))
+            colorObj.isShow = flag
+            this.editAttr(colorObj)
+          }, 300)
         }
       },
+      // 保存颜色
       saveColor () {
+        if (this.colorName_) {
+          this.$Message.warning('请重置颜色搜索后重试')
+          return
+        }
         this.loading3 = true
         let values = []
-        for (let i of this.colorObj.values) {
+        let colorObj = JSON.parse(JSON.stringify(this.colorObj))
+        for (let i of colorObj.values) {
           if (!this.isEmpty(i.name)) {
             values.push(i)
           }
         }
-        this.colorObj.values = values
-        this.editAttr(this.colorObj, (response) => {
-          if (response.data.code === 200) {
-            this.$Message.success('操作成功')
-            this.editing3 = false
+        let qobj = {}
+        let oldValues = []
+        let newValues = []
+        for (let i of values) {
+          if (!qobj[i.name]) {
+            i.id ? oldValues.push(i) : newValues.push(i)
+            qobj[i.name] = 1
           } else {
-            this.$Message.error('操作失败')
+            this.$Message.warning('颜色必须唯一')
             this.loading3 = false
+            return
+          }
+        }
+        colorObj.values = oldValues.length > 0 ? oldValues : []
+        console.log('values', values)
+        colorObj.newValues = values.length > 0 ? newValues : [{name: '默认'}]
+        if (colorObj.id) {
+          // 编辑
+          if (values.length === 0) {
+            // 新增默认属性值
+            this.editAttr(colorObj, (response) => {
+              if (response.data.code === 200) {
+                this.$Message.success('操作成功')
+                this.editing3 = false
+              } else {
+                this.$Message.error('操作失败')
+                this.loading3 = false
+              }
+            })
+          } else {
+            // 编辑属性-编辑属性值
+            this.editAttr(colorObj, (response) => {
+              if (response.data.code === 200) {
+                this.editing3 = false
+              } else {
+                this.$Message.error('操作失败')
+                this.loading3 = false
+              }
+            })
+          }
+        } else {
+          // 新增属性-新增属性值
+          colorObj.name = '颜色'
+          colorObj.productCategoryId = this.currCate[0].id
+          if (values.length === 0) {
+            colorObj.values = [{name: '默认'}]
+          }
+          this.addAttr(colorObj, (response) => {
+            if (response.data.code === 200) {
+              this.$Message.success('操作成功')
+              this.editing3 = false
+            } else {
+              this.$Message.error('操作失败')
+              this.loading3 = false
+            }
+          })
+        }
+      },
+      // 搜索颜色
+      searchColor () {
+        this.afterSkuAttrValueChange(() => {
+          let values = []
+          for (let i of this.colorObj.values) {
+            if (i.name.indexOf(this.colorName_) !== -1) {
+              values.push(i)
+            }
+          }
+          this.colorObj.values = values
+        })
+      },
+      // 清除搜索颜色
+      cancelSearch () {
+        this.colorName_ = ''
+        this.afterSkuAttrValueChange()
+      },
+      // 检查类目下是否有商品 callback1: 存在, callback2: 不存在
+      ifExistP (currCate, callback1, callback2) {
+        this.getForSell(1, 1, {categoryId: currCate.id}, (response) => {
+          if (response.data.pageInfo.list.length > 0) {
+            callback1()
+          } else {
+            this.getOnSell(1, 1, {categoryId: currCate.id}, (response) => {
+              if (response.data.pageInfo.list.length > 0) {
+                callback1()
+              } else {
+                callback2()
+              }
+            })
           }
         })
       },
-      searchColor () {
-        let values = []
-        for (let i of this.colorObj.values) {
-          if (i.name.indexOf(this.colorName_) !== -1) {
-            values.push(i)
+      getForSell (pageNum, pageSize, params, callback) {
+        this.$http.post(...pmAPI.forSell(pageNum, pageSize, params)).then(response => {
+          if (typeof callback === 'function') {
+            callback(response)
           }
-        }
-        this.colorObj.values = values
+        }).catch(error => {
+          console.log(error)
+        })
       },
-      cancelSearch () {
-        this.colorName_ = ''
+      getOnSell (pageNum, pageSize, params, callback) {
+        this.$http.post(...pmAPI.onsell(pageNum, pageSize, params)).then(response => {
+          if (typeof callback === 'function') {
+            callback(response)
+          }
+        }).catch(error => {
+          console.log(error)
+        })
+      },
+      // 检查类目下是否有商品&类目
+      ifControl (currCate, callback) {
+        if (currCate.level === 3) {
+          this.ifExistP(currCate, () => {
+            this.check = false
+            callback()
+          }, () => {
+            this.check = true
+            callback()
+          })
+        } else {
+          if ((currCate.level === 1 && currCate.children.length === 0) || (currCate.level === 2 && currCate.children.length === 0)) {
+            this.check = true
+          } else {
+            this.check = false
+          }
+          callback()
+        }
       }
-    },
-    beforeCreate: function () {
-      this.$route.meta['keepAlive'] = true
     },
     computed: {
       modalTitle () {
@@ -665,16 +914,22 @@
           return '添加自定义属性'
         }
       },
-      // 仅用于判断新增或编辑sku属性，是否有属性值
-      editObjValues () {
-        let editObj = JSON.parse(JSON.stringify(this.editObj))
-        let values = []
-        for (let i in editObj.values) {
-          if (!this.isEmpty(editObj.values[i].name)) {
-            values.push(editObj.values[i].name)
+      // 判断类目下面是否有子类目
+      isDisabled () {
+        if (this.currCate[0]) {
+          if (this.currCate[0].level !== 3 && this.currCate[0].children.length > 0) {
+            return true
+          } else {
+            return false
           }
+        } else {
+          return true
         }
-        return values
+      },
+      // sku Modal name disabled true:禁用
+      banEditSkuName () {
+        // 有子类目或商品 并且 编辑状态
+        return !this.check && this.editObj.id !== ''
       }
     },
     watch: {
@@ -692,8 +947,6 @@
         if (!newV) {
           this.colorObj.values = []
           this.loading3 = false
-        } else {
-          this.afterSkuAttrValueChange()
         }
       },
       colorName_ (newV, oldV) {

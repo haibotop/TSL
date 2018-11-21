@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="22px" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48 (47235) - http://www.bohemiancoding.com/sketch -->
+    <title>Path</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="iPhone-8" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-126.000000, -103.000000)">
+        <g id="收货地址" transform="translate(126.000000, 103.000000)">
+            <rect id="Path" opacity="0.1" x="0" y="0" width="22" height="22"></rect>
+            <g id="Group-4" transform="translate(4.000000, 5.000000)" fill="#867DA3">
+                <path d="M1,1 L1,13 L12,13 L12,1 L1,1 Z M11,0 L11,1 L12,1 L12,8 L13,8 L13,13 C13,13.5522847 12.5522847,14 12,14 L1,14 C0.44771525,14 0,13.5522847 0,13 L0,1 C0,0.44771525 0.44771525,0 1,0 L11,0 Z" id="Combined-Shape" fill-rule="nonzero"></path>
+                <rect id="Rectangle-18" x="4" y="6" width="3" height="1"></rect>
+                <circle id="Oval-6" cx="3" cy="6.5" r="1"></circle>
+                <rect id="Rectangle-18" x="4" y="4" width="4" height="1"></rect>
+                <circle id="Oval-6" cx="3" cy="4.5" r="1"></circle>
+                <circle id="Oval-6" cx="3" cy="8.5" r="1"></circle>
+                <circle id="Oval-6" cx="3" cy="10.5" r="1"></circle>
+                <rect id="Rectangle-19" x="4" y="8" width="2" height="1"></rect>
+                <rect id="Rectangle-20" x="4" y="10" width="6" height="1"></rect>
+            </g>
+            <g id="Group-3" transform="translate(15.516113, 9.340820) rotate(-330.000000) translate(-15.516113, -9.340820) translate(14.016113, 3.340820)">
+                <path d="M1,3 L1,8 L2,8 L2,3 L1,3 Z M0.5,2 L2.5,2 C2.77614237,2 3,2.22385763 3,2.5 L3,9 L0,9 L0,2.5 C-3.38176876e-17,2.22385763 0.223857625,2 0.5,2 Z" id="Path" fill="#867DA3" fill-rule="nonzero"></path>
+                <path d="M0.5,0.5 L2.5,0.5 C2.77614237,0.5 3,0.723857625 3,1 C3,1.27614237 2.77614237,1.5 2.5,1.5 L0.5,1.5 C0.223857625,1.5 3.38176876e-17,1.27614237 0,1 C-3.38176876e-17,0.723857625 0.223857625,0.5 0.5,0.5 Z" id="Path" fill="#867DA3"></path>
+                <path d="M2.21836971,10.9754598 C2.14592426,11.2169447 1.95699576,11.4058732 1.71551091,11.4783186 C1.31876628,11.597342 0.900653677,11.3722045 0.781630286,10.9754598 L0.263992337,9.25 L2.73600766,9.25 L2.21836971,10.9754598 Z M1.26054343,10.8317859 C1.30021789,10.9640341 1.43958876,11.03908 1.57183697,10.9994055 C1.65233192,10.975257 1.71530809,10.9122808 1.73945657,10.8317859 L2.06399234,9.75 L0.936007663,9.75 L1.26054343,10.8317859 Z" id="Triangle" fill="#80779D" fill-rule="nonzero"></path>
+            </g>
+        </g>
+    </g>
+</svg>

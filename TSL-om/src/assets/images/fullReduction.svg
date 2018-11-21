@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="66px" height="44px" viewBox="0 0 66 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48 (47235) - http://www.bohemiancoding.com/sketch -->
+    <title>满减促销</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Desktop-HD" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-258.000000, -150.000000)">
+        <g id="Group" transform="translate(243.000000, 115.000000)">
+            <g id="满减促销" transform="translate(57.133514, 57.133514) rotate(-135.000000) translate(-57.133514, -57.133514) translate(26.633514, 26.633514)">
+                <path d="M57.1606964,1.77635684e-14 C59.2777592,1.77635684e-14 60.9931927,1.715625 61,3.83292411 L61,28.9001116 C61,29.9145089 60.5983707,30.888058 59.8767995,31.6097098 L31.6129896,59.8766741 C30.1153889,61.374442 27.6919987,61.374442 26.1943979,59.8766741 L1.12320054,34.8026786 C-0.374400179,33.3049107 -0.374400179,30.88125 1.12320054,29.3834821 L29.3870104,1.12332589 C30.1085816,0.401674107 31.0820221,1.77635684e-14 32.0963062,1.77635684e-14 L57.1606964,1.77635684e-14 Z M49.3675201,16.5914007 C51.8816522,16.5914007 53.9197589,14.5532939 53.9197589,12.0391619 C53.9197589,9.52502981 51.8816522,7.48692307 49.3675201,7.48692307 C46.853388,7.48692307 44.8152813,9.52502981 44.8152813,12.0391619 C44.8152813,14.5532939 46.853388,16.5914007 49.3675201,16.5914007 Z" id="Combined-Shape" fill="#FADB14" fill-rule="nonzero"></path>
+                <text id="满XX-减XX" transform="translate(28.660199, 33.339801) rotate(-225.000000) translate(-28.660199, -33.339801) " font-family="MicrosoftYaHei, Microsoft YaHei" font-size="12" font-weight="normal" fill="#3C3C3C">
+                    <tspan x="12.6527366" y="30.3398007">满XX</tspan>
+                    <tspan x="12.6527366" y="46.3398007">减XX</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>

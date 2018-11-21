@@ -1,61 +1,3 @@
-<style scoped>
-  .my-breadcrumb {
-    margin: 0px 10px;
-  }
-  .search {
-    margin-top: 10px;
-  }
-  .search .my-label {
-    margin-left: 10px;
-  }
-  .search .ivu-select {
-    width: 50%;
-    margin-left: 10px;
-  }
-  .search button {
-    margin-left: 10px;
-  }
-  .cates {
-    height: 350px;
-    margin: 10px;
-    background-color: #F8F8F9;
-    border-radius: 6px;
-  }
-  .cates .ivu-col {
-    height: 100%;
-  }
-  .cate1, .cate2, .cate3 {
-    width: calc(100% - 20px);
-    height: calc(100% - 20px);
-    margin: 10px;
-    overflow: scroll;
-    overflow-x:hidden
-  }
-  .cates .ivu-radio-wrapper-checked {
-    color: #2d8cf0;
-  }
-  .cates .ivu-radio-group-item:after {
-    content: "\F125";
-    display: block;
-    position: absolute;
-    right: 0px;
-    top: 0px;
-    font-family: Ionicons;
-  }
-  .btn-bar {
-    text-align: center;
-  }
-  .btn-bar span {
-    position: absolute;
-    line-height: 32px;
-    margin-left: 20px;
-  }
-</style>
-<style>
-  #selectCate .cates .ivu-radio {
-    display: none;
-  }
-</style>
 <template>
   <div id="selectCate">
     <Breadcrumb class="my-breadcrumb">
@@ -66,27 +8,27 @@
     <div class="search">
       <label for="" class="my-label">类目搜索：</label>
       <AutoComplete v-model="selectedPath" @on-search="handleSearch" icon="ios-search" clearable @on-select="onSelect" ref="search">
-        <Option v-for="(item, index) in cateSearchTips" :key="index" :value="item.path"></Option>
+        <Option v-for="(item, index) in cateSearchTips" :key="index" :value="item.path">
+          <span v-for="(item2, index2) in item.path.split(selectedPath)" :key="index2">{{item2}}<b v-if="index2 % 2 === 0" style="color:red;">{{selectedPath}}</b></span>
+        </Option>
       </AutoComplete>
       <Button @click="searchBtn" :loading="searching">搜索</Button>
       <div class="cates">
-        <Row>
-          <Col span="8">
+        <div class="cate">
           <RadioGroup v-model="cate1" vertical class="cate1">
-            <Radio v-for="(item, index) in cateData" :key="index" :label="JSON.stringify(item)">{{item.name}}</Radio>
+            <Radio v-for="(item, index) in cateData" :key="index" v-if="item.status === 1" :label="JSON.stringify(item)">{{item.name}}</Radio>
           </RadioGroup>
-          </Col>
-          <Col span="8">
+        </div>
+        <div class="cate">
           <RadioGroup v-model="cate2" vertical class="cate1">
-            <Radio v-for="(item, index) in cate1_Obj.secondCategory" :key="index" :label="JSON.stringify(item)">{{item.name}}</Radio>
+            <Radio v-for="(item, index) in cate1_Obj.secondCategory" :key="index"  v-if="item.status === 1" :label="JSON.stringify(item)">{{item.name}}</Radio>
           </RadioGroup>
-          </Col>
-          <Col span="8">
+        </div>
+        <div class="cate">
           <RadioGroup v-model="cate3" vertical class="cate1">
-            <Radio v-for="(item, index) in cate2_Obj.threeCategory" :key="index" :label="JSON.stringify(item)">{{item.name}}</Radio>
+            <Radio v-for="(item, index) in cate2_Obj.threeCategory" :key="index"  v-if="item.status === 1" :label="JSON.stringify(item)">{{item.name}}</Radio>
           </RadioGroup>
-          </Col>
-        </Row>
+        </div>
       </div>
       <div class="btn-bar">
         <Button @click="addProduct" :disabled="cate3.length === 0">发布商品</Button>
@@ -136,6 +78,7 @@
           }
         })
       },
+      // 展示关键词关联项
       handleSearch (val) {
         if (this.isEmpty(val)) {
           this.getCate(() => {
@@ -155,6 +98,7 @@
           this.cateSearchTips = arr
         }
       },
+      // 选择关键词关联项
       onSelect (val) {
         this.cateData = []
         this.getCate(() => {
@@ -193,6 +137,7 @@
         }
         if (this.isEmpty(this.selectedId)) {
           this.searching = true
+          // 拿出所有类目名包含关键字的类目的id
           let arr = []
           for (let i of this.cateSearchData) {
             if (i.path.indexOf(this.selectedPath) !== -1) {
@@ -203,6 +148,7 @@
           let cateData1 = []
           for (let id of arr) {
             for (let i of this.cateData) {
+              console.log('i:', i)
               if (id === i.id) {
                 cateData1.push(i)
               } else {
@@ -229,6 +175,9 @@
               }
             }
           }
+          if (cateData.length === 0) {
+            this.$Message.info('数据为空')
+          }
           this.cateData = cateData
           this.cate1 = ''
           this.cate2 = ''
@@ -236,14 +185,29 @@
           this.searching = false
         }
       },
-      addProduct () {
-        this.$parent.page = 'addProduct'
-        if (this.cate3) {
-          this.$parent.currCate = {
-            path: this.selectedPath,
-            cate3: JSON.parse(this.cate3)
+      getCommonAttr (id, callback) {
+        this.$http.get(cateAPI.getCommonAttr(id)).then(response => {
+          if (typeof callback === 'function') {
+            callback(response)
           }
-        }
+        }).catch(error => {
+          console.log(error)
+        })
+      },
+      addProduct () {
+        this.getCommonAttr(JSON.parse(this.cate3).id, (response) => {
+          if (response.data.catalogAttr.length === 0) {
+            this.$Message.warning('您选择的类目缺少通用参数，无法发布商品')
+          } else {
+            this.$parent.page = 'addProduct'
+            if (this.cate3) {
+              this.$parent.currCate = {
+                path: this.selectedPath,
+                cate3: JSON.parse(this.cate3)
+              }
+            }
+          }
+        })
       }
     },
     computed: {
@@ -317,14 +281,12 @@
               for (let j of i.secondCategory) {
                 if (j.threeCategory.length > 0) {
                   for (let k of j.threeCategory) {
-                    this.cateSearchData.push({ path: `${i.name}>>${j.name}>>${k.name}`, id: k.id })
+                    if (i.status === 1 && j.status === 1 && k.status === 1) {
+                      this.cateSearchData.push({ path: `${i.name}>>${j.name}>>${k.name}`, id: k.id })
+                    }
                   }
-                } else {
-                  this.cateSearchData.push({ path: `${i.name}>>${j.name}`, id: j.id })
                 }
               }
-            } else {
-              this.cateSearchData.push({ path: i.name, id: i.id })
             }
           }
         }
@@ -338,3 +300,65 @@
     }
   }
 </script>
+<style scoped>
+  .my-breadcrumb {
+    margin: 0px 10px;
+  }
+  .search {
+    margin-top: 10px;
+  }
+  .search .my-label {
+    margin-left: 10px;
+  }
+  .search .ivu-select {
+    width: 50%;
+    margin-left: 10px;
+  }
+  .search button {
+    margin-left: 10px;
+  }
+  .cates {
+    width: 1110px;
+    height: auto;
+    margin: 10px;
+    background-color: #F8F8F9;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .cate {
+    width: 370px;
+    height: 400px;
+    float: left;
+  }
+  .cate1, .cate2, .cate3 {
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    margin: 10px;
+    overflow: scroll;
+    overflow-x:hidden
+  }
+  .cates .ivu-radio-wrapper-checked {
+    color: #2d8cf0;
+  }
+  .cates .ivu-radio-group-item:after {
+    content: "\F125";
+    display: block;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    font-family: Ionicons;
+  }
+  .btn-bar {
+    text-align: center;
+  }
+  .btn-bar span {
+    position: absolute;
+    line-height: 32px;
+    margin-left: 20px;
+  }
+</style>
+<style>
+  #selectCate .cates .ivu-radio {
+    display: none;
+  }
+</style>

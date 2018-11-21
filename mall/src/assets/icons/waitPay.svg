@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="22px" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48 (47235) - http://www.bohemiancoding.com/sketch -->
+    <title>Rectangle 4</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="iPhone-8" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-30.000000, -61.000000)">
+        <g id="待付款" transform="translate(30.000000, 61.000000)">
+            <rect id="Rectangle-4" opacity="0.1" x="0" y="0" width="22" height="22"></rect>
+            <path d="M17,7 L16,7 L16,5 C16,4.44771525 15.5522847,4 15,4 L4,4 C3.44771525,4 3,4.44771525 3,5 L3,17 C3,17.5522847 3.44771525,18 4,18 L15,18 C15.5522847,18 16,17.5522847 16,17 L16,15 L17,15 L17,15.2634421 L17,17 C17,18.1045695 16.1045695,19 15,19 L4,19 C2.8954305,19 2,18.1045695 2,17 L2,5 C2,3.8954305 2.8954305,3 4,3 L15,3 C16.1045695,3 17,3.8954305 17,5 L17,6.78848805 L17,7 Z" id="Combined-Shape" fill="#867DA3"></path>
+            <path d="M11.2857143,9 C10.5756339,9 10,9.3581722 10,9.8 L10,12.2 C10,12.6418278 10.5756339,13 11.2857143,13 L17.7142857,13 C18.4243661,13 19,12.6418278 19,12.2 L19,9.8 C19,9.3581722 18.4243661,9 17.7142857,9 L11.2857143,9 Z M11.4444444,8 L17.5555556,8 C18.9055849,8 20,8.76751186 20,9.71428571 L20,12.2857143 C20,13.2324881 18.9055849,14 17.5555556,14 L11.4444444,14 C10.0944151,14 9,13.2324881 9,12.2857143 L9,9.71428571 C9,8.76751186 10.0944151,8 11.4444444,8 Z" id="Rectangle-2" fill="#867DA3" fill-rule="nonzero"></path>
+            <circle id="Oval" fill="#867DA3" cx="11.75" cy="10.75" r="1"></circle>
+        </g>
+    </g>
+</svg>

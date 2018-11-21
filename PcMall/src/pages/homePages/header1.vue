@@ -200,7 +200,8 @@
                     }
                 ],
                 allPrice:0,  
-                nickName:'登录/注册'
+                nickName:'登录/注册',
+                userInfoSession: sessionStorage.getItem('userInfo')
             }
         },
         methods: {   
@@ -226,6 +227,9 @@
             stop(){}
         },
         mounted () {
+            this.bus.$on('userNickName', ()=>{ //监听用户修改后的昵称
+                this.nickName = JSON.parse(sessionStorage.getItem('userInfo')).nickName
+            })
             let userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
             console.log(userInfo)
             if(userInfo!=null){

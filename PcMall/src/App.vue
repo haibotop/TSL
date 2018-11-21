@@ -4,6 +4,9 @@
   </div>
 </template>
 <script>
+
+// import './assets/js/webchat7moor.js' //客服
+
 export default {
   data () {
     return {}
@@ -12,7 +15,9 @@ export default {
     // qingqiu themes color
     // default color
   },
-  methods: {}
+  methods: {
+
+  }
 }
 </script>
 

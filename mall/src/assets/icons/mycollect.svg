@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="22px" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48 (47235) - http://www.bohemiancoding.com/sketch -->
+    <title>Path</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="iPhone-8" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-30.000000, -103.000000)">
+        <g id="收藏" transform="translate(30.000000, 103.000000)">
+            <rect id="Path" opacity="0.1" x="0" y="0" width="22" height="22"></rect>
+            <path d="M10.9994639,18.7109507 L17.4901535,12.9999658 C18.6073302,12.0666865 19.5,10.5841948 19.5,9.2677735 C19.5,6.83963184 17.5876492,4.87647023 15.2352941,4.87647023 C13.6262038,4.87647023 12.175355,5.80237215 11.4465747,7.24960948 L11,8.13643301 L10.5534253,7.24960948 C9.82464498,5.80237215 8.37379622,4.87647023 6.76470588,4.87647023 C4.4123508,4.87647023 2.5,6.83963184 2.5,9.2677735 C2.5,10.5715383 3.43574913,12.1956157 4.39132297,12.9172628 L4.41967933,12.9403532 L10.9994639,18.7109507 Z" id="Combined-Shape" stroke="#867DA3"></path>
+        </g>
+    </g>
+</svg>

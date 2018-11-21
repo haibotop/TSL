@@ -83,7 +83,7 @@
           <FormItem label="商品名称：" prop="name"><Input class="my-input" v-model="baseInfo.name" :maxlength="50"></Input><span class="tips-text">还能输入{{`${50 - baseInfo.name.length}`}}个字</span></FormItem>
           <FormItem label="商品广告词：" prop="advert"><Input class="my-input" v-model="baseInfo.advert" :maxlength="50"></Input><span class="tips-text">还能输入{{`${50 - baseInfo.advert.length}`}}个字</span></FormItem>
           <FormItem label="产地：" prop="placeOfOrigin"><Input class="my-input" v-model="baseInfo.placeOfOrigin" :maxlength="10"></Input><span class="tips-text">10个字以内</span></FormItem>
-          <FormItem label="商品关键词：" prop="keyword"><Input class="my-input" v-model="baseInfo.keyword"></Input><span class="tips-text">关键词之间用空格隔开</span></FormItem>
+          <FormItem label="商品关键词：" prop="keyword"><Input class="my-input" v-model="baseInfo.keyword"></Input><span class="tips-text">关键词之间用空格隔开2</span></FormItem>
           <FormItem label="商品简介："><Input type="textarea" v-model="baseInfo.desc" :maxlength="200" class="my-input"></Input><span class="tips-text">200个字以内</span></FormItem>
         </Form>
         <b class="margin-10">通用参数</b>
@@ -110,7 +110,7 @@
 
       <TabPane label="销售属性" :disabled="currTab < 1">
         <b class="margin-10" v-show="!checkColor">商品主图</b>
-        <UploadImg class="margin-left-10" v-show="!checkColor"></UploadImg>
+        <uploadImg5 class="margin-left-10" v-show="!checkColor"></uploadImg5>
         <b class="margin-10">销售属性</b>
         <Form :label-width="100" v-for="(item, index) in skuParams" :key="index">
           <FormItem :label="`${item.name}：`">
@@ -123,7 +123,7 @@
           </FormItem>
           <Table :columns="imgCol" :data="imgData" class="margin-10" v-show="checkColor && item.name === '颜色'"></Table>
         </Form>
-        <div v-for="(item, index) in diySku" class="diy-sku-box">
+        <div v-for="(item, index) in diySku" :key="index" class="diy-sku-box">
           <Row>
             <Col span="4" offset="1" class-name="margin-bottom-10"><Input class="diy-sku-input" v-model="item.name" size="small"></Input>：</Col>
             <Col span="1" offset="18">
@@ -216,12 +216,12 @@
   import * as cateAPI from '../../../services/operationCate.es6'
   import * as pAPI from '../../../services/product.es6'
   import { quillEditor } from 'vue-quill-editor'
-  import { default as UploadImg } from '../../../components/uploadImg.vue'
+  import { default as uploadImg5 } from '../../../components/uploadImg5.vue'
   export default {
     name: 'addProduct',
     components: {
       quillEditor,
-      UploadImg
+      uploadImg5
     },
     data () {
       return {
@@ -275,7 +275,7 @@
                 props: {value: params.row.price},
                 on: {
                   'on-blur': (val) => {
-                    this.skuGroups[params.index].price = val.srcElement.value
+                    this.skuGroups[params.index].price = val.target.value
                   }
                 }
               })
@@ -289,7 +289,7 @@
                 props: {value: params.row.originalPrice},
                 on: {
                   'on-blur': (val) => {
-                    this.skuGroups[params.index].originalPrice = val.srcElement.value
+                    this.skuGroups[params.index].originalPrice = val.target.value
                   }
                 }
               })
@@ -303,7 +303,7 @@
                 props: {value: params.row.stock},
                 on: {
                   'on-blur': (val) => {
-                    this.skuGroups[params.index].stock = val.srcElement.value
+                    this.skuGroups[params.index].stock = val.target.value
                   }
                 }
               })
@@ -349,7 +349,7 @@
           {
             title: '图片（每种颜色最多上传5张，800*800像素，单张大小不超过1m。仅支持 JPG、JPEG、PNG格式。）',
             render: (h, params) => {
-              return h(UploadImg, {
+              return h(uploadImg5, {
                 props: {size: 'small'}
               })
             }

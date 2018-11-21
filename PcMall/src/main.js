@@ -9,6 +9,7 @@ import App from './App'
 
 import store from '@/store/index.js'
 
+
 //省市区三级联动
 import 'vue-area-linkage/dist/index.css'; // v2 or higher
 import VueAreaLinkage from 'vue-area-linkage';
@@ -25,7 +26,9 @@ Vue.use(iView)
 Vue.use(Ajax.default)
 Vue.use(VueLoading, {type:'spiningDubbles'})
 
-
+// 头像
+import Croppa from 'vue-croppa'
+Vue.use(Croppa)
 
 // 路由配置
 const RouterConfig = {

@@ -27,6 +27,7 @@ import shoppingCart from '@/pages/shoppingCart/shoppingCart'
 
 //订单
 import createOrder from '@/pages/order/createOrder.vue'
+import asOrders from '@/pages/order/asOrders.vue'
 
 //我的----------
 import mine from '@/pages/me/mine.vue'
@@ -136,6 +137,14 @@ let order = [
             intercept: true
         },
         component: createOrder
+    },
+    {
+        path: '/asOrders',
+        name: 'asOrders',
+        meta: {
+            intercept: true
+        },
+        component: asOrders
     }
 ]
 

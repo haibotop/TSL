@@ -9,10 +9,8 @@ export default {
     return {}
   },
   mounted () {
-
-  },
-  beforeDestroy () {
-
+    // qingqiu themes color
+    // default color
   },
   methods: {}
 }

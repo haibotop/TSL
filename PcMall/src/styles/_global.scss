@@ -50,3 +50,16 @@ input, textarea {
 ul,li{
   list-style: none;
 }
+
+// 清除浮动
+.clearfix {
+  clear: both;
+
+  &:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+  }
+}

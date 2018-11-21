@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="77px" height="104px" viewBox="0 0 77 104" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48 (47235) - http://www.bohemiancoding.com/sketch -->
+    <title>地址</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="地址为空" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-149.000000, -223.000000)">
+        <g id="地址" transform="translate(150.000000, 224.000000)" fill-rule="nonzero" stroke="#C8C8C8">
+            <path d="M21.0938354,37.4345666 C21.0938354,28.3911631 28.4387569,21.0569924 37.5000651,21.0569924 C46.5615033,21.0569924 53.9062948,28.3912928 53.9062948,37.4345666 C53.9062948,46.480048 46.5615033,53.8121409 37.5000651,53.8121409 C28.4386269,53.8121409 21.0938354,46.4800481 21.0938354,37.4345666 Z M75,37.4345666 C75,16.7615737 58.2115706,0 37.4999349,0 C16.7882992,0 0,16.7614439 0,37.4345666 C0,58.1076893 37.5000651,102.944993 37.5000651,102.944993 C37.5000651,102.944993 75,58.1075595 75,37.4345666 Z" id="Shape"></path>
+        </g>
+    </g>
+</svg>
