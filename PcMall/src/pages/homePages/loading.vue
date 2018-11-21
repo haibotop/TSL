@@ -16,7 +16,6 @@
         mounted () {
             if(this.scope){
                 this.$refs.vueLoading.parentNode.style.position = 'relative'
-                document.getElementById('vueLoading').style.height = this.$refs.vueLoading.parentNode.offsetHeight + 'px'
             }
         }
     }
@@ -25,14 +24,8 @@
 <style lang="stylus" scoped>
     #vueLoading.loading_
         position absolute
-        width inherit
-        // height inherit
-        // left 0
-        // top 0
-        // background #000
-        // z-index 999
-        // opacity 0.5
-        // filter:Alpha(opacity=50)
+        width 100%
+        height 100%
     #vueLoading
         position: fixed
         left 0

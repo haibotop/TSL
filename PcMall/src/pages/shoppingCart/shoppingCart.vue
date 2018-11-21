@@ -3,6 +3,7 @@
     <header1></header1>
     <header2></header2>
     <div id="shoppingCart">
+      <!-- <loading v-if="showLoading" :scope=true></loading> -->
       <!-- <div class="detail-title"><div class="detail-t">珠宝类型 <span class="xiegang"></span> 戒指</div></div> -->
       <v-title :titleTpye="titleTpye"></v-title>
       <div class="shoppingCart-content" >
@@ -21,7 +22,18 @@
           <div class="shoppingCart-content-center" > <!--v-show="shoppingCarts-->
             <div v-for="item in shoppingCarts" :key="item.merchantInfo.id">
               <div class="shoppingCart-promotions" v-for="(promotion,index) in item.promotions" :key="promotion.promotionInfo.id">
-                <div class="shoppingCart-product" v-for="product in promotion.productItems" :key="product.id">
+                <!-- 有促销的时候 -->
+                <div class="promotion-info" v-show="promotion.promotionInfo.id">
+                  <div>
+                    <span v-if="promotion.promotionInfo.type === 1" v-for="(item, index) in promotion.promotionInfo.pdsArray" :key="index">满{{item.fullLimit / 100}}减{{item.subtract / 100}}</span>
+                    <span v-if="promotion.promotionInfo.type === 2" v-for="(item, index) in promotion.promotionInfo.pdsArray" :key="index">满{{item.fullLimit / 100}}折{{item.discount / 10}}</span>
+                    <span v-if="promotion.promotionInfo.type === 3">打{{promotion.promotionInfo.discount / 10}}折</span>
+                    <span v-if="promotion.promotionInfo.type === 4">直降{{promotion.promotionInfo.directAmount / 100}}元</span>
+                  </div>
+                  <a class="a2" href="javascript:void(0)" v-if="promotion.promotionInfo.type === 1 || promotion.promotionInfo.type === 2" @click="$router.push({path: '/pl/*'})">去凑单&nbsp&nbsp></a>
+                </div>
+                <!-- 产品 -->
+                <div class="shoppingCart-product" v-for="(product,proIndex) in promotion.productItems" :key="product.id">
                   <div class="checkbox"><Checkbox v-model="checkedObj[product.id]"></Checkbox></div><!--选中按钮-->
                   <div class="img">
                     <div>
@@ -48,8 +60,21 @@
                       </Select>
                     </div>
                   </div>
-                  
-                  <div class="num" >
+                  <div class="numPromotion" >
+                    <div class="promotion-box" :class="{activeColor:proIndex==promotionActive1&&index==promotionActive2}" @mouseover="promotionActive1=proIndex;promotionActive2=index;promotionPopupSkuId = product.id" @mouseleave="promotionActive1=-1;promotionActive2=-1;promotionPopupSkuId = ''">
+                      <!-- 促销 -->
+                      <span>促销&nbsp&nbsp<Icon :type="proIndex==promotionActive1&&index==promotionActive2?'ios-arrow-down':'ios-arrow-up'" size="16"/></span>
+                      <transition mode="out-in" v-show="proIndex==promotionActive1&&index==promotionActive2" >
+                        <div v-show="proIndex==promotionActive1&&index==promotionActive2">
+                          <p v-for="item in product.promotionList" :key="item.id" @click="changePromotion(item.id)">
+                            <a v-if="item.type === 1" v-for="(item2, index) in item.pdsArray" :key="index">满{{item2.fullLimit / 100}}减{{item2.subtract / 100}}<span>></span></a>
+                            <a v-if="item.type === 2" v-for="(item2, index) in item.pdsArray" :key="index">满{{item2.fullLimit / 100}}折{{item2.discount / 10}}<span>></span></a>
+                            <a v-if="item.type === 3">打{{item.discount / 10}}折<span>></span></a>
+                            <a v-if="item.type === 4">直降{{item.directAmount / 100}}<span>></span>元</a>
+                          </p>
+                        </div>
+                      </transition>
+                    </div>
                     <span class="tb-stock">
                       <span v-if="!editFlag && product.amount > product.stock" class="no-stock">暂无库存</span>
                       <input-number v-else v-model="product.amount" @on-change="putNum(product)" :min="1" :max="product ? product.stock : 0"></input-number>
@@ -118,7 +143,9 @@
     components: { header1,header2,vFooter,vTitle,loading,inputNumber,XHeader, Scroller, XButton, CheckIcon, Popup, debounce, Checker, CheckerItem, Group, InlineXNumber, MyInlineXNumber },
     data () {
       return {
-        showLoading: true,//loading
+        promotionActive2: -1,//促销样式
+        promotionActive1: -1,//促销样式
+        showLoading: false,//loading
         checkNum:0,
         titleTpye: ['珠宝类型','戒指'],//珠宝类型的头部
         list: [], // 原数据
@@ -210,14 +237,17 @@
         } else {
           this.handleRes([])
         }
+        this.showLoading =  false
       },
       // 接口-获取购物车数据
       getCartData () {
+        this.showLoading = true
         this.$http.get(scAPI.getshoppingCart1()).then(res => {
           if (res.data.code === 200) {
             if (res.data.list) {
               this.list = res.data.list
               this.handleRes(res.data.list)
+              // console.log('=====',this.list)
               this.showLoading = false
             }
           }
@@ -225,6 +255,7 @@
       },
       handleRes (list = []) {
         let datas = []
+        console.log('listlist',list)
         list.forEach(e => {
           let data = {
             merchantInfo: e.merchantInfo,
@@ -244,6 +275,7 @@
                 noPromotionData.productItems.push(i)
               }
             } else if (!obj[i.defaultPromotionId]) {
+              console.log('!obj[i.defaultPromotionId]',i.defaultPromotionId)
               // 参加促销的商品
               let promotion = {}
               for (let j of i.promotionList) {
@@ -253,6 +285,7 @@
               }
               promotion.productItems = [i]
               data.promotions.push(promotion)
+              
               obj[i.defaultPromotionId] = 1
             } else {
               for (let index in data.promotions) {
@@ -265,8 +298,10 @@
           if (noPromotionData) { data.promotions.push(noPromotionData) }
           datas.push(data)
         })
+         console.log('datadatadatadatadatadatadata',datas)
         this.setChecked(datas)
         this.shoppingCarts = datas
+        console.log('this.shoppingCarts',this.shoppingCarts)
         this.checkedObj = JSON.parse(JSON.stringify(this.checkedObj))
       },
       // 设置check-icon的绑定对象
@@ -292,6 +327,8 @@
         this.handleRes(list)
         this.list = list
         this.promotionPopupFlag = false
+        this.promotionActive1 = -1
+        this.promotionActive2 = -1
       },
       // 计算总价
       getSum () {
@@ -721,6 +758,9 @@
         this.editFlag = false
       }
     },
+    updated () {
+      console.log('dsfsdf',this.shoppingCarts)
+    },
     mounted: function () {  
       let userInfo = sessionStorage.getItem('userInfo')
       if (userInfo) {
@@ -803,7 +843,7 @@
       //     // sku
       //     this.specArray = []
       //     // ----------已选sku组合[{specId,specName,specValueId,specValueName}]
-      //     // this.specArrayOn = []
+      //     this.specArrayOn = []
       //     this.usedSpecValueArray = []
       //     this.skuSpecArray = []
       //   }
@@ -864,6 +904,29 @@
       .shoppingCart-content-center
         height 440px
         overflow auto
+        .promotion-info
+          min-height 45px
+          margin-bottom -10px
+          background #fafafa
+          // padding-bottom 5px
+          // overflow hidden
+          span
+            font-size: 14px
+            display block
+            float left
+            border 1px solid $blue
+            background $blue
+            color #fff
+            border-radius 6px
+            padding 5px 5px
+            margin 0 0 0 45px
+            transform translateY(10px)
+          a
+            font-size 14px
+            line-height 40px
+            color #4a90e2
+            float right
+            margin 5px 68px 0 0
         .shoppingCart-product
           height 110px
           padding 0 50px 50px 50px
@@ -909,9 +972,46 @@
             .price
               $mb(10px)
               color $blue
-          .num
+          .numPromotion
             float right
-            $mt(53px)
+            $mt(19px)
+            position relative
+            .promotion-box
+              text-align center
+              line-height 40px
+              color #4a90e2
+              span
+                cursor pointer
+              div
+                position absolute
+                width 210px
+                left -107px
+                z-index 20
+                background #fff
+                $border(1,1px)
+                $border(border-left,4px)
+                padding 20px 0 20px 20px
+                p
+                  text-align left
+                  width 160px
+                  border-bottom 1px solid #ccc
+                  height 36px
+                  line-height 36px
+                  cursor pointer
+                  a
+                    color $blue
+                    span
+                      float right
+                      font-size 20px
+              .v-enter,.v-leave-to
+                  opacity :0
+              .v-enter-active
+                  transition all .5s
+              .v-leave-active
+                  transition all .4s
+            .activeColor
+              color #fff
+              background-color $blue
             .tb-stock 
               position relative
               float left  

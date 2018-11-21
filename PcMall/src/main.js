@@ -56,6 +56,43 @@ router.beforeEach((to, from, next) => {
   } else {
     next()
   }
+
+  // if (to.meta.intercept) {
+  //   if (sessionInfo) {
+  //     // if (to.path === '')
+  //     next()
+  //   } else {
+  //     // Vue.$vux.confirm.show({
+  //     //   content: '用户未登录',
+  //     //   confirmText: '去登录',
+  //     //   onConfirm: () => {
+  //     //     next({path: '/signin'})
+  //     //   },
+  //     //   onCancel: () => {
+  //     //     console.log(to.name)
+  //     //     if (['mine', 'mySet', 'myAccount', 'myPassword', 'myInfo', 'myNickname', 'myCollection', 'myOrders', 'myOrderDetail'].indexOf(to.name) !== -1) {
+  //     //       next({path: '/mine'})
+  //     //     }
+  //     //   }
+  //     // });
+  //     iView.Modal.confirm({
+  //       title: '',
+  //       content: '<p>用户未登录</p>',
+  //       okText: '去登陆',
+  //       cancelText: '取消',
+  //       onOk: () => {
+  //         next({path: '/login'})
+  //       },
+  //       onCancel: () => {
+  //         if (['mine', 'mySet', 'myAccount', 'myPassword', 'myInfo', 'myNickname', 'myCollection', 'myOrders', 'myOrderDetail'].indexOf(to.name) !== -1) {
+  //           next({path: '/mine'})
+  //         }
+  //       }
+  //     })
+  //   }
+  // } else {
+  //   next()
+  // }
 })
 
 router.afterEach(() => {
@@ -64,23 +101,23 @@ router.afterEach(() => {
 })
 
 // 配置Ajax拦截器，处理全局异步请求的交互
-// Ajax.$interceptor.requestThen = function (config) {
-//   iView.LoadingBar.start()
-//   if (config.certified) {
-//     if (!sessionStorage.getItem('userInfo')) {
-//       iView.LoadingBar.error()
-//       iView.Message.error({
-//         content: `用户未登录，请重新登录!`
-//       })
-//       router.replace({path: '/home'})
-//       if (config.source) {
-//         config.source.cancel()
-//       }
-//       // Promise.cancel()
-//       return
-//     }
-//   }
-// }
+Ajax.$interceptor.requestThen = function (config) {
+  iView.LoadingBar.start()
+  if (config.certified) {
+    if (!sessionStorage.getItem('userInfo')) {
+      iView.LoadingBar.error()
+      iView.Message.error({
+        content: `用户未登录，请重新登录!`
+      })
+      router.replace({path: '/home'})
+      if (config.source) {
+        config.source.cancel()
+      }
+      // Promise.cancel()
+      return
+    }
+  }
+}
 
 Ajax.$interceptor.requestThen = function (config) {
   iView.LoadingBar.start()
@@ -102,8 +139,8 @@ Ajax.$interceptor.requestThen = function (config) {
       // })
       iView.Modal.confirm({
         title: '',
-        content: '<p>用户未登录</p>',
-        okText: '去登陆',
+        content: '<p>用户未登录-收藏</p>',
+        okText: '去登录-收藏',
         cancelText: '取消',
         onOk:()=>{
           router.push({path: '/login'})
