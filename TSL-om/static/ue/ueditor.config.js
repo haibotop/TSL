@@ -39,7 +39,7 @@
         //工具栏上的所有的功能按钮和下拉框，可以在new编辑器的实例时选择自己需要的从新定义
         , toolbars: [[
             'source', '|', 'undo', 'redo', '|',
-            'bold', 'italic', 'underline', 'strikethrough', 'removeformat', '|', 'forecolor', 'insertorderedlist', 'insertunorderedlist', 'cleardoc', '|',
+            'bold', 'italic', 'underline', 'strikethrough', 'removeformat', '|', 'link', 'unlink', '|', 'forecolor', 'insertorderedlist', 'insertunorderedlist', 'cleardoc', '|',
             'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
             'fontfamily', 'fontsize', '|',
             'directionalityltr', 'directionalityrtl', 'indent', '|',

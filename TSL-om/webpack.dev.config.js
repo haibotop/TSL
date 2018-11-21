@@ -20,7 +20,7 @@ Object.keys(webpackBaseConfig.entry).forEach(function (name) {
 
 module.exports = merge(webpackBaseConfig, {
   // cheap-module-eval-source-map is faster for development
-  devtool: '#cheap-module-eval-source-map',
+  devtool: '#eval-source-map',
   output: {
     publicPath: '/',
     filename: `${config.assetsPath}/js/[name].js`,

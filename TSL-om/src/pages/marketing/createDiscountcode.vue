@@ -51,6 +51,12 @@
     overflow-y: auto;
     overflow-x: hidden;
   }
+  .ppppp .ivu-form-item-label::before{
+    content:''!important
+  }
+  .discountCode .ivu-form-item-error-tip {
+    width:280px
+  }
 </style>
 <template>
   <div id="createCoupon">
@@ -86,37 +92,45 @@
       </FormItem>
       <!-- <FormItem label="生成张数：" style="width: 100%;" prop="total">
         <Input  style="width:238px" v-model="local.total"></Input>
-      </FormItem>
-      <FormItem label="领取张数：" style="width: 100%;"prop="limitGet">
+      </FormItem> -->
+      <!-- <FormItem label="领取张数：" style="width: 100%;"prop="limitGet">
         <Input  style="width:238px" v-model="local.limitGet"></Input>折扣码可使用次数
       </FormItem> -->
-      <FormItem label="折扣码可使用次数：（改）" style="width: 100%;"prop="limitGet">
-        <Input  style="width:238px" v-model="local.limitGet"></Input>
+      <FormItem label="折扣码可使用次数：" style="width: 100%;" prop="circleTimes">
+        <Input  style="width:238px" v-model="local.circleTimes"></Input>
       </FormItem>
       <FormItem label="选择规则：" class="ivu-form-item-required" style="width: 100%;" prop="rules">
         <Select v-model="local.rules" @on-change="onChange" style="width:238px">
           <Option v-for="item in rulesList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
       </FormItem>
-      <FormItem v-if="local.rules===1" label="满：" style="width: 100%;" prop="fullSubtract">
-        <Input v-model="local.fullSubtract" style="width:238px"></Input> 元
+      <FormItem v-if="local.rules===1" label="满：" style="width: 100%;" prop="minExpense">
+        <Input v-model="local.minExpense" style="width:238px"></Input> 元
       </FormItem>
-      <FormItem v-if="local.rules!==null&&local.rules!==3" label="减：" style="width: 100%;" prop="subtract">
-        <Input v-model="local.subtract" style="width:238px"></Input> 元
+      <FormItem v-if="local.rules!==null&&local.rules!==3" label="减：" style="width: 100%;" prop="discountAmount">
+        <Input v-model="local.discountAmount" style="width:238px"></Input> 元
       </FormItem>
-      <FormItem v-if="local.rules===3" v-for="(list,index) in discountList" :key="index" label="满：" style="width: 50%;" prop="subtract">
-        <Input v-model="list.num1" style="width:100px"></Input> 件&nbsp&nbsp&nbsp
-        打<Input v-model="list.num2" style="width:100px"></Input> 折<span v-if="index!==0" @click="delDiscountList(index)" style="color:#0000ff;cursor:pointer;margin-left:10px">-删除本级促销</span>
-      </FormItem>
+      <!-- 折扣码 -->
+      <div v-if="local.rules===3" v-for="(list,index) in local.discountList" :key="index" class="discountCode">
+        <FormItem label="满" style="width: 29%;" :prop="'discountList.' + index + '.num1'" :rules="local_rule.minQuantity">
+          <Input v-model="list.num1" style="width:100px;margin-right:6px"></Input> 件
+        </FormItem>
+        <FormItem label="打" class="ppppp" style="margin-left: -150px;width: 40%;" :prop="'discountList.' + index + '.num2'" :rules="local_rule.discountRatio">
+          <Tooltip placement="right">
+            <div slot="content"><p>请输入1~9.9之间的数</p><p>小数点后保留1位</p></div>
+            <Input v-model.trim="list.num2" :maxlength="4" style="width:100px;margin-left:6px;margin-right:6px"></Input> 折
+          </Tooltip>
+          <span v-if="index!==0" @click="delDiscountList(index)" style="color:#0000ff;cursor:pointer;margin-left:10px">-删除本级促销</span>
+        </FormItem>
+      </div>
       <!-- <FormItem label="可叠加使用：" style="width: 100%;">
         <Checkbox v-model="local.isOverlay"></Checkbox>
       </FormItem> -->
-      <!-- <div>添加多级促销<span>（最多添加4级）</span></div> -->
-      <FormItem v-if="local.rules===3" @click.native="addDiscountList" style="width: 100%;color:#0000ff;cursor:pointer">
-        +添加多级促销<span style="color:#ff0000">（最多添加4级）</span>
+      <FormItem v-if="local.rules===3" style="width: 100%;color:#0000ff">
+        <span @click="addDiscountList" style="cursor:pointer">+添加多级促销<span style="color:#ff0000">（最多添加4级）</span></span>
       </FormItem>
-      <FormItem label="不与其他活动的折扣码叠加使用（改）" style="width: 100%;">
-        <Checkbox v-model="local.isOverlay"></Checkbox>
+      <FormItem label="不与其他活动的折扣码叠加使用" style="width: 100%;">
+        <Checkbox v-model="local.exclusived"></Checkbox>
       </FormItem>
       <FormItem label="折扣码活动描述：" style="width: 100%;" prop="memo">
         <Input type="textarea" v-model.trim="local.memo" :maxlength="100" style="width:500px;" :autosize="{minRows:4}"></Input>
@@ -201,10 +215,10 @@
 
     <Modal v-model="modal3" width="400">
       <p style="color:#19be6b;font-size:18px;">提交成功！</p>
-      <p>是否继续创建优惠券？</p>
+      <p>是否继续创建折扣码？</p>
       <div slot="footer" style="text-align:center;">
         <Button type="success" @click="initcp">是，继续创建</Button>
-        <Button type="success" @click="gotolist">否，去优惠券列表</Button>
+        <Button type="success" @click="gotolist">否，去折扣码列表</Button>
       </div>
     </Modal>
   </div>
@@ -221,7 +235,6 @@
     components: {Loading},
     data () {
       return {
-        discountList: [{num1:'',num2:''}],
         labeltxt1: '选择商品：',
         labeltxt2: '已选择商品：',
         loading: false,
@@ -233,15 +246,16 @@
         modal3: false,
         // 初始化
         local: {
+            discountList: [{num1:'',num2:''}],
             name: '',
             total: '',
-            limitGet: '',
+            circleTimes: '',
             rules: null,
-            fullSubtract: '',
-            subtract: '',
+            minExpense: '',
+            discountAmount: '',
             startDate: '',
             endDate: '',
-            isOverlay: false,
+            exclusived: false,
             memo: ''
         },
         local_rule: {
@@ -249,10 +263,24 @@
             startDate: [{required: true, message: '必填项不可为空', trigger: 'change'}],
             endDate: [{required: true, message: '必填项不可为空', trigger: 'change'}],
             total: [{required: true, message: '必填项不可为空', trigger: 'blur'}, {message: '请输入大于0的10位以内整数', trigger: 'blur', pattern: /^(?!0+$)\d{0,10}$/}],
-            limitGet: [{required: true, message: '必填项不可为空', trigger: 'blur'}, {message: '请输入大于0的4位以内整数', trigger: 'blur', pattern: /^(?!0+$)\d{0,4}$/}],
+            circleTimes: [{required: true, message: '必填项不可为空', trigger: 'blur'}, {message: '请输入大于0的4位以内整数', trigger: 'blur', pattern: /^(?!0+$)\d{0,4}$/}],
             rules: [{required: true, type: 'number', message: '必填项不可为空', trigger: 'change'}],
-            fullSubtract: [{required: true, message: '必填项不可为空', trigger: 'blur'}, {message: '请输入8位整数、2位小数以内的数字', trigger: 'blur', pattern: /^\d{1,8}(\.\d{0,2})?$/}],
-            subtract: [{required: true, message: '必填项不可为空', trigger: 'blur'}, {message: '请输入8位整数、2位小数以内的数字', trigger: 'blur', pattern: /^\d{1,8}(\.\d{0,2})?$/}]
+            minExpense: [{required: true, message: '必填项不可为空', trigger: 'blur'}, {message: '请输入8位整数、2位小数以内的数字', trigger: 'blur', pattern: /^\d{1,8}(\.\d{0,2})?$/}],
+            discountAmount: [{required: true, message: '必填项不可为空', trigger: 'blur'}, {message: '请输入8位整数、2位小数以内的数字', trigger: 'blur', pattern: /^\d{1,8}(\.\d{0,2})?$/}],
+            minQuantity: [{required: true, message: '必填项不可为空', trigger: 'blur'}, {message: '请输入大于0的4位以内整数', trigger: 'blur', pattern: /^(?!0+$)\d{0,4}$/}],
+            discountRatio: [{
+            required: true,
+            validator: (rule, value, callback) => {
+              if (!value) {
+                callback(new Error(' '))
+              } else if (!tool.validDiscountNum(value)) {
+                callback(new Error('请输入1~9.9之间的数（小数点后保留1位）'))
+              } else {
+                callback()
+              }
+            },
+            trigger: 'blur'}],
+          
         },
         rulesList: [
           {
@@ -572,16 +600,20 @@
     },
     methods: {
       onChange(){
-        this.discountList.splice(1,this.discountList.length)
-        this.$set(this.discountList[0],'num1','')
-        this.$set(this.discountList[0],'num2' ,'')
+        this.local.discountList.splice(1,this.local.discountList.length)
+        this.$set(this.local.discountList[0],'num1','')
+        this.$set(this.local.discountList[0],'num2' ,'')
       },
       delDiscountList(index){
-        this.discountList.splice(index,1)
+        this.local.discountList.splice(index,1)
       },
       addDiscountList(){
-        if(this.discountList.length < 4){
-          this.discountList.push({})
+        if(this.local.discountList.length < 4){
+          this.index++
+          this.local.discountList.push({
+            num1:'',
+            num2:''
+          })
         }
       },
       // 选择类型
@@ -606,13 +638,9 @@
           this.$Message.warning('结束日期不能早于开始日期')
           return false
         }
-        if (Number(this.local.total) < Number(this.local.limitGet)) {
-          this.$Message.warning('领取张数不能大于生成张数')
-          return false
-        }
         return true
       },
-      // 提交优惠券信息
+      // 提交折扣码信息
       saveCoupon () {
         if (!(this.checkDate())) {
           return
@@ -631,33 +659,47 @@
               'name': this.local.name,
               'startDate': this.local.startDate + ':00',
               'endDate': this.local.endDate + ':00',
-              'total': Number(this.local.total),
-              'limitGet': Number(this.local.limitGet),
+              // 'total': Number(this.local.total),
+              'circleTimes': Number(this.local.circleTimes),
               'rules': this.local.rules,
-              // 'fullSubtract': Number(this.local.fullSubtract),
-              'subtract': Number(this.local.subtract) * 100,
-              'isOverlay': this.local.isOverlay ? 2 : 1,
-              'memo': this.local.memo
+              // 'minExpense': Number(this.local.minExpense),
+              'discountAmount': Number(this.local.discountAmount) * 100,
+              'exclusived': this.local.exclusived ? 2 : 1,
+              'memo': this.local.memo,
             }
             if (params.rules === 1) {
-              params.fullSubtract = Number(this.local.fullSubtract) * 100
+              params.minExpense = Number(this.local.minExpense) * 100
+            }
+            //折扣码
+            if(params.rules === 3){
+              let discountcodePieceLists = []
+              for(let item of this.local.discountList){
+                let obj = {}
+                obj.discountRatio = Number(item.num1)
+                obj.minQuantity = Number(item.num2) * 10
+                discountcodePieceLists.push(obj)
+              }           
+                params.discountcodePieceLists = discountcodePieceLists
             }
             let temparr = []
             if (params.type === 1) {
               for (let i = 0; i < this.data1.length; i++) {
-                temparr.push({'productId': this.data1[i].skuId})
+                // temparr.push({'productId': this.data1[i].skuId})
+                temparr.push({'id': this.data1[i].skuId})//改动 id
               }
               params.productIds = temparr
             } else {
               for (let i = 0; i < this.data4.length; i++) {
-                temparr.push({'categoryId': this.data4[i].id})//改动 id
+                // temparr.push({'categoryId': this.data4[i].id})
+                temparr.push({'id': this.data4[i].id})//改动 id
               }
               params.categoryIds = temparr
             }
             // console.log(params)
             const self = this
             this.loading = true
-            this.$http.post(...mkAPI.createCoupon(params)).then((response) => {
+            console.log(params)
+            this.$http.post(...mkAPI.createDiscount(params)).then((response) => {
               self.loading = false
               if (response.data.code === 200) {
                 this.modal3 = true
@@ -1060,7 +1102,7 @@
         this.getData3List()
       },
       gotolist () {
-        this.$router.push({path: '/home/couponList'})
+        this.$router.push({path: '/home/discountcodeList'})
       }
     },
     mounted () {

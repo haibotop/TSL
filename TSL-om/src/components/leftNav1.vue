@@ -98,7 +98,6 @@
     mounted: function () {
       // 开启动态权限数据
       this.getSessionPower((val) => {
-        console.log('val',val)
         if (val.length === 0) {
           this.$Message.warning({content: '该用户任何没有权限'})
         }
@@ -122,7 +121,6 @@
           let pwdUserInfo = sessionStorage.getItem('userInfo')
           let us = cryptoJs.AES.decrypt(pwdUserInfo, 'key', 'conf')
           let qxContent = JSON.parse(us.toString(cryptoJs.enc.Utf8))
-          console.log('qxContent',qxContent )
           callback(qxContent.menuVoList)
         }
       },
@@ -160,7 +158,6 @@
             c.currentView = c.url.split('/')[2]
           }
         }
-        console.log('arr',arr)
         this.dataArr = arr
       }
     },

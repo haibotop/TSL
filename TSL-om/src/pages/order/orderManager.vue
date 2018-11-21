@@ -6,13 +6,18 @@
     margin: 10px;
   }
   .width-40 {
-    width: 40%;
+    width: 33%;
   }
   .width-55 {
-    width: 55%;
+    width: 36%;
+    margin-left: -5%;
+    margin-right: 5%!important
   }
   .width-49{
     width:49%;
+  }
+  .width-24{
+    width: 24%
   }
   .margin-0-10 {
     margin: 0px 10px;
@@ -70,8 +75,11 @@
         <Input class="order-input" v-model="local.orderNo"/>
       </FormItem>
       <FormItem label="订单金额：" class="width-55" :label-width="110">
-        <Input class="my-date" v-model="local.amountFrom" placeholder="最小金额" style="width: 170px;"/>
-        <Input class="my-date" v-model="local.amountTo" placeholder="最大金额" style="width: 170px;"/>
+        <Input class="my-date" v-model="local.amountFrom" placeholder="最小金额" style="width: 140px;"/>
+        <Input class="my-date" v-model="local.amountTo" placeholder="最大金额" style="width: 140px;"/>
+      </FormItem>
+      <FormItem label="折扣码：" class="width-24" :label-wdth="110">
+        <Input class="order-input" v-model="local.discountCode"/>
       </FormItem>
       <FormItem label="订单状态：" class="width-40" :label-width="110">
         <Select class="order-input" v-model="local.status" >
@@ -79,26 +87,32 @@
         </Select>
       </FormItem>
       <FormItem label="下单时间：" class="width-55" :label-width="110">
-        <DatePicker v-model="local.createDateFrom" type="date" format="yyyy-MM-dd" placeholder="选择日期和时间" style="width: 170px"></DatePicker>
-        <DatePicker v-model="local.createDateTo" type="date" format="yyyy-MM-dd" placeholder="选择日期和时间" style="width: 170px"></DatePicker>
+        <DatePicker v-model="local.createDateFrom" type="date" format="yyyy-MM-dd" placeholder="选择日期和时间" style="width: 140px"></DatePicker>
+        <DatePicker v-model="local.createDateTo" type="date" format="yyyy-MM-dd" placeholder="选择日期和时间" style="width: 140px"></DatePicker>
+      </FormItem>
+      <FormItem label="系统员工编号：" class="width-24 " :label-width="110">
+        <Input class="order-input" style="width:151px" v-model="local.systemStaffNum" :maxlength="11"/>
       </FormItem>
       <FormItem label="设计编码：" class="width-40 receiver-width" :label-width="110">
         <Input class="order-input" v-model="local.merchantName"></Input>
       </FormItem>
       <FormItem label="付款时间：" class="width-55" :label-width="110">
-        <DatePicker v-model="local.payDateFrom" type="date" format="yyyy-MM-dd" placeholder="选择日期和时间" @clearable = 'true' style="width: 170px"></DatePicker>
-        <DatePicker v-model="local.payDateTo" type="date" format="yyyy-MM-dd" @clearable = 'true' placeholder="选择日期和时间" style="width: 170px"></DatePicker>
+        <DatePicker v-model="local.payDateFrom" type="date" format="yyyy-MM-dd" placeholder="选择日期和时间" @clearable = 'true' style="width: 140px"></DatePicker>
+        <DatePicker v-model="local.payDateTo" type="date" format="yyyy-MM-dd" @clearable = 'true' placeholder="选择日期和时间" style="width: 140px"></DatePicker>
+      </FormItem>
+      <FormItem label="员工编号：" class="width-24" :label-wdth="110">
+        <Input class="order-input" v-model="local.StaffNum"/>
       </FormItem>
       <FormItem label="用户注册手机：" class="width-40 receiver-width" :label-width="110">
         <Input class="order-input" v-model="local.memberMobile" :maxlength="11"/>
       </FormItem>
-      <FormItem label="收货人姓名：" class="width-40 receiver-width" :label-width="110">
+      <FormItem label="收货人姓名：" class="width-55 receiver-width" :label-width="110">
         <Input class="order-input" v-model="local.receiverName"></Input>
       </FormItem>
       <FormItem label="收货人电话：" class="width-40 receiver-width" :label-width="110">
         <Input class="order-input" v-model="local.receiverMobile" :maxlength="11"></Input>
       </FormItem>
-      <FormItem label="商品名称：" class="width-40 receiver-width" :label-width="110">
+      <FormItem label="商品名称：" class="width-55 receiver-width" :label-width="110">
         <Input class="order-input" v-model="local.productName"></Input>
       </FormItem>
       <FormItem label="TSL会员号：" class="width-40 receiver-width" :label-width="110">
@@ -440,7 +454,24 @@
             width: 180,
             align: 'center'
           },
-          
+          {
+            title: '折扣码',
+            key: 'discountCode',
+            width: 180,
+            align: 'center'
+          },
+          {
+            title: '系统员工编码',
+            key: 'systemStaffNum',
+            width: 180,
+            align: 'center'
+          },
+          {
+            title: '员工编码',
+            key: 'StaffNum',
+            width: 180,
+            align: 'center'
+          },
         ],
         data1: [],
         // 批量出库
@@ -582,7 +613,10 @@
           receiverMobile: null,
           tslNo: null,
           productName: null,
-          merchantName: null
+          merchantName: null,
+          discountCode: null,
+          systemStaffNum: null,
+          StaffNum:null
         },
         orderStartTime: '',
         orderEndTime: '',
@@ -809,6 +843,7 @@
         if (params.amountTo) {
           params.amountTo = this.convertFen(params.amountTo)
         }
+        console.log('params',params)
         this.$http.post(...omAPI.postOrderList(this.pageNum, this.pageSize, params))
           .then((response) => {
             if (response.data.code === 200) {
@@ -838,11 +873,14 @@
         this.local.payDateFrom = ''
         this.local.payDateTo = ''
         this.local.memberMobile = ''
-        this.local.receiverNam = null
+        this.local.receiverName = null
         this.local.receiverMobile = null
         this.local.tslNo = null
         this.local.productName = null
         this.local.merchantName = null
+        this.local.discountCode = null,
+        this.local.systemStaffNum = null,
+        this.local.StaffNum = null
       },
       cancelSend () {
         this.modal1 = false
@@ -1255,7 +1293,6 @@
         if (params.amountTo) {
           params.amountTo = this.convertFen(params.amountTo)
         }
-
         this.exportExcel(this.param(params))
       },
       exportExcel (obj) {

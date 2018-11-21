@@ -805,6 +805,7 @@ color: red;
                   if (this.model1 !== '') {
                     this.model2 = b.secondCategory[0].id
                     this.list2 = b.secondCategory
+                    this.secondCheck (b.secondCategory[0].id)
                   }
                 }
               }
