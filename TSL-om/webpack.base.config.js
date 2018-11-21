@@ -14,14 +14,6 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|es6|vue)$/,
-        loader: 'eslint-loader',
-        enforce: 'pre',
-        options: {
-          formatter: require('eslint-friendly-formatter')
-        }
-      },
-      {
         test: /\.vue$/,
         loader: 'vue-loader',
         options: {

@@ -394,38 +394,39 @@ export default {
       second = second < 10 ? ('0' + second) : second
       return y + '-' + m + '-' + d + ' ' + h + ':' + minute + ':' + second
     },
-    // judgeStartTime (status) {
-    //   if (!status) {
-    //     let startTime = ''
-    //     let endTime = ''
-    //     if (this.startTime) {
-    //       startTime = this.formatDateTime(this.startTime)
-    //     }
-    //     if (this.endTime) {
-    //       endTime = this.formatDateTime(this.endTime)
-    //       if (endTime < startTime) {
-    //         this.startTime = ''
-    //         this.endTime = ''
-    //       }
-    //     }
-    //   }
-    // },
-    // judgeEndTime (status) {
-    //   if (!status) {
-    //     let startTime = ''
-    //     let endTime = ''
-    //     if (this.endTime) {
-    //     }
-    //     if (this.startTime) {
-    //       startTime = this.formatDateTime(this.startTime)
-    //       if (endTime < startTime) {
-    //         this.startTime = ''
-    //         this.endTime = ''
-    //         this.$Message.error({content: '日期选择有误!请重新选择正常时间搜索范围。'})
-    //       }
-    //     }
-    //   }
-    // },
+    //为什么注释
+    judgeStartTime (status) {
+      if (!status) {
+        let startTime = ''
+        let endTime = ''
+        if (this.startTime) {
+          startTime = this.formatDateTime(this.startTime)
+        }
+        if (this.endTime) {
+          endTime = this.formatDateTime(this.endTime)
+          if (endTime < startTime) {
+            this.startTime = ''
+            this.endTime = ''
+          }
+        }
+      }
+    },
+    judgeEndTime (status) {
+      if (!status) {
+        let startTime = ''
+        let endTime = ''
+        if (this.endTime) {
+        }
+        if (this.startTime) {
+          startTime = this.formatDateTime(this.startTime)
+          if (endTime < startTime) {
+            this.startTime = ''
+            this.endTime = ''
+            this.$Message.error({content: '日期选择有误!请重新选择正常时间搜索范围。'})
+          }
+        }
+      }
+    },
     // 请求查询
     querryData () {
       let startTime = null
@@ -502,6 +503,7 @@ export default {
           this.seleList2 = this.seleList1[i].secondCategory
           this.secSele = this.seleList2[0].name
           this.categoryId = this.seleList2[0].id
+          this.list2Change(this.seleList2[0].name)
           break
         }
       }

@@ -55,26 +55,30 @@ export function preCartToCart (this_, callback) {
       this_.$http.post(...cartAPI.visitorCartItem(params)).then(res => {
         if (res.data.code === 200) {
           if (this_.$route.path === 'shoppingCart') {
-            this_.$vux.toast.show({text: '预购物袋合并成功', type: 'text', width: '200px'})
+            // this_.$vux.toast.show({text: '预购物袋合并成功', type: 'text', width: '200px'})
+            this_.$Message.success({content:'预购物袋合并成功',duration:3})
           }
           if (typeof callback === 'function') {
             callback()
           }
         } else if (res.data.code === 1007) {
           if (this_.$route.path === 'shoppingCart') {
-            this_.$vux.toast.show({text: '购买数量超过库存', type: 'text', width: '200px'})
+            // this_.$vux.toast.show({text: '购买数量超过库存', type: 'text', width: '200px'})
+            this_.$Message.error({content:'购买数量超过库存',duration:3})
           }
           sessionStorage.removeItem('settlementProductItems')
           callback()
         } else if (res.data.code === 1008) {
           if (this_.$route.path === 'shoppingCart') {
-            this_.$vux.toast.show({text: '商品不可用', type: 'text', width: '200px'})
+            // this_.$vux.toast.show({text: '商品不可用', type: 'text', width: '200px'})
+            this_.$Message.error({content:'商品不可用',duration:3})
           }
           sessionStorage.removeItem('settlementProductItems')
           callback()
         } else {
           if (this_.$route.path === 'shoppingCart') {
-            this_.$vux.toast.show({text: '预购物袋合并失败', type: 'text', width: '200px'})
+            // this_.$vux.toast.show({text: '预购物袋合并失败', type: 'text', width: '200px'})
+            this_.$Message.error({content:'预购物袋合并失败',duration:3})
           }
           sessionStorage.removeItem('settlementProductItems')
           callback()
