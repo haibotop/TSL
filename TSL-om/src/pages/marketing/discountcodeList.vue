@@ -144,22 +144,16 @@
     </Modal>
     <Modal v-model="couponListBoolean" title="券码列表" width="800">
       <div class="ccSearch">
-        <Form :label-width="120">
-          <div class="ccItem">
+        <Form :label-width="100" inline>
             <FormItem label="折扣码：">
-              <Input placeholder="折扣码" v-model="couponTabsData.discountCode"></Input>
+              <Input placeholder="折扣码" style="width:120px;" v-model="couponTabsData.discountCode"></Input>
             </FormItem>
-          </div>
-          <div class="ccItem">
             <FormItem label="员工编号：">
-              <Input placeholder="员工编号" v-model="couponTabsData.operator"></Input>
+              <Input placeholder="员工编号" style="width:120px;" v-model="couponTabsData.operator"></Input>
             </FormItem>
-          </div>
-          <div class="ccItem">
             <FormItem label="订单编号：">
-              <Input placeholder="订单编号"  v-model="couponTabsData.consumeOrder"></Input>
+              <Input placeholder="订单编号" style="width:120px;"  v-model="couponTabsData.consumeOrder"></Input>
             </FormItem>
-          </div>
           <div class="ccItemNew">
             <Button class="btnsize" @click="handdleCouponTabSearch">查询</Button>
             <Button class="btnsize" @click="handdleCouponTabReset">重置</Button>
