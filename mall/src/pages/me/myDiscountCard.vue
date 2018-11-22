@@ -104,7 +104,7 @@
         <div class="cardList_right">
           <p class="zkmCode">折扣码：{{item.discountcode}}</p>
           <p class="expiryDate">有效期：{{(item.startDate || '').replace("T", " ").split(' ')[0]}}至{{(item.endDate || '').replace("T", " ").split(' ')[0]}}</p>
-          <p class="useNow">立即使用</p>
+          <p class="useNow" @click="disUseNow(item.discountcode)">立即使用</p>
           <p class="lookDetail" @click="lookDetail1(index)">查看明细<img src="../../assets/icons/icon_drop_down.png" alt=""></p>
         </div>
         <div class="cardList_bottom" v-show="lookDetailIndex1 == index">
@@ -134,7 +134,8 @@
       </div>
     </div>
     <div class="group" v-show="tabIndex === 2">
-      <div class="cardList" v-for="(item,index) in loseEfficacyItem">
+      <div v-if="loseEfficacyItem.id == null"></div>
+      <div v-else class="cardList"  v-for="(item,index) in loseEfficacyItem">
         <div class="cardList_left" style="background-color: #8B8B8B">
           <p class="disPrice">￥{{item.discountAmount}}</p>
           <p class="manjian" v-show="item.rule   === 2">直减</p>
@@ -191,6 +192,9 @@ export default {
     this.loseEfficacy() // 已失效
   },
   methods: {
+    disUseNow (discountcode) {
+      this.$router.push({path: '/couponPl', query: {'discountcode': discountcode}})
+    },
     readyTrade () { // 已兑换
        let parms = {
            status: 1, // 1：已兑换2：已使用3：已失效 ,
@@ -199,6 +203,8 @@ export default {
         this.$http.post(...disAPI.getDiscountList(parms))
           .then(res => {
             this.readyTradeItem = res.data.couponIds
+            console.log('this.readyTradeItem', this.readyTradeItem)
+            // Object.assign()
           })
     },
     readyUsed () { // 已使用
@@ -218,7 +224,7 @@ export default {
       }
       this.$http.post(...disAPI.getDiscountList(parms))
         .then(res => {
-          this.loseEfficacyItem = res.data.couponIds
+          this.loseEfficacyItem = res.data.couponIds || []
         })
     },
     lookDetail1 (index) { // 查看已兑换明细

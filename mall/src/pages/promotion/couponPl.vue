@@ -153,7 +153,7 @@
             param.dateStatus = 1
             break
         }
-        param.promotionId = this.$route.query.couponId || this.$route.query.promotionId
+        param.promotionId = this.$route.query.couponId || this.$route.query.promotionId || this.$route.query.discountcode
         this.getProduct(param, this.pageSize, this.currentPage)
       },
       //  ---------- 根据优惠券信息获取商品集合
@@ -163,6 +163,8 @@
           api = mkApi.getCouponSku
         } else if (this.$route.query.promotionId) {
           api = mkApi.getPromSku
+        } else if (this.$route.query.discountcode) {
+          api = mkApi.getDiscountProduct
         } else {
           return
         }

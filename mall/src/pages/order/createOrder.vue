@@ -84,11 +84,11 @@
               </span>
             </div>
           </cell-box>
-          <cell-box is-link class="coupon" title="折扣码" @click.native="openCoupon">
+          <cell-box is-link class="coupon" title="折扣码" @click.native="showDiscountEvent">
             <div class="account" >
               <span class="title">
                 <span class="dis-coupon">折扣码</span>
-                <span class="discount" v-for="item in selected" :key="item.code">{{item.rules === 1 ? `满${item.fullSubtract / 100}减${item.subtract / 100}` : `直减${item.subtract / 100}`}}</span>
+                <span class="discount" v-for="item in chooseDisItem" :key="item.code">{{item.rule === 1 ? `满${item.minExpense}减${item.discountAmount}` : `直减${item.discountAmount}`}}</span>
               </span>
             </div>
           </cell-box>
@@ -98,7 +98,7 @@
             <div class="account" >
               <span class="title">
                 <span class="dis-coupon">员工编号</span>
-                <input type="text" class="memberNum" v-model="memberNumber" v-if="memberStatus">
+                <input type="text" class="memberNum" v-model="memberNumber" >
               </span>
             </div>
           </cell-box>
@@ -136,17 +136,61 @@
     </div>
     <cashier v-model="cashierFlag" :price="payAmount" :orderNum="orderNum"></cashier>
     <useCoupons v-show="couponFlag" v-model="couponFlag" ref="useCoupons" :merchants="merchants" @selected="getSelected"></useCoupons>
+    <div v-transfer-dom >
+      <popup v-model="showDiscount" position="bottom" max-height="75%" class="discountBox" :style="readyTradeItem.length >2 ? 'height:100% !important;':''">
+        <img src="../../assets/icons/icon_close_b.png" alt="" class="iconCloseDis" @click="showDiscount = false">
+        <div :class="readyTradeItem.length >2 ? 'discountBox_lit' :''">
+          <p class="disTitle" >请在方框内输入对应的折扣码，输入正确才可领取对应的优惠券，如有任何问题，请联系在线客服。</p>
+          <div v-if="readyTradeItem != null"
+               class="cardList" :class="[item.a == true ? 'cardListActived' : '',index > okUse ? 'noClick' : '']" v-for="(item,index) in readyTradeItem"
+               @click="chooseDiscount(item,index)">
+            <div class="cardList_left" :class="index > okUse ? 'noUse' : ''">
+              <p class="disPrice" v-show="item.rule  === 1 || item.rule  === 2">￥{{item.discountAmount}}</p>
+              <p class="disPrice" v-show="item.rule   === 3">满件折</p>
+              <p class="manjian" v-show="item.rule   === 2">直减</p>
+              <div class="manjian" v-show="item.rule   === 3" >
+                <p v-for="item1 in item.discountcodePiecediscountList">满{{item1.discountRatio}}件打{{item1.min_quantity/10}}折</p>
+              </div>
+              <p class="manjian" v-show="item.rule === 1">满{{item.minExpense}}减{{item.discountAmount}}</p>
+              <p class="reUse"><img src="../../assets/icons/icon_overlay.png" alt=""><span>可叠加适用</span></p>
+            </div>
+            <div class="cardList_right" :class="item.a == true ? 'cardActived' : ''">
+              <p class="zkmCode">折扣码：{{item.discountcode}}</p>
+              <p class="expiryDate">有效期：{{(item.startDate || '').replace("T", " ").split(' ')[0]}}至{{(item.endDate || '').replace("T", " ").split(' ')[0]}}</p>
+              <p class="lookDetail" @click.stop="lookDetail1(index)">查看明细<img src="../../assets/icons/icon_drop_down.png" alt=""></p>
+              <i class="rightTopCss"></i>
+            </div>
+            <div class="cardList_bottom" v-show="lookDetailIndex1 == index">
+              <p class="explain" v-if="item.memo">说明：{{item.memo || '无'}}</p>
+            </div>
+          </div>
+          <div class="discountBottom1" v-if="chooseDiscountStatus">
+            <input type="text" v-model="cashingDiscount" placeholder="请输入折扣码">
+            <span class="exchange" @click="changeDiscount">兑换</span>
+          </div>
+          <div class="discountBottom2" v-else>
+            <span class="disCancel" @click="discountCancel">取消选择</span>
+            <span class="disUse" @click="discountUse">使用</span>
+            <div style="clear:both;"></div>
+          </div>
+        </div>
+      </popup>
+    </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
+  import * as disAPI from '../../services/API/discountServices.es6'
   import * as tool from '@/services/myTool.es6'
   import * as orderAPI from '@/services/API/orderServices.es6'
   import cashier from '@/components/cashier.vue'
-  import { XHeader, Group, Cell, CellBox, XTextarea, Scroller, debounce } from 'vux'
+  import { TransferDom, XHeader, Popup, Group, Cell, CellBox, XTextarea, Scroller, debounce } from 'vux'
   import useCoupons from '@/pages/promotion/useCoupons.vue'
   export default {
+    directives: {
+      TransferDom
+    },
     name: 'createOrder',
-    components: { cashier, XHeader, Group, Cell, CellBox, XTextarea, Scroller, debounce, useCoupons },
+    components: { cashier, XHeader, Popup, Group, Cell, CellBox, XTextarea, Scroller, debounce, useCoupons },
     data () {
       return {
         scrollerHeight: 0,
@@ -162,10 +206,27 @@
         selected: [], // 已选优惠券
         sum: 0,
         memberNumber: '', // 员工编号
-        memberStatus: false
+        memberStatus: false,
+        showDiscount: false, // 折扣码弹窗
+        userId: '', // memberId
+        productId: [], // 产品Id
+        readyTradeItem: '',  // 已兑换折扣码
+        lookDetailIndex1: -1, // 查看明细
+        chooseDiscountStatus: true,
+        chooseDisItem: [], // 已选择折扣码
+        disPrice: 0, // 折扣码优惠总和
+        cashingDiscount: '', // 输入折扣码
+        okUse: 0
       }
     },
     mounted: function () {
+      this.userId = JSON.parse(sessionStorage.getItem('userInfo')).memberId
+      for (var i of JSON.parse(sessionStorage.getItem('settlementProductItems'))) {
+        for (var j of i.productItem) {
+          this.productId.push(j.productId)
+        }
+      }
+      this.readyTrade() // 已兑换折扣码
       if (sessionStorage.getItem('memberRemark')) {
         this.memberRemark = sessionStorage.getItem('memberRemark')
       }
@@ -175,6 +236,103 @@
       })
     },
     methods: {
+      changeDiscount () { // 兑换折扣码
+        let parms = {
+          couponIds: [this.cashingDiscount],
+          userId: this.userId
+        }
+        this.$http.post(...disAPI.cashingDiscountcode(parms))
+          .then(res => {
+            console.log('2222', res.data)
+            if(res.data.code == 20053){
+              this.$vux.alert.show({
+                title: '提示',
+                content: '该折扣码已兑换！'
+              })
+            } else if (res.data.code == 20055) {
+              this.$vux.alert.show({
+                title: '提示',
+                content: '折扣码输入有误！'
+              })
+            } else if (res.data.code == 200) {
+              this.$vux.alert.show({
+                title: '提示',
+                content: '兑换成功！'
+              })
+              this.readyTrade() // 已兑换折扣码
+            }
+          })
+      },
+      discountUse () {
+        let arr = this.readyTradeItem.filter(item=>{
+          return item.a == true
+        })
+        this.chooseDisItem = arr
+        this.disPrice = 0
+        for (var i of arr) {
+          this.disPrice += i.discountAmount
+        }
+        this.showDiscount = false
+      },
+      discountCancel () {
+        for (var a of this.readyTradeItem) {
+          this.$set(a, 'a', false)
+        }
+        this.showDiscount = false
+        this.chooseDiscountStatus = true
+        this.lookDetailIndex1 = -1
+        this.chooseDisItem = []
+        this.disPrice = 0
+      },
+      chooseDiscount (item, index) {
+        if (item.a) {
+          this.$set(item, 'a', false)
+        } else {
+          // this.chooseDiscountStatus = false
+          this.$set(item, 'a', true)
+          console.log('1111', item.a)
+        }
+
+        let a = this.readyTradeItem.every(item => {
+          return item.a == false || ''
+        })
+        if (a) {
+          this.chooseDiscountStatus = true
+        } else {
+          this.chooseDiscountStatus = false
+          this.chooseDisItem = []
+        }
+        // this.chooseDiscountStatus = !this.chooseDiscountStatus
+      },
+      showDiscountEvent () { // 显示折扣码弹窗
+        this.showDiscount = true
+      },
+      readyTrade () { // 已兑换折扣码
+        let parms = this.productId
+        this.$http.post(...disAPI.getDiscountInfo(parms))
+          .then(res => {
+            if (res.data.code === 200) {
+              let a = res.data.couponUseProductInfos[0]
+              console.log('fsfa', res.data.couponUseProductInfos[0])
+              this.readyTradeItem = a.couponProductUseInfo.concat(a.couponProductNoUseInfo)
+              this.okUse = a.couponProductUseInfo.length - 1
+            } else if (res.data.code === -1) {
+              this.$vux.alert.show({
+                title: '提示',
+                content: '出错了！'
+              })
+            }
+          })
+          .catch(res => {
+            this.$vux.alert.show({
+              title: '提示',
+              content: '您输入的折扣码有误！'
+            })
+          })
+      },
+      lookDetail1 (index) { // 查看已兑换明细
+        this.lookDetailIndex1 = this.lookDetailIndex1 == index ? -1 : index
+      },
       getSettlementDate () {
         if (sessionStorage.getItem('settlementProductItems')) {
           this.params = JSON.parse(sessionStorage.getItem('settlementProductItems'))
@@ -379,10 +537,12 @@
           return
         }
         sessionStorage.removeItem('memberRemark')
+        // this.chooseDisItem
         let params = {
           addressId: this.address.id,
           remark: this.memberRemark,
           couponList: []
+          // discountCode: []
         }
         for (let i of this.selected) {
           params.couponList.push({
@@ -390,6 +550,12 @@
             code: i.code
           })
         }
+        // for (let i of this.chooseDisItem) {
+        //   params.discountCode.push({
+        //     couponId: i.id,
+        //     code: i.code
+        //   })
+        // }
         this.$http.patch(...orderAPI.order(params)).then(res => {
           if (res.data.code === 200) {
             this.$vux.toast.show({type: 'text', text: '下单成功', width: '200px'})
@@ -466,7 +632,7 @@
       },
       calcAmount () {
         let couponsValue = tool.handlePrice(this.couponsValue)
-        return (this.afterPromotion - couponsValue).toFixed(2)
+        return (this.afterPromotion - couponsValue).toFixed(2) - this.disPrice
       },
       payAmount () {
         let couponsValue = tool.handlePrice(this.couponsValue)
@@ -520,6 +686,183 @@
 }
 .discount{
   color:#000;
+}
+.discountBox{
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  /*height: 100% !important;*/
+  max-height: 80%;
+  background: #fff;
+  overflow: visible;
+  .discountBox_lit{
+    overflow-y: scroll;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+  }
+  .iconCloseDis{
+    position: absolute;
+    top: -48px;
+    right: 15px;
+    width: 36px;
+    height: 48px;
+  }
+  .disTitle{
+    margin: 10px 15px 15px;
+    padding: 10px 15px;
+    background-color: #FFF4E8;
+    font-size: 14px;
+    color: #A3A3A3;
+  }
+  .noClick{
+    pointer-events: none;
+  }
+  .cardList{
+    position: relative;
+    margin: 10px 15px 0;
+    background-color: #fff;
+    font-size: 12px;
+    line-height: 24px;
+    border: 1px solid #CFCFCF;
+    .name{
+      color: #352665;
+    }
+    .zkmCode,.expiryDate,.explain{
+      color: #8b8b8b;
+    }
+    .cardList_left{
+      display: inline-block;
+      padding: 20px 0;
+      width: 30%;
+      background-color: #352665;
+      color: #fff;
+      text-align: center;
+      .disPrice{
+        font-size: 30px;
+        line-height: 36px;
+      }
+      img{
+        width: 10px;
+        margin-right: 3px;
+      }
+    }
+    .noUse{
+      background-color: #979797;
+    }
+    .cardList_right{
+      float: right;
+      width: 56%;
+      padding: 20px;
+      .lookDetail{
+        position: relative;
+        top: 16px;
+        right: 10px;
+        float: right;
+        color: #8b8b8b;
+        img{
+          position: relative;
+          top: 5px;
+          right: -10px;
+          width: 15px;
+        }
+      }
+    }
+    .cardList_right.cardActived::before{
+      position: absolute;
+      right: 0;
+      top: 0;
+      content: '';
+      display: inline-block;
+      border: 15px solid transparent;
+      border-top-color: #352665;
+      border-right-color: #352665;
+    }
+    .rightTopCss::before{
+      content: '';
+      display: inline-block;
+      position: absolute;
+      top: 8px;
+      right: 11px;
+      width: 2px;
+      height: 5px;
+      background-color: #fff;
+      transform: rotate(-45deg);
+    }
+    .rightTopCss::after{
+      content: '';
+      display: inline-block;
+      position: absolute;
+      top: 4px;
+      right: 6px;
+      width: 2px;
+      height: 10px;
+      background-color: #fff;
+      transform: rotate(-135deg);
+    }
+    .cardList_bottom{
+      position: relative;
+      padding: 10px 20px;
+    }
+    .cardList_bottom::before{
+      content: '';
+      display: inline-block;
+      position: absolute;
+      top: 0px;
+      width: 90%;
+      height: 1px;
+      background-color: #d6d6d6;
+    }
+  }
+  .cardListActived{
+    border-color: #352665;
+  }
+  .discountBottom1{
+    padding: 15px;
+    background-color: #F8F8F8;
+    input{
+      padding-left: 5px;
+      width: 65%;
+      height: 36px;
+      outline: none;
+      border-color: transparent;
+      font-size: 16px;
+    }
+    span{
+      display: inline-block;
+      width: 30%;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      background: #352665;
+      color: #fff;
+      float: right;
+    }
+  }
+  .discountBottom2{
+    padding: 15px;
+    background-color: #fff;
+    text-align: center;
+    .disCancel{
+      display: inline-block;
+      float: left;
+      width: 46%;
+      height: 38px;
+      line-height: 38px;
+      border: 1px solid #979797;
+    }
+    .disUse{
+      display: inline-block;
+      float: right;
+      width: 46%;
+      height: 38px;
+      line-height: 38px;
+      border: 1px solid #352665;
+      background-color: #352665;
+      color: #fff;
+    }
+  }
 }
 .promotion-info {
   min-height: 25px;
@@ -618,7 +961,8 @@
     color: red;
   }
   .memberNum{
-    width: 75%;
+    padding-left: 5px;
+    width: 72%;
     height: 26px;
     background: #fafafa;
     outline: none;

@@ -1,12 +1,15 @@
 const webpack = require('webpack');
+const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const merge = require('webpack-merge');
 const webpackBaseConfig = require('./webpack.base.config.js');
-var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
+const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const ReplacePlugin = require('replace-bundle-webpack-plugin');
 const fs = require('fs');
 const config = require('./webpack.config.js');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+
 
 // fs.open('./src/config/env.js', 'w', function (err, fd) {
 //   const buf = 'export default "production";';
@@ -84,6 +87,14 @@ module.exports = merge(webpackBaseConfig, {
       filename: 'index.html',
       template: './src/templates/index.ejs',
       inject: false
-    })
+    }),
+    // 把静态文件的static文件夹除了.js文件全部原封复制过去static
+    new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, 'static'),
+        to: 'static',
+        ignore: ['*.js']
+      }
+    ])
   ]
 });

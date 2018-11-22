@@ -61,16 +61,16 @@ let interval
                 loading: false,
                 Couponlist: [],
                 status: 0, // 0未领取 1未使用 2已使用 3已失效
-                pullupDefaultConfig: {
-                    content: '上拉刷新',
-                    pullUpHeight: 60,
-                    height: 40,
-                    autoRefresh: false,
-                    downContent: '释放后加载',
-                    upContent: '已到底端',
-                    loadingContent: '加载中...',
-                    clsPrefix: 'xs-plugin-pullup-'
-                }
+                // pullupDefaultConfig: {
+                //     content: '上拉刷新',
+                //     pullUpHeight: 60,
+                //     height: 40,
+                //     autoRefresh: false,
+                //     downContent: '释放后加载',
+                //     upContent: '已到底端',
+                //     loadingContent: '加载中...',
+                //     clsPrefix: 'xs-plugin-pullup-'
+                // }
             }
         },
         watch: {
@@ -179,7 +179,7 @@ let interval
                 .active
                     $border(1,2px)
             .myCoupons-right
-                padding 40px 0 0 30px
+                padding 40px 0 0 5px
                 float left
                 width 780px
                 background #fff

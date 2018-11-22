@@ -30,3 +30,7 @@ export function getCouponOrderInfo (ids) {
 export function getOptimal (params) {
   return [`campaign/Campaign/v1/getOptimalCouponOrderInfo`, params]
 }
+// 根据折扣码获取相关商品信息
+export  function getDiscountProduct (param, pagesize, pageNum) {
+  return [`/OperationManagement/OperationManagement/v1/getDiscountcodeProducts?pageSize=${pagesize}&pageNum=${pageNum}`, param]
+}

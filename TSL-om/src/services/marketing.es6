@@ -122,3 +122,38 @@ export function couponCount (id) {
 export function createDiscount (params) {
   return [`/om/OperationManagement/v1/discountCode/list`, params]
 }
+// 查看活动码折扣列表
+export function discountCodeList (params, pageSize, pageNum) {
+  return [`/om/OperationManagement/v1/discountCodeListsByConditions/list?pageSize=${pageSize}&pageNum=${pageNum}`, params]
+}
+
+// 根据ID删除折扣码。
+export function delByDiscountIds (ids) {
+  return [
+    `om/OperationManagement/v1/DelByDiscountIds`,
+    ids
+  ]
+}
+// 查看活动码折扣详情
+export function discountCodeLists (params) {
+  return [`/om/OperationManagement/v1/discountCode/lists`, params]
+}
+// GET 下载折扣码模板
+export function excelTem () {
+  return `/om/OperationManagement/v1/excelTemplateLead`
+}
+
+// 查看活动码折扣使用情况列表
+export function dCodeByConditionsLists (setObj, pageSize, pageNum) {
+  return [
+    `om/OperationManagement/v1/discountCodeListsByConditions/lists?pageSize=${pageSize}&pageNum=${pageNum}`,
+    setObj
+  ]
+}
+// 导入excel折扣码
+export function discountCodeimportListsList (setObj) {
+  return [
+    `om/OperationManagement/v1/discountCodeimportLists/list`,
+    setObj
+  ]
+}

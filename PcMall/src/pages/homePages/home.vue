@@ -4,6 +4,7 @@
     <header2></header2>
     <pageTemp :template="template"></pageTemp> 
     <v-footer></v-footer>
+    <send-coupons></send-coupons>
   </div>
 </template>
 
@@ -12,13 +13,15 @@
   import header2 from './header2'
   import pageTemp from './pageTemp'
   import vFooter from './footer.vue'
+  import sendCoupons from '../promotion/sendCoupons.vue'
   import * as pageAPI from '@/services/API/homePage.es6'
   export default {
     components:{
       header1,
       header2,
       pageTemp,
-      vFooter
+      vFooter,
+      sendCoupons
     },
     data () {
       return {

@@ -12,6 +12,10 @@
     display: inline-block;
     width: 27%;
   }
+  .ccItemNew {
+    margin:0 20px 20px;
+    text-align: right;
+  }
   .ccHandle{
     width: 30%;
   }
@@ -62,7 +66,7 @@
         <Form :label-width="140">
           <div class="ccItem">
             <FormItem label="折扣码活动名称：">
-              <Input placeholder="折扣码活动名称" style="width: 150px" v-model="couponName"></Input>
+              <Input placeholder="折扣码活动名称" style="width: 150px" v-model="name"></Input>
             </FormItem>
           </div>
           <div class="ccItem">
@@ -72,7 +76,7 @@
       </div>
       <div class="ccHandle">
         <!-- <Button class="btnsize" @click="toCreateCoupon">添加</Button> -->
-        <Button class="btnsize" style="width:120px" >下载折扣码模板（改）</Button>
+        <Button class="btnsize" style="width:120px" @click="handleDown">下载折扣码模板</Button>
         <Button class="btnsize" :disabled="deleteIdsBoolean" @click="selectDelete">删除</Button>
       </div>
     </div>
@@ -86,24 +90,22 @@
           <div class="" style="flex: 1; width: 32%;word-wrap:break-word;">
             <ul>
               <li>折扣码活动名称{{cpDetailData.name}}</li>
-              <li>开始时间：{{cpDetailData.start_date}}</li>
-              <li>修改时间：{{cpDetailData.update_date}}</li>
-              <li>限领张数：{{cpDetailData.limitGet}}</li>
+              <li>开始时间：{{cpDetailData.startDate}}</li>
+              <li>修改时间：{{cpDetailData.updateDate}}</li>
             </ul>
           </div>
           <div style="flex: 1; width: 32%; word-wrap:break-word;">
             <ul>
               <li>折扣码活动描述：{{cpDetailData.memo === '' ? '无' : cpDetailData.memo}}</li>
-              <li>结束时间：{{cpDetailData.end_date}}</li>
-              <li>{{cpDetailData.couponTypeMemo}}</li>
+              <li>结束时间：{{cpDetailData.endDate}}</li>
+              <li>满{{cpDetailData.minExpense}}减{{cpDetailData.discountAmount}}</li>
             </ul>
           </div>
           <div style="flex: 1; width: 32%">
             <ul>
               <li>类型：{{cpDetailData.typeName}}</li>
-              <li>创建时间：{{cpDetailData.create_date}}</li>
-              <!-- <li>生成张数：{{cpDetailData.total}}</li> -->
-              <li>折扣码可使用次数：（改）{{cpDetailData.total}}</li>
+              <li>创建时间：{{cpDetailData.createDate}}</li>
+              <li>折扣码可使用次数：{{cpDetailData.circleTimes}}</li>
             </ul>
           </div>
         </div>
@@ -114,19 +116,17 @@
       <div class="cpRange">
         <table ref="cpTable" v-show="cpType===1">
           <tr>
-            <td width="100">货品图片</td>
-            <td width="250">类目编码（改）</td>
-            <td width="250">分类名称（改）</td>
+            <td width="250">类目编码</td>
+            <td width="250">分类名称</td>
           </tr>
           <tr v-for="item in cpDetailData.productCateInfo">
-            <td width="100"><img :src="item.picUrl" alt="货品图片" class="tdImg"></td>
             <td width="250">{{item.barCode}}</td>
             <td width="250" >{{item.name}}</td>
           </tr>
         </table>
         <table ref="cpTable" v-show="cpType===2">
           <tr>
-            <td width="300">分类编码</td>
+            <td width="300">类目编码</td>
             <td width="300">分类名称</td>
           </tr>
           <tr v-for="item in cpDetailData.productCateInfo">
@@ -142,18 +142,35 @@
         <Button @click="couponDetailBoolean=false">取消</Button>
       </div>
     </Modal>
-    <Modal v-model="couponListBoolean" title="券码列表">
+    <Modal v-model="couponListBoolean" title="券码列表" width="800">
+      <div class="ccSearch">
+        <Form :label-width="100" inline>
+            <FormItem label="折扣码：">
+              <Input placeholder="折扣码" style="width:120px;" v-model="couponTabsData.discountCode"></Input>
+            </FormItem>
+            <FormItem label="员工编号：">
+              <Input placeholder="员工编号" style="width:120px;" v-model="couponTabsData.operator"></Input>
+            </FormItem>
+            <FormItem label="订单编号：">
+              <Input placeholder="订单编号" style="width:120px;"  v-model="couponTabsData.consumeOrder"></Input>
+            </FormItem>
+          <div class="ccItemNew">
+            <Button class="btnsize" @click="handdleCouponTabSearch">查询</Button>
+            <Button class="btnsize" @click="handdleCouponTabReset">重置</Button>
+          </div>
+        </Form>
+      </div>
       <Tabs type="card" @on-click="couponTabsCheck">
-        <TabPane label="所有券码">
+        <TabPane label="未兑换折扣码">
           <cpTableCm :dataList="couponListData"></cpTableCm>
         </TabPane>
-        <TabPane label="未领取券码">
+        <TabPane label="已兑换折扣码">
           <cpTableCm :dataList="couponListData"></cpTableCm>
         </TabPane>
-        <TabPane label="已领取券码">
+        <TabPane label="已使用折扣码">
           <cpTableCm :dataList="couponListData"></cpTableCm>
         </TabPane>
-        <TabPane label="已使用券码">
+        <TabPane label="全部折扣码">
           <cpTableCm :dataList="couponListData"></cpTableCm>
         </TabPane>
       </Tabs>
@@ -164,75 +181,25 @@
         <Button @click="couponListBoolean=false">取消</Button>
       </div>
     </Modal>
-    <Modal v-model="couponSendBoolen" title=" " :styles="{top:'20px'}" width="1300" @on-ok="confirmSendCoupon">
-      <Form inline style="" :label-width="100" ref="buyerListForm" :model="search_c">
-        <FormItem style="width: 24%" label="会员ID：" prop="id">
-          <Input v-model="search_c.id"></Input>
-        </FormItem>
-        <FormItem style="width: 34%" label="所在地区：">
-          <FormItem style="width: 150px; margin-right: 2%" prop="province">
-            <Select v-model="search_c.province" placeholder="省" @on-change="changeProvince">
-              <Option v-for="item in provinceList" :value="item.text" :key="item.value">{{item.text}}</Option>
-            </Select>
-          </FormItem><!--
-      --><FormItem style="width: 130px" prop="city">
-          <Select v-model="search_c.city" placeholder="市">
-            <Option v-for="item in cityList" :value="item.text" :key="item.value">{{item.text}}</Option>
-          </Select>
-        </FormItem>
-        </FormItem>
-        <FormItem style="width: 39%" label="注册时间：">
-          <FormItem prop="creatStartDate">
-            <DatePicker width="150" format="yyyy-MM-dd HH:mm" placeholder="开始时间" class="my-date" type="datetime" :value="search_c.creatStartDate" @on-change="(val)=>{setTheDate(val,'creatStartDate')}"></DatePicker>
-          </FormItem>
-          <FormItem prop="creatEndDate">
-            <DatePicker width="150" format="yyyy-MM-dd HH:mm" placeholder="结束时间" class="my-date" type="datetime" :value="search_c.creatEndDate" @on-change="(val)=>{setTheDate(val,'creatEndDate')}"></DatePicker>
-          </FormItem>
-        </FormItem>
-        <FormItem style="width: 39%" label="最近购买：">
-          <FormItem prop="buyStartDate">
-            <DatePicker format="yyyy-MM-dd HH:mm" placeholder="开始时间" class="my-date" type="datetime" :value="search_c.buyStartDate" @on-change="(val)=>{setTheDate(val,'buyStartDate')}"></DatePicker>
-          </FormItem>
-          <FormItem prop="buyEndDate">
-            <DatePicker format="yyyy-MM-dd HH:mm" placeholder="结束时间" class="my-date" type="datetime" :value="search_c.buyEndDate" @on-change="(val)=>{setTheDate(val,'buyEndDate')}"></DatePicker>
-          </FormItem>
-        </FormItem>
-        <FormItem style="width: 39%" label="最近登录：">
-          <FormItem prop="loginStartDate">
-            <DatePicker format="yyyy-MM-dd HH:mm" placeholder="开始时间" class="my-date" type="datetime" :value="search_c.loginStartDate" @on-change="(val)=>{setTheDate(val,'loginStartDate')}"></DatePicker>
-          </FormItem>
-          <FormItem prop="loginEndDate">
-            <DatePicker format="yyyy-MM-dd HH:mm" placeholder="结束时间" class="my-date" type="datetime" :value="search_c.loginEndDate" @on-change="(val)=>{setTheDate(val,'loginEndDate')}"></DatePicker>
-          </FormItem>
-        </FormItem>
-        <FormItem label="会员类型：">
-          <i-select v-model="search_c.memberType" placeholder="请选择会员类型" :transfer="true">
-            <i-option v-for="item in memberDecription" :value="item.value" :key="item.decription">{{item.decription}}</i-option>
-          </i-select>
-        </FormItem>
-        <FormItem style="width: 24%" label="会员手机：" prop="mobile">
-          <Input v-model="search_c.mobile"></Input>
-        </FormItem>
-        <div style="margin: 10px;">
-          <Button @click="vipInfoSearch" style="width: 100px;">查询</Button>
-          <Button @click="vipInfoReset" style="margin-left:50px;width: 100px;">重置</Button>
-        </div>
-      </Form>
-      <pTable :pTableBorder="true" class="modal-pTable" :pTableCoulmns="vipClms" :pTableData="vipData" :pageParams="vipParams" :tempPro="vipTempPro" :refleshPage="handleVipComponentPageChange"></pTable>
+    <Modal v-model="ProsConfirmFlag" width="960" title="产品信息确认">
+      <Table :columns="ProsConfirmColumns" :data="ProsConfirmData"></Table>
       <div slot="footer">
-        <Button type="primary" @click="confirmSendCoupon">确认</Button>
-        <Button @click="couponSendBoolen=false">取消</Button>
+        <Button type="primary" @click="postImportData">确定</Button>
+        <Button type="ghost" @click="ProsConfirmFlag = false">取消</Button>
       </div>
-      <Loading :isload="loading" class="pop-loading"></Loading>
     </Modal>
+    <input v-show="false" ref="importDraftExcel" type="file" @change="importfxx(this)"  accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+    <iframe style="display:none;" ref="excelTem" id="excelTem" name="excelTem"></iframe>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import * as mkAPI from '../../services/marketing.es6'
+  import * as config from '../../services/config.es6'
   import pTable from '../../components/pTable.vue'
-  import cpTableCm from '../../components/couponTable.vue'
+  import cpTableCm from '../../components/discountcodeTable.vue'
   import cityData from '../../libs/cityData.js'
   import Loading from '../../components/loading.vue'
+  import * as tool from '../../services/tool.es6'
   export default {
     name: 'couponList',
     components: {
@@ -242,7 +209,7 @@
     },
     data () {
       return {
-        couponName: '',
+        name: '',
         cpDetailData: {},
         pTempPro: [],
         ccTable: [
@@ -253,29 +220,31 @@
           },
           {
             key: 'name',
-            title: '折扣码名称',
+            title: '折扣码活动名称',
             align: 'center',
             width: 150
           },
           {
-            key: 'cptype',
+            key: 'type',
             title: '类型',
             align: 'center',
             width: 100,
             render: (h, params) => {
               let cpTypeName = ''
-              if (params.row.rules === 1) {
+              if (params.row.rule === 1) {
                 cpTypeName = '满减优惠'
-              } else if (params.row.rules === 2) {
+              } else if (params.row.rule === 2) {
                 cpTypeName = '直降优惠'
+              } else if (params.row.rule === 3) {
+                cpTypeName = '满件折优惠'
               }
               return h('div', cpTypeName)
             }
           },
           {
-            key: 'limitGet',
+            key: 'circleTimes',
             // title: '每人可领张数',
-            title: '折扣码可使用次数（改）',
+            title: '折扣码可使用次数',
             align: 'center',
             width: 100
           },
@@ -317,13 +286,12 @@
                   },
                   on: {
                     click: () => {
-                      // 券码列表modal
-                      this.couponListBoolean = true
+                      // 导入折扣码
                       this.clRow = params.row
-                      this.checkAllCoupons()
+                      this.importDraftData()
                     }
                   }
-                }, '查看券码'),
+                }, '导入折扣码'),
                 h('Button', {
                   props: {
                     type: 'text',
@@ -331,13 +299,13 @@
                   },
                   on: {
                     click: () => {
-                      // sit
-                    //  window.location.href = `/platform/om/OperationManagement/v1/ExportCouponCoding?couponId=${params.row.id}`
-                      // uat
-                      window.location.href = `/platform/om/OperationManagement/v1/ExportCouponCoding?couponId=${params.row.id}`
+                      // 券码列表modal
+                      this.couponListBoolean = true
+                      this.clRow = params.row
+                      this.checkAllCoupons(0)
                     }
                   }
-                }, '导出券码'),
+                }, '查看折扣码'),
                 h('Button', {
                   props: {
                     type: 'text',
@@ -350,7 +318,7 @@
                         onOk: () => {
                           let self = this
                           setTimeout(() => {
-                            self.deleteByCouponId(params.row.id, () => {
+                            self.delByDiscountIds({couponIds:[params.row.id]}, () => {
                               self.$Message.success({content: '操作成功'})
                               self.handleCouponList()
                             })
@@ -359,21 +327,7 @@
                       })
                     }
                   }
-                }, '删除'),
-                h('Button', {
-                  props: {
-                    type: 'text',
-                    size: 'small'
-                  },
-                  on: {
-                    click: () => {
-                      // 派券modal
-                      this.couponSendBoolen = true
-                      this.vipRow = params.row
-                      console.log(this.vipRow)
-                    }
-                  }
-                }, '派券')
+                }, '删除')
               ])
             }
           }
@@ -384,60 +338,24 @@
         couponLabel: '',
         clRow: {},
         couponListData: [],
-        // 派券
-        vipClms: [
-          {
-            type: 'selection',
-            align: 'center',
-            width: 80
-          },
-          {
-            title: '会员ID',
-            key: 'id',
-            width: 180
-          },
-          {
-            title: '会员手机',
-            key: 'mobile',
-            width: 130
-          },
-          {
-            title: '昵称',
-            key: 'nickName',
-            width: 140
-          },
-          {
-            title: '注册时间',
-            key: 'createDate',
-            width: 210
-          },
-          {
-            title: '省份',
-            key: 'province',
-            width: 100
-          },
-          {
-            title: '城市',
-            key: 'city',
-            width: 100
-          },
-          {
-            title: '最近登录时间',
-            key: 'loginDate',
-            width: 210
-          },
-          {
-            title: '购物时间',
-            key: 'buyDate',
-            width: 210
-          }
-        ],
         vipData: [],
         vipTempPro: [],
         vipCheckedLength: 0,
         vipRow: {},
         provinceList: cityData,
         cityList: null,
+        ProsLoading: false,
+        ProsConfirmFlag: false,
+        ProsConfirmData: [],
+        ProsConfirmColumns: [
+          {key: 'discountCode', title: '折扣码'},
+          {key: 'operator', title: '系统员工编号'}
+        ],
+        couponTabsData: {
+          discountCode: '',
+          operator: '',
+          consumeOrder: ''
+        },
         memberDecription: [
           {
             value: 0,
@@ -485,7 +403,6 @@
         },
         couponDetailBoolean: false,
         couponListBoolean: false,
-        couponSendBoolen: false,
         deleteIdsBoolean: true,
         // 加载
         loading: false
@@ -493,32 +410,34 @@
     },
     mounted () {
       this.handleCouponList()
+      this.$refs.importDraftExcel.addEventListener('click', this.handlefileclear, false)
+    },
+    beforeDestroy: function () {
+      this.$refs.importDraftExcel.removeEventListener('click', this.handlefileclear, false)
     },
     methods: {
       /* -----------接口调用----------- */
-      // 获取优惠券列表
-      getCouponByName (params, callback) {
+      // 获取列表
+      discountCodeList (params, callback) {
         // 查所有
         if (!params.name) {
-          params.name = 'name'
+          params.name = ''
         }
-        this.$http.get(mkAPI.getCouponByName(params.name, params.pageSize, params.pageNum))
-            .then((res) => {
-              if (res.data.code === 200) {
-                if (typeof callback === 'function') {
-                  callback(res.data)
-                }
-              }
-            })
+        this.$http.post(...mkAPI.discountCodeList({name: params.name}, params.pageSize, params.pageNum)).then((res) => {
+          if (res.data.code === 200) {
+            if (typeof callback === 'function') {
+              callback(res.data)
+            }
+          }
+        })
       },
-      // 获取优惠券详情
-      getCouponById (couponId, callback) {
-        this.$http.get(mkAPI.getCouponById(couponId))
-            .then((res) => {
-              if (typeof callback === 'function') {
-                callback(res)
-              }
-            })
+      // 查看活动码折扣详情
+      discountCodeLists (couponId, callback) {
+        this.$http.post(...mkAPI.discountCodeLists(couponId)).then((res) => {
+          if (typeof callback === 'function') {
+            callback(res)
+          }
+        })
       },
       // 根据类目优惠券获取类目商品Id
       productSkuCidsInfo (params, callback) {
@@ -553,9 +472,10 @@
               }
             })
       },
-      // 获取全部券码
-      getCouponCoding (params, callback) {
-        this.$http.get(mkAPI.getCouponCoding(params.couponId, params.pageSize, params.pageNum))
+      // 查看活动码折扣使用情况列表
+      dCodeByConditionsLists (params, callback) {
+        console.log(params.setObj)
+        this.$http.post(...mkAPI.dCodeByConditionsLists(params.setObj, params.pageSize, params.pageNum))
           .then((res) => {
             if (res.data.code === 200) {
               if (typeof callback === 'function') {
@@ -564,53 +484,9 @@
             }
           })
       },
-      // 查询已领取券码
-      getCouponCodingGet (params, callback) {
-        this.$http.get(mkAPI.getCouponCodingGet(params.couponId, params.pageSize, params.pageNum))
-          .then((res) => {
-            if (res.data.code === 200) {
-              if (typeof callback === 'function') {
-                callback(res)
-              }
-            }
-          })
-      },
-      // 查询未领取券码
-      getCouponCodingNotGet (params, callback) {
-        this.$http.get(mkAPI.getCouponCodingNotGet(params.couponId, params.pageSize, params.pageNum))
-          .then((res) => {
-            if (res.data.code === 200) {
-              if (typeof callback === 'function') {
-                callback(res)
-              }
-            }
-          })
-      },
-      // 查询已使用券码
-      getCouponCodingUse (params, callback) {
-        this.$http.get(mkAPI.getCouponCodingUse(params.couponId, params.pageSize, params.pageNum))
-          .then((res) => {
-            if (res.data.code === 200) {
-              if (typeof callback === 'function') {
-                callback(res)
-              }
-            }
-          })
-      },
-      // 删除单个优惠券
-      deleteByCouponId (id, callback) {
-        this.$http.delete(mkAPI.deleteByCouponId(id))
-          .then((res) => {
-            if (res.data.code === 200) {
-              if (typeof callback === 'function') {
-                callback(res)
-              }
-            }
-          })
-      },
-      // 批量删除优惠券
-      deleteByCouponIdArr (ids, callback) {
-        this.$http.post(...mkAPI.deleteByCouponIds(ids))
+      // 根据ID删除折扣码。
+      delByDiscountIds (id, callback) {
+        this.$http.post(...mkAPI.delByDiscountIds(id))
           .then((res) => {
             if (res.data.code === 200) {
               if (typeof callback === 'function') {
@@ -654,8 +530,8 @@
       },
       /* ------------数据处理------------ */
       handleCouponList () {
-        this.getCouponByName(this.pageParams, (d) => {
-          let cpInfo = d.couponInfo
+        this.discountCodeList(this.pageParams, (d) => {
+          let cpInfo = d.discountCoderesultStatusListInner
           console.log(cpInfo)
           this.ccData = cpInfo.list
           this.pageParams = {
@@ -685,9 +561,7 @@
           couponIds: []
         }
         for (let p of this.pTempPro) {
-          params.couponIds.push({
-            productsIds: p
-          })
+          params.couponIds.push(p)
         }
         console.log(params)
         this.$Modal.confirm({
@@ -695,7 +569,7 @@
           onOk: () => {
             let self = this
             setTimeout(() => {
-              self.deleteByCouponIdArr(params, () => {
+              self.delByDiscountIds(params, () => {
                 self.handleCouponList()
                 // reset 缓存数组
                 self.pTempPro = []
@@ -704,14 +578,26 @@
           }
         })
       },
-      /* --------添加优惠券------------ */
-      toCreateCoupon () {
-        this.$router.push({path: 'createCoupon'})
+      /* --------下载模板------------ */
+      handleDown: function () {
+        const params = {
+          templateName: '折扣码模板.xlsx',
+          fileName: '折扣码模板'
+        }
+        let formhtml = `<form id="exceTem" target="excelTem" method="get" action="/${config.SERVER_PATH}${mkAPI.excelTem()}">`
+        for (let key in params) {
+          formhtml += `<input type="hidden" name="${key}" value="${params[key]}" />`
+        }
+        formhtml += '</form>'
+        this.$refs.excelTem.contentWindow.document.getElementsByTagName('body')[0].innerHTML = formhtml
+        const formelm = this.$refs.excelTem.contentWindow.document.getElementById('exceTem')
+        formelm.submit()
+        formelm.parentNode.removeChild(formelm)
       },
       /* --------查看详情功能---------- */
       getCouponDetail (params) {
         // (请求优惠券详情)
-        this.getCouponById(params.row.id, (res) => {
+        this.discountCodeLists({id:params.row.id}, (res) => {
           let dtData = res.data
           let dtArr = []
           // dtData.type ===1 单品
@@ -820,10 +706,10 @@
       // 渲染优惠券详情
       reviewCouponDetail (dtData) {
         // 类型
-        dtData.typeName = dtData.rules === 1 ? '满减优惠' : '直降优惠'
+        dtData.typeName = dtData.rule === 1 ? '满减优惠' : '直降优惠'
         console.log(dtData)
         // 分转元
-        dtData.couponTypeMemo = dtData.fullSubtract === null ? `立减${this.$tool.handlePrice(dtData.subtract)}元` : `满${this.$tool.handlePrice(dtData.fullSubtract)}减${this.$tool.handlePrice(dtData.subtract)}`
+        // dtData.couponTypeMemo = dtData.fullSubtract === null ? `立减${this.$tool.handlePrice(dtData.subtract)}元` : `满${this.$tool.handlePrice(dtData.fullSubtract)}减${this.$tool.handlePrice(dtData.subtract)}`
         this.cpDetailData = dtData
       },
       // 优惠券详情分页
@@ -840,43 +726,19 @@
       couponTabsCheck (name) {
         this.couponLabel = name
       },
-      checkAllCoupons () {
+      checkAllCoupons (status) {
         let params = {
-          couponId: this.clRow.id,
+          setObj: {
+            status: status == 3 ? '' : Number(status) + 1,
+            id: this.clRow.id,
+            discountCode: this.couponTabsData.discountCode,
+            operator: this.couponTabsData.operator,
+            consumeOrder: this.couponTabsData.consumeOrder
+          },
           pageSize: this.clParams.pageSize,
           pageNum: this.clParams.pageNum
         }
-        this.getCouponCoding(params, (res) => {
-          this.handleListData(res)
-        })
-      },
-      checkUnreceivedCoupons () {
-        let params = {
-          couponId: this.clRow.id,
-          pageSize: this.clParams.pageSize,
-          pageNum: this.clParams.pageNum
-        }
-        this.getCouponCodingNotGet(params, (res) => {
-          this.handleListData(res)
-        })
-      },
-      checkReceiveCoupons () {
-        let params = {
-          couponId: this.clRow.id,
-          pageSize: this.clParams.pageSize,
-          pageNum: this.clParams.pageNum
-        }
-        this.getCouponCodingGet(params, (res) => {
-          this.handleListData(res)
-        })
-      },
-      checkUsedCoupons () {
-        let params = {
-          couponId: this.clRow.id,
-          pageSize: this.clParams.pageSize,
-          pageNum: this.clParams.pageNum
-        }
-        this.getCouponCodingUse(params, (res) => {
+        this.dCodeByConditionsLists(params, (res) => {
           this.handleListData(res)
         })
       },
@@ -884,34 +746,17 @@
         console.log(clnum)
         this.clParams.pageNum = clnum
         console.log(this.couponLabel)
-        switch (this.couponLabel) {
-          case 0: {
-            this.checkAllCoupons()
-            break
-          }
-          case 1: {
-            this.checkUnreceivedCoupons()
-            break
-          }
-          case 2: {
-            this.checkReceiveCoupons()
-            break
-          }
-          case 3: {
-            this.checkUsedCoupons()
-            break
-          }
-        }
+        this.checkAllCoupons(this.couponLabel)
       },
       handleListData (res) {
-        for (let r of res.data.productName.list) {
+        for (let r of res.data.discountCoderesultStatusListInners.list) {
           switch (r.status) {
             case 0: {
-              r.statusName = '未领取'
+              r.statusName = '未兑换'
               break
             }
             case 1: {
-              r.statusName = '已领取'
+              r.statusName = '已兑换'
               break
             }
             case 2: {
@@ -920,76 +765,27 @@
             }
           }
         }
-        this.couponListData = res.data.productName.list
-        this.clParams.pageSize = res.data.productName.pageSize
-        if (res.data.productName.pageNum === 0) {
+        this.couponListData = res.data.discountCoderesultStatusListInners.list
+        this.clParams.pageSize = res.data.discountCoderesultStatusListInners.pageSize
+        if (res.data.discountCoderesultStatusListInners.pageNum === 0) {
           this.clParams.pageNum = 1
         } else {
-          this.clParams.pageNum = res.data.productName.pageNum
+          this.clParams.pageNum = res.data.discountCoderesultStatusListInners.pageNum
         }
-        this.clParams.pageTotal = res.data.productName.total
+        this.clParams.pageTotal = res.data.discountCoderesultStatusListInners.total
         console.log(this.couponListData)
       },
       // 渲染列表
       /* -----------派券功能----------- */
       // 列表搜索功能
       searchCoupon () {
-        this.pageParams.name = this.couponName
+        console.log(this.name)
+        this.pageParams.name = this.name
         this.handleCouponList()
-      },
-      // 派券 会员信息搜索功能
-      formValid: function () {
-        if (new Date(this.search_c.creatStartDate) > new Date(this.search_c.creatEndDate)) {
-          this.$Message.warning('创建时间结束时间不能小于开始时间')
-          return false
-        }
-        if (new Date(this.search_c.buyStartDate) > new Date(this.search_c.buyEndDate)) {
-          this.$Message.warning('最近购买结束时间不能小于开始时间')
-          return false
-        }
-        if (new Date(this.search_c.loginStartDate) > new Date(this.search_c.loginEndDate)) {
-          this.$Message.warning('最近登录结束时间不能小于开始时间')
-          return false
-        }
-        return true
       },
       // 日期处理
       setTheDate: function (val, tp) {
         this.search_c[tp] = val
-      },
-      // 派券列表查询
-      vipInfoSearch (callback) {
-        const self = this
-        if (this.formValid() === false) {
-          return
-        }
-        const params = {
-          'buyEndDate': self.search_c.buyEndDate,
-          'buyStartDate': self.search_c.buyStartDate,
-          'city': self.search_c.city,
-          'creatEndDate': self.search_c.creatEndDate,
-          'creatStartDate': self.search_c.creatStartDate,
-          'id': self.search_c.id,
-          'loginEndDate': self.search_c.loginEndDate,
-          'loginStartDate': self.search_c.loginStartDate,
-          'mobile': self.search_c.mobile,
-          'memberType': self.search_c.memberType,
-          'couponId': self.vipRow.id, // 根据couponId获取对应coupon会员状态
-          'pageNum': self.vipParams.pageNum,
-          'pageSize': self.vipParams.pageSize,
-          'province': self.search_c.province === '-请选择-' ? '' : self.search_c.province
-        }
-        console.log(params)
-        this.postSendCoupons(params, (res) => {
-          if (typeof callback === 'function') {
-            callback(res)
-          }
-          this.vipCheckedCoupon(res)
-          this.vipData = res.data.sendCouponInfos.list
-          this.vipParams.pageNum = res.data.sendCouponInfos.pageNum
-          this.vipParams.pageTotal = res.data.sendCouponInfos.total
-          this.loading = false
-        })
       },
       // 会员派券状态回显
       vipCheckedCoupon (res) {
@@ -1014,47 +810,61 @@
           }
         }
       },
-      // 派券 子组件pageChange 复选操作
-      handleVipComponentPageChange () {
-        this.loading = true
-        this.vipInfoSearch((res) => {
-          for (let t of this.vipTempPro) {
-            for (let l of res.data.sendCouponInfos.list) {
-              if (t === l.id) {
-                l._checked = true
-                break
+      importDraftData: function () {
+        this.$refs.importDraftExcel.click()
+      },
+      importfxx: function (obj) {
+        this.ProsLoading = true
+        tool.importfxx(obj, (data) => {
+          let data_ = []
+          for (let i of data) {
+            data_.push({
+              'discountCode': i['折扣码'],
+              'operator': i['系统员工编号']
+            })
+          }
+          this.ProsConfirmData = data_
+          this.ProsConfirmFlag = true
+          this.ProsLoading = false
+        })
+      },
+      postImportData: function () {
+        var setObj = {
+          couponIds: this.ProsConfirmData,
+          id: this.clRow.id
+        }
+        this.$http.post(...mkAPI.discountCodeimportListsList(setObj)).then(res => {
+          if (res.data.code === 200) {
+            var discountCodedata = res.data.discountCodeFailsImporresult
+            var msgArry = ''
+            if (discountCodedata.length > 0) {
+              for (var i = 0; discountCodedata.length > i; i++) {
+                msgArry = msgArry + discountCodedata[i].discountCode + ','
               }
+              this.$Message.success('折扣码为' + msgArry + '已存在')
+            } else {
+              this.$Message.success('发布成功')
             }
+            this.ProsConfirmFlag = false
+          } else {
+            this.$Message.success('发布失败')
+            this.ProsConfirmFlag = false
           }
         })
       },
-      // 派券
-      confirmSendCoupon () {
-        console.log('vipRow', this.vipRow)
-        // 当前选择项
-        console.log(this.vipTempPro.length)
-        if (this.vipTempPro.length === 0) {
-          this.$Message.warning({content: '请选择需要派券的会员'})
-          return
+      handlefileclear: function (e) {
+        e.target.value = ''
+      },
+      handdleCouponTabReset: function () {
+        this.couponTabsData = {
+          discountCode: '',
+          operator: '',
+          consumeOrder: ''
         }
-        let memberIds = []
-        for (let v of this.vipTempPro) {
-          memberIds.push(v)
-        }
-        console.log(memberIds)
-        this.loading = true
-        this.getCouponCount(this.vipRow.id, (res) => {
-          if (this.vipTempPro.length > res.data.couponCount) {
-            this.$Modal.warning({content: `券码数量还支持派券${res.data.couponCount}人，超出派券人数，请重新派券`})
-            this.couponSendBoolen = false
-          } else {
-            this.postSaveCouponUser(this.vipRow.id, memberIds, (res) => {
-              console.log(res)
-              this.$Message.success({content: res.data.message})
-              this.couponSendBoolen = false
-            })
-          }
-        })
+      },
+      handdleCouponTabSearch: function () {
+        this.clParams.pageNum = 1
+        this.checkAllCoupons(this.couponLabel)
       }
     },
     watch: {
@@ -1075,46 +885,14 @@
           this.deleteIdsBoolean = true
         }
       },
-      couponSendBoolen: function () {
-        if (this.couponSendBoolen) {
-          this.loading = true
-          this.vipInfoSearch()
-        } else {
-          // reset Info
-          this.vipTempPro = []
-          this.vipParams = {
-            pageSize: 20,
-            pageNum: 1,
-            pageTotal: 0
-          }
-          this.vipCheckedLength = 0
-          this.loading = false
-        }
-      },
       couponListBoolean: function () {
         if (this.couponListBoolean) {
           console.log(111)
         }
       },
       couponLabel: function () {
-        switch (this.couponLabel) {
-          case 0: {
-            this.checkAllCoupons()
-            break
-          }
-          case 1: {
-            this.checkUnreceivedCoupons()
-            break
-          }
-          case 2: {
-            this.checkReceiveCoupons()
-            break
-          }
-          case 3: {
-            this.checkUsedCoupons()
-            break
-          }
-        }
+        this.clParams.pageNum = 1
+        this.checkAllCoupons(this.couponLabel)
       }
     }
   }
