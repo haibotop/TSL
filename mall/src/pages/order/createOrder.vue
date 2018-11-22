@@ -88,7 +88,11 @@
             <div class="account" >
               <span class="title">
                 <span class="dis-coupon">折扣码</span>
-                <span class="discount" v-for="item in chooseDisItem" :key="item.code">{{item.rule === 1 ? `满${item.minExpense}减${item.discountAmount}` : `直减${item.discountAmount}`}}</span>
+                <span class="discount" v-for="item in chooseDisItem" :key="item.code">
+                  <span v-if="item.rule === 1">满{{item.minExpense/100}}减{{item.discountAmount/100}}</span>
+                  <span v-if="item.rule === 2">直减{{item.discountAmount/100}}</span>
+                  <span v-if="item.rule === 3">满{{item.discountcodePiecediscountList[0].min_quantity}}件打{{item.discountcodePiecediscountList[0].discountRatio/10}}折</span>
+                </span>
               </span>
             </div>
           </cell-box>
@@ -118,6 +122,11 @@
               <span class="title">优惠券：</span>
               <span><span class="price">￥ {{handlePrice(couponsValue) * -1}}</span></span>
             </div>
+          </cell-box><cell-box>
+            <div class="account" >
+              <span class="title">折扣码优惠：</span>
+              <span class="price">￥ {{(Number(disPrice.jian) + Number(disPrice.manjianzhe))* -1}}</span>
+            </div>
           </cell-box>
         </group>
         <!-- <pdCoupons v-model="couponFlag"></pdCoupons> -->
@@ -141,18 +150,22 @@
         <img src="../../assets/icons/icon_close_b.png" alt="" class="iconCloseDis" @click="showDiscount = false">
         <div :class="readyTradeItem.length >2 ? 'discountBox_lit' :''">
           <p class="disTitle" >请在方框内输入对应的折扣码，输入正确才可领取对应的优惠券，如有任何问题，请联系在线客服。</p>
+          <div style="margin: 0 10px">
           <div v-if="readyTradeItem != null"
                class="cardList" :class="[item.a == true ? 'cardListActived' : '',index > okUse ? 'noClick' : '']" v-for="(item,index) in readyTradeItem"
                @click="chooseDiscount(item,index)">
             <div class="cardList_left" :class="index > okUse ? 'noUse' : ''">
-              <p class="disPrice" v-show="item.rule  === 1 || item.rule  === 2">￥{{item.discountAmount}}</p>
-              <p class="disPrice" v-show="item.rule   === 3">满件折</p>
-              <p class="manjian" v-show="item.rule   === 2">直减</p>
-              <div class="manjian" v-show="item.rule   === 3" >
-                <p v-for="item1 in item.discountcodePiecediscountList">满{{item1.discountRatio}}件打{{item1.min_quantity/10}}折</p>
+              <p class="disPrice" v-if="item.rule  === 1 || item.rule  === 2">￥{{item.discountAmount/100}}</p>
+              <p class="disPrice" v-if="item.rule   === 3">{{item.discountcodePiecediscountList[0].discountRatio/10}}折</p>
+              <p class="manjian" v-if="item.rule   === 2">直减</p>
+              <div class="manjian" v-if="item.rule   === 3" >
+                <p v-for="item1 in item.discountcodePiecediscountList.slice(0,1)">满{{item1.min_quantity}}件打{{item1.discountRatio/10}}折</p>
               </div>
-              <p class="manjian" v-show="item.rule === 1">满{{item.minExpense}}减{{item.discountAmount}}</p>
-              <p class="reUse"><img src="../../assets/icons/icon_overlay.png" alt=""><span>可叠加适用</span></p>
+              <p class="manjian" v-if="item.rule === 1">满{{item.minExpense/100}}减{{item.discountAmount/100}}</p>
+              <p class="reUse">
+                <img src="../../assets/icons/icon_overlay.png" alt="">
+                <span v-if="item.exclusived === 1">不</span><span>可叠加使用</span>
+              </p>
             </div>
             <div class="cardList_right" :class="item.a == true ? 'cardActived' : ''">
               <p class="zkmCode">折扣码：{{item.discountcode}}</p>
@@ -163,6 +176,7 @@
             <div class="cardList_bottom" v-show="lookDetailIndex1 == index">
               <p class="explain" v-if="item.memo">说明：{{item.memo || '无'}}</p>
             </div>
+          </div>
           </div>
           <div class="discountBottom1" v-if="chooseDiscountStatus">
             <input type="text" v-model="cashingDiscount" placeholder="请输入折扣码">
@@ -214,9 +228,12 @@
         lookDetailIndex1: -1, // 查看明细
         chooseDiscountStatus: true,
         chooseDisItem: [], // 已选择折扣码
-        disPrice: 0, // 折扣码优惠总和
+        disPrice: { // 折扣码优惠
+          'jian': 0, // 满减or直减
+          'manjianzhe': 0 // 满减折
+        },
         cashingDiscount: '', // 输入折扣码
-        okUse: 0
+        okUse: 0,
       }
     },
     mounted: function () {
@@ -264,14 +281,27 @@
           })
       },
       discountUse () {
-        let arr = this.readyTradeItem.filter(item=>{
+        let arr = this.readyTradeItem.filter ( item=> {
           return item.a == true
         })
         this.chooseDisItem = arr
-        this.disPrice = 0
-        for (var i of arr) {
-          this.disPrice += i.discountAmount
+        this.disPrice = { // 折扣码优惠
+          'jian': 0, // 满减or直减
+          'manjianzhe': 0 // 满减折
         }
+        console.log('55555', arr)
+        for (var i of arr) {
+          this.disPrice.jian += i.discountAmount / 100
+          if (i.rule === 3) {
+            let aa = i.discountcodePiecediscountList[0].discountRatio
+            for (var j of i.productIdsssss) {
+              this.disPrice.manjianzhe += j.price / 100 * (1 - aa / 100)
+            }
+            this.disPrice.manjianzhe = this.disPrice.manjianzhe.toFixed(2)
+            // console.log('nnn', this.disPrice.manjianzhe)
+          }
+        }
+        console.log('this.disPrice', this.disPrice)
         this.showDiscount = false
       },
       discountCancel () {
@@ -541,8 +571,9 @@
         let params = {
           addressId: this.address.id,
           remark: this.memberRemark,
-          couponList: []
-          // discountCode: []
+          couponList: [],
+          discountcodeList: [],
+          operator: this.memberNumber
         }
         for (let i of this.selected) {
           params.couponList.push({
@@ -550,12 +581,12 @@
             code: i.code
           })
         }
-        // for (let i of this.chooseDisItem) {
-        //   params.discountCode.push({
-        //     couponId: i.id,
-        //     code: i.code
-        //   })
-        // }
+        for (let i of this.chooseDisItem) {
+          params.discountcodeList.push({
+            discountcodeId: i.discountcodeRecordId
+          })
+        }
+        console.log('params', params)
         this.$http.patch(...orderAPI.order(params)).then(res => {
           if (res.data.code === 200) {
             this.$vux.toast.show({type: 'text', text: '下单成功', width: '200px'})
@@ -632,7 +663,7 @@
       },
       calcAmount () {
         let couponsValue = tool.handlePrice(this.couponsValue)
-        return (this.afterPromotion - couponsValue).toFixed(2) - this.disPrice
+        return (this.afterPromotion - couponsValue).toFixed(2) - this.disPrice.jian - this.disPrice.manjianzhe
       },
       payAmount () {
         let couponsValue = tool.handlePrice(this.couponsValue)
@@ -721,7 +752,7 @@
   }
   .cardList{
     position: relative;
-    margin: 10px 15px 0;
+    margin: 10px 0;
     background-color: #fff;
     font-size: 12px;
     line-height: 24px;
@@ -752,13 +783,15 @@
       background-color: #979797;
     }
     .cardList_right{
-      float: right;
-      width: 56%;
+      position: absolute;
+      top: 0;
+      left: 30%;
       padding: 20px;
+      width: 60%;
       .lookDetail{
         position: relative;
-        top: 16px;
-        right: 10px;
+        margin-top: 16px;
+        margin-right: 10px;
         float: right;
         color: #8b8b8b;
         img{

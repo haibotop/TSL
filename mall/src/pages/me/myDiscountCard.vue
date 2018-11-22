@@ -95,16 +95,19 @@
     <div class="group" v-show="tabIndex === 0">
       <div class="cardList" v-for="(item,index) in readyTradeItem">
         <div class="cardList_left">
-          <p class="disPrice">￥{{item.discountAmount}}</p>
-          <p class="manjian" v-show="item.rule   === 2">直减</p>
-          <p class="manjian" v-show="item.rule === 1">满{{item.minExpense}}减{{item.discountAmount}}</p>
-          <!--<p class="manjian">满1000减100</p>-->
-          <p class="reUse"><img src="../../assets/icons/icon_overlay.png" alt=""><span>可叠加适用</span></p>
+          <p class="disPrice" v-if="item.rule  === 1 || item.rule  === 2">￥{{item.discountAmount/100}}</p>
+          <p class="disPrice" v-if="item.rule   === 3">满件折</p>
+          <p class="manjian" v-if="item.rule   === 2">直减</p>
+          <div class="manjian" v-if="item.rule   === 3" >
+            <p >满{{item.discountcodePiecediscountList[0].discountRatio}}件打{{item.discountcodePiecediscountList[0].min_quantity/10}}折</p>
+          </div>
+          <p class="manjian" v-if="item.rule === 1">满{{item.minExpense/100}}减{{item.discountAmount/100}}</p>
+          <p class="reUse"><img src="../../assets/icons/icon_overlay.png" alt=""><span>可叠加使用</span></p>
         </div>
         <div class="cardList_right">
           <p class="zkmCode">折扣码：{{item.discountcode}}</p>
           <p class="expiryDate">有效期：{{(item.startDate || '').replace("T", " ").split(' ')[0]}}至{{(item.endDate || '').replace("T", " ").split(' ')[0]}}</p>
-          <p class="useNow" @click="disUseNow(item.discountcode)">立即使用</p>
+          <p class="useNow" @click="disUseNow(item.id)">立即使用</p>
           <p class="lookDetail" @click="lookDetail1(index)">查看明细<img src="../../assets/icons/icon_drop_down.png" alt=""></p>
         </div>
         <div class="cardList_bottom" v-show="lookDetailIndex1 == index">
@@ -116,11 +119,14 @@
     <div class="group" v-show="tabIndex === 1">
       <div class="cardList" v-for="(item,index) in readyUsedItem">
         <div class="cardList_left" style="background-color: #8B8B8B">
-          <p class="disPrice">￥{{item.discountAmount}}</p>
-          <p class="manjian" v-show="item.rule   === 2">直减</p>
-          <p class="manjian" v-show="item.rule === 1">满{{item.minExpense}}减{{item.discountAmount}}</p>
-          <!--<p class="manjian">满1000减100</p>-->
-          <p class="reUse"><img src="../../assets/icons/icon_overlay.png" alt=""><span>可叠加适用</span></p>
+          <p class="disPrice" v-if="item.rule  === 1 || item.rule  === 2">￥{{item.discountAmount/100}}</p>
+          <p class="disPrice" v-if="item.rule   === 3">满件折</p>
+          <p class="manjian" v-if="item.rule   === 2">直减</p>
+          <div class="manjian" v-if="item.rule   === 3" >
+            <p >满{{item.discountcodePiecediscountList[0].discountRatio}}件打{{item.discountcodePiecediscountList[0].min_quantity/10}}折</p>
+          </div>
+          <p class="manjian" v-if="item.rule === 1">满{{item.minExpense/100}}减{{item.discountAmount/100}}</p>
+          <p class="reUse"><img src="../../assets/icons/icon_overlay.png" alt=""><span>可叠加使用</span></p>
         </div>
         <div class="cardList_right">
           <p class="zkmCode">折扣码：{{item.discountcode}}</p>
@@ -137,11 +143,14 @@
       <div v-if="loseEfficacyItem.id == null"></div>
       <div v-else class="cardList"  v-for="(item,index) in loseEfficacyItem">
         <div class="cardList_left" style="background-color: #8B8B8B">
-          <p class="disPrice">￥{{item.discountAmount}}</p>
-          <p class="manjian" v-show="item.rule   === 2">直减</p>
-          <p class="manjian" v-show="item.rule === 1">满{{item.minExpense}}减{{item.discountAmount}}</p>
-          <!--<p class="manjian">满1000减100</p>-->
-          <p class="reUse"><img src="../../assets/icons/icon_overlay.png" alt=""><span>可叠加适用</span></p>
+          <p class="disPrice" v-if="item.rule  === 1 || item.rule  === 2">￥{{item.discountAmount/100}}</p>
+          <p class="disPrice" v-if="item.rule   === 3">满件折</p>
+          <p class="manjian" v-if="item.rule   === 2">直减</p>
+          <div class="manjian" v-if="item.rule   === 3" >
+            <p >满{{item.discountcodePiecediscountList[0].discountRatio}}件打{{item.discountcodePiecediscountList[0].min_quantity/10}}折</p>
+          </div>
+          <p class="manjian" v-if="item.rule === 1">满{{item.minExpense/100}}减{{item.discountAmount/100}}</p>
+          <p class="reUse"><img src="../../assets/icons/icon_overlay.png" alt=""><span>可叠加使用</span></p>
         </div>
         <div class="cardList_right">
           <p class="zkmCode">折扣码：{{item.discountcode}}</p>
@@ -192,37 +201,36 @@ export default {
     this.loseEfficacy() // 已失效
   },
   methods: {
-    disUseNow (discountcode) {
-      this.$router.push({path: '/couponPl', query: {'discountcode': discountcode}})
+    disUseNow (id) {
+      this.$router.push({path: '/couponPl', query: {'discountcode': id}})
     },
     readyTrade () { // 已兑换
-       let parms = {
+       let params = {
            status: 1, // 1：已兑换2：已使用3：已失效 ,
            userId: this.userId
          }
-        this.$http.post(...disAPI.getDiscountList(parms))
+        this.$http.post(...disAPI.getDiscountList(params))
           .then(res => {
-            this.readyTradeItem = res.data.couponIds
+            this.readyTradeItem = res.data.couponIds || []
             console.log('this.readyTradeItem', this.readyTradeItem)
-            // Object.assign()
           })
     },
     readyUsed () { // 已使用
-      let parms = {
+      let params = {
         status: 2,
         userId: this.userId
       }
-      this.$http.post(...disAPI.getDiscountList(parms))
+      this.$http.post(...disAPI.getDiscountList(params))
         .then(res => {
-          this.readyUsedItem = res.data.couponIds
+          this.readyUsedItem = res.data.couponIds || []
         })
     },
     loseEfficacy () { // 已失效
-      let parms = {
+      let params = {
         status: 3,
         userId: this.userId
       }
-      this.$http.post(...disAPI.getDiscountList(parms))
+      this.$http.post(...disAPI.getDiscountList(params))
         .then(res => {
           this.loseEfficacyItem = res.data.couponIds || []
         })

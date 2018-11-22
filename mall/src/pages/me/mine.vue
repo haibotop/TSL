@@ -26,7 +26,7 @@
       </cell>
       <cell is-link link="/myDiscountCard">
         <div slot="icon"><img src="../../assets/icons/icon_coupon_normal.png"  style="fill:#352665;margin:0px 5px -6px 0px;width:27px;"></div>
-        <div slot="title">我的折扣码<badge v-show="existCoupons" style="margin:-10px 0 0 1px;"></badge></div>
+        <div slot="title">我的折扣码<badge v-show="existDiscount" style="margin:-10px 0 0 1px;"></badge></div>
       </cell>
       <cell title="我的收藏" is-link link="/myCollection">
         <div slot="icon"><img src="../../assets/icons/mycollect.svg"  style="fill:#352665;margin:0px 5px -6px 0px;width:27px;"></div>
@@ -50,12 +50,14 @@
   import subTab from '@/components/subTab.vue'
   import { Group, Cell, Badge } from 'vux'
   import * as mkApi from '@/services/API/marketing.es6'
+  import * as disAPI from '../../services/API/discountServices.es6'
   export default {
     name: 'mine',
     components: { subTab, Group, Cell, Badge },
     data () {
       return {
-        existCoupons: false
+        existCoupons: false,
+        existDiscount: false
       }
     },
     mounted: function () {
@@ -64,6 +66,7 @@
           this.getMyCoupon(0, 1, 99)
         }
       }
+      this.readyTrade()
     },
     computed: {
       headPortrait () {
@@ -129,6 +132,23 @@
             }
           }
         })
+      },
+      readyTrade () { // 已兑换
+        let params = {
+          status: 1, // 1：已兑换2：已使用3：已失效 ,
+          userId: JSON.parse(sessionStorage.getItem('userInfo')).memberId
+        }
+        this.$http.post(...disAPI.getDiscountList(params))
+          .then(res => {
+            if (res.data.code === 200) {
+              if (res.data.couponIds) {
+                if (res.data.couponIds.length > 0) {
+                  console.log('existDiscount', res.data.couponIds.length)
+                  this.existDiscount = true
+                }
+              }
+            }
+          })
       }
     }
   }

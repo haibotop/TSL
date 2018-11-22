@@ -154,6 +154,7 @@
             break
         }
         param.promotionId = this.$route.query.couponId || this.$route.query.promotionId || this.$route.query.discountcode
+        // console.log('折扣码11111', param)
         this.getProduct(param, this.pageSize, this.currentPage)
       },
       //  ---------- 根据优惠券信息获取商品集合
