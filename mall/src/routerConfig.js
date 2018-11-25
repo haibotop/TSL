@@ -150,9 +150,9 @@ let myModal = [
   {
     path: '/myDiscountCard',
     name: 'myDiscountCard',
-    meta: {
-      intercept: true
-    },
+    // meta: {
+    //   intercept: true
+    // },
     component: myDiscountCard
   },
   {

@@ -65,8 +65,8 @@
         if (!sessionStorage.getItem('sendCoupons')) {
           this.getMyCoupon(0, 1, 99)
         }
+        this.readyTrade()
       }
-      this.readyTrade()
     },
     computed: {
       headPortrait () {
@@ -136,7 +136,7 @@
       readyTrade () { // 已兑换
         let params = {
           status: 1, // 1：已兑换2：已使用3：已失效 ,
-          userId: JSON.parse(sessionStorage.getItem('userInfo')).memberId
+          userId: JSON.parse(sessionStorage.getItem('userInfo')).memberId || ''
         }
         this.$http.post(...disAPI.getDiscountList(params))
           .then(res => {

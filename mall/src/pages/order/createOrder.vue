@@ -57,7 +57,7 @@
                 <div class="text-info">
                   <p>{{handleName(product.name)}}</p>
                   <span class="price">￥{{ handlePrice(product.price) }}</span>
-                  <span class="quantity">×{{product.quantity}}</span>
+                  <span class="quantity" ref="quantity">×{{product.quantity}}</span>
                 </div>
               </div>
             </cell-box>
@@ -139,7 +139,7 @@
       </div>
     </scroller>
     <div v-show="!couponFlag" class="sub-bar">
-      <div class="amount">合计:<span class="price">￥{{calcAmount}}</span></div>
+      <div class="amount">合计:<span class="price">￥{{Number(calcAmount)}}</span></div>
       <div id="percreateorder" v-show="orderAble" class="order-btn" @click="order">下单</div>
       <div v-show="!orderAble" class="order-btn-disable">下单</div>
     </div>
@@ -150,11 +150,13 @@
         <img src="../../assets/icons/icon_close_b.png" alt="" class="iconCloseDis" @click="showDiscount = false">
         <div :class="readyTradeItem.length >2 ? 'discountBox_lit' :''">
           <p class="disTitle" >请在方框内输入对应的折扣码，输入正确才可领取对应的优惠券，如有任何问题，请联系在线客服。</p>
-          <div style="margin: 0 10px">
+          <div style="margin: 0 10px 70px;">
           <div v-if="readyTradeItem != null"
-               class="cardList" :class="[item.a == true ? 'cardListActived' : '',index > okUse ? 'noClick' : '']" v-for="(item,index) in readyTradeItem"
+               class="cardList" :class="{cardListActived : item.a == true , noClick : index > okUse ,
+               noClick : item.noUse == false,noClick_:(item.a!=true&&flag1)||(item.a!=true&&item.exclusived==1&&flag2)}"
+               v-for="(item,index) in readyTradeItem"
                @click="chooseDiscount(item,index)">
-            <div class="cardList_left" :class="index > okUse ? 'noUse' : ''">
+            <div class="cardList_left" :class="{noUse : index > okUse,noUse_:(item.a!=true&&flag1)||(item.a!=true&&item.exclusived==1&&flag2)}">
               <p class="disPrice" v-if="item.rule  === 1 || item.rule  === 2">￥{{item.discountAmount/100}}</p>
               <p class="disPrice" v-if="item.rule   === 3">{{item.discountcodePiecediscountList[0].discountRatio/10}}折</p>
               <p class="manjian" v-if="item.rule   === 2">直减</p>
@@ -174,7 +176,7 @@
               <i class="rightTopCss"></i>
             </div>
             <div class="cardList_bottom" v-show="lookDetailIndex1 == index">
-              <p class="explain" v-if="item.memo">说明：{{item.memo || '无'}}</p>
+              <p class="explain" >说明：<span v-if="item.memo">{{item.memo || '无'}}</span></p>
             </div>
           </div>
           </div>
@@ -234,15 +236,18 @@
         },
         cashingDiscount: '', // 输入折扣码
         okUse: 0,
+        flag1: false,
+        flag2: false
       }
     },
     mounted: function () {
       this.userId = JSON.parse(sessionStorage.getItem('userInfo')).memberId
       for (var i of JSON.parse(sessionStorage.getItem('settlementProductItems'))) {
         for (var j of i.productItem) {
-          this.productId.push(j.productId)
+          this.productId.push({productId: j.productId, count: j.quantity})
         }
       }
+      console.log('的双丰收的发生y', JSON.parse(sessionStorage.getItem('settlementProductItems')))
       this.readyTrade() // 已兑换折扣码
       if (sessionStorage.getItem('memberRemark')) {
         this.memberRemark = sessionStorage.getItem('memberRemark')
@@ -281,21 +286,22 @@
           })
       },
       discountUse () {
-        let arr = this.readyTradeItem.filter ( item=> {
-          return item.a == true
+        let arr = this.readyTradeItem.filter (item => {
+          return item.a === true
         })
         this.chooseDisItem = arr
         this.disPrice = { // 折扣码优惠
           'jian': 0, // 满减or直减
           'manjianzhe': 0 // 满减折
         }
-        console.log('55555', arr)
+        // console.log('55555', arr)
         for (var i of arr) {
           this.disPrice.jian += i.discountAmount / 100
           if (i.rule === 3) {
             let aa = i.discountcodePiecediscountList[0].discountRatio
-            for (var j of i.productIdsssss) {
-              this.disPrice.manjianzhe += j.price / 100 * (1 - aa / 100)
+              // * this.productId[index].count
+            for (let [index, j] of i.productIdsssss.entries()) {
+              this.disPrice.manjianzhe += j.price * this.productId[index].count / 100 * (1 - aa / 100)
             }
             this.disPrice.manjianzhe = this.disPrice.manjianzhe.toFixed(2)
             // console.log('nnn', this.disPrice.manjianzhe)
@@ -308,31 +314,88 @@
         for (var a of this.readyTradeItem) {
           this.$set(a, 'a', false)
         }
-        this.showDiscount = false
+        // this.showDiscount = false
         this.chooseDiscountStatus = true
         this.lookDetailIndex1 = -1
         this.chooseDisItem = []
-        this.disPrice = 0
+        this.flag1 = false
+        this.flag2 = false
+        this.disPrice = { // 折扣码优惠
+          'jian': 0, // 满减or直减
+          'manjianzhe': 0 // 满减折
+        }
       },
       chooseDiscount (item, index) {
         if (item.a) {
           this.$set(item, 'a', false)
-        } else {
-          // this.chooseDiscountStatus = false
-          this.$set(item, 'a', true)
-          console.log('1111', item.a)
-        }
+          if (item.exclusived == 1) {
+            this.flag1 = false
+          } else if (item.exclusived == 2) {
+            this.flag1 = false
+            let f = this.readyTradeItem.every((item, index) => {
+              if (!item.a) item.a = ''
+              return item.a == false || ''
+            })
+            console.log('this.readyTradeItemthis.readyTradeItem',this.readyTradeItem)
+            if (f) {
+              this.flag2 = false
+            }
 
+          }
+        } else {
+          this.$set(item, 'a', true)
+          if (item.exclusived == 1) {
+            this.flag1 = true
+            this.flag2 = false
+          } else if (item.exclusived == 2) {
+            this.flag2 = true
+            this.flag1 = false
+          }
+        }
+        console.log('1111', item.a)
         let a = this.readyTradeItem.every(item => {
           return item.a == false || ''
         })
+        console.log('aaa', a)
         if (a) {
           this.chooseDiscountStatus = true
         } else {
           this.chooseDiscountStatus = false
           this.chooseDisItem = []
         }
+
+        console.log('this.chooseDiscountStatus', this.chooseDiscountStatus)
+        console.log('this.flag1', this.flag1)
+        console.log('this.flag2', this.flag2)
+
         // this.chooseDiscountStatus = !this.chooseDiscountStatus
+        // console.log('item.id', item.id)
+        // this.readyTradeItem.filter (item_ => {
+        //   console.log('item_.id', item_.id)
+        //   if (item.id!=item_.id) {
+        //     if (item_.exclusived == 1) {
+        //       if (!item_.noUse) {
+        //         this.$set(item_, 'noUse', true)
+        //       } else {
+        //         this.$set(item_, 'noUse', false)
+        //       }
+        //     } else {
+        //       if (item_.exclusived == 1) {
+        //         if (!item_.noUse) {
+        //           this.$set(item_, 'noUse', true)
+        //         } else {
+        //           this.$set(item_, 'noUse', false)
+        //         }
+        //       } else {
+        //         if (!item_.noUse) {
+        //           this.$set(item_, 'noUse', true)
+        //         } else {
+        //           this.$set(item_, 'noUse', false)
+        //         }
+        //       }
+        //     }
+        //   }
+        // })
       },
       showDiscountEvent () { // 显示折扣码弹窗
         this.showDiscount = true
@@ -344,6 +407,7 @@
             if (res.data.code === 200) {
               let a = res.data.couponUseProductInfos[0]
               console.log('fsfa', res.data.couponUseProductInfos[0])
+              this.readyTradeItem = a.couponProductUseInfo
               this.readyTradeItem = a.couponProductUseInfo.concat(a.couponProductNoUseInfo)
               this.okUse = a.couponProductUseInfo.length - 1
             } else if (res.data.code === -1) {
@@ -353,12 +417,12 @@
               })
             }
           })
-          .catch(res => {
-            this.$vux.alert.show({
-              title: '提示',
-              content: '您输入的折扣码有误！'
-            })
-          })
+          // .catch(res => {
+          //   this.$vux.alert.show({
+          //     title: '提示',
+          //     content: '您输入的折扣码有误！'
+          //   })
+          // })
       },
       lookDetail1 (index) { // 查看已兑换明细
         this.lookDetailIndex1 = this.lookDetailIndex1 == index ? -1 : index
@@ -451,6 +515,7 @@
             }
           }
           merchants.push(merchantInfo)
+          console.log('merchants', merchants)
         }
         // 计算促销优惠
         for (let [i, index] of new Map(merchants.map((i, index) => [i, index]))) {
@@ -663,12 +728,12 @@
       },
       calcAmount () {
         let couponsValue = tool.handlePrice(this.couponsValue)
-        return (this.afterPromotion - couponsValue).toFixed(2) - this.disPrice.jian - this.disPrice.manjianzhe
+        return ((this.afterPromotion - couponsValue).toFixed(2) - this.disPrice.jian - this.disPrice.manjianzhe).toFixed(2)
       },
       payAmount () {
         let couponsValue = tool.handlePrice(this.couponsValue)
-        let payPrice = (this.afterPromotion - couponsValue).toFixed(2) * 100
-        return payPrice
+        let payPrice = (((this.afterPromotion - couponsValue) - this.disPrice.jian - this.disPrice.manjianzhe) * 100).toFixed(2)
+        return Number(payPrice)
       },
       calcDiscountedPrice () {
         let amount = 0
@@ -750,6 +815,9 @@
   .noClick{
     pointer-events: none;
   }
+  .noClick_{
+    pointer-events: none;
+  }
   .cardList{
     position: relative;
     margin: 10px 0;
@@ -780,6 +848,9 @@
       }
     }
     .noUse{
+      background-color: #979797;
+    }
+    .noUse_{
       background-color: #979797;
     }
     .cardList_right{
@@ -852,6 +923,9 @@
     border-color: #352665;
   }
   .discountBottom1{
+    position: fixed;
+    bottom: 0;
+    width: calc(100% - 30px);
     padding: 15px;
     background-color: #F8F8F8;
     input{
@@ -874,6 +948,9 @@
     }
   }
   .discountBottom2{
+    position: fixed;
+    bottom: 0;
+    width: calc(100% - 30px);
     padding: 15px;
     background-color: #fff;
     text-align: center;
