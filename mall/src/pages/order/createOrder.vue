@@ -125,7 +125,7 @@
           </cell-box><cell-box>
             <div class="account" >
               <span class="title">折扣码优惠：</span>
-              <span class="price">￥ {{(Number(disPrice.jian) + Number(disPrice.manjianzhe))* -1}}</span>
+              <span class="price">￥ {{(Number(disPrice.jian) + Number(disPrice.manjianzhe)).toFixed(2) * -1}}</span>
             </div>
           </cell-box>
         </group>
@@ -294,15 +294,14 @@
             for (let [index, j] of i.productIdsssss.entries()) {
               for (var z of this.productId) {
                 if (z.productId == j.productId) {
-                  this.disPrice.manjianzhe += j.price * z.count / 100 * (1 - aa / 100)
+                  this.disPrice.manjianzhe = j.price * z.count / 100 * (1 - aa / 100) - 0 + Number(this.disPrice.manjianzhe)
                 }
               }
             }
             this.disPrice.manjianzhe = this.disPrice.manjianzhe.toFixed(2)
-            // console.log('nnn', this.disPrice.manjianzhe)
           }
         }
-        console.log('this.disPrice', this.disPrice)
+        // console.log('this.disPrice', this.disPrice)
         this.showDiscount = false
       },
       discountCancel () {
