@@ -151,10 +151,9 @@
         <div :class="readyTradeItem.length >2 ? 'discountBox_lit' :''">
           <p class="disTitle" >请在方框内输入对应的折扣码，输入正确才可领取对应的优惠券，如有任何问题，请联系在线客服。</p>
           <div style="margin: 0 10px 70px;">
-          <div v-if="readyTradeItem != null"
+          <div v-if="readyTradeItem != null" v-for="(item,index) in readyTradeItem"
                class="cardList" :class="{cardListActived : item.a == true , noClick : index > okUse ,
-               noClick : item.noUse == false,noClick_:(item.a!=true&&flag1)||(item.a!=true&&item.exclusived==1&&flag2)}"
-               v-for="(item,index) in readyTradeItem"
+               noClick_:(item.a!=true&&flag1)||(item.a!=true&&item.exclusived==1&&flag2)}"
                @click="chooseDiscount(item,index)">
             <div class="cardList_left" :class="{noUse : index > okUse,noUse_:(item.a!=true&&flag1)||(item.a!=true&&item.exclusived==1&&flag2)}">
               <p class="disPrice" v-if="item.rule  === 1 || item.rule  === 2">￥{{item.discountAmount/100}}</p>
@@ -247,7 +246,6 @@
           this.productId.push({productId: j.productId, count: j.quantity})
         }
       }
-      console.log('的双丰收的发生y', JSON.parse(sessionStorage.getItem('settlementProductItems')))
       this.readyTrade() // 已兑换折扣码
       if (sessionStorage.getItem('memberRemark')) {
         this.memberRemark = sessionStorage.getItem('memberRemark')
@@ -265,23 +263,17 @@
         }
         this.$http.post(...disAPI.cashingDiscountcode(parms))
           .then(res => {
-            console.log('2222', res.data)
-            if(res.data.code == 20053){
+            if (res.data.code === 200) {
               this.$vux.alert.show({
                 title: '提示',
-                content: '该折扣码已兑换！'
-              })
-            } else if (res.data.code == 20055) {
-              this.$vux.alert.show({
-                title: '提示',
-                content: '折扣码输入有误！'
-              })
-            } else if (res.data.code == 200) {
-              this.$vux.alert.show({
-                title: '提示',
-                content: '兑换成功！'
+                content: res.data.message
               })
               this.readyTrade() // 已兑换折扣码
+            } else {
+              this.$vux.alert.show({
+                title: '提示',
+                content: res.data.message
+              })
             }
           })
       },
@@ -294,14 +286,17 @@
           'jian': 0, // 满减or直减
           'manjianzhe': 0 // 满减折
         }
-        // console.log('55555', arr)
         for (var i of arr) {
           this.disPrice.jian += i.discountAmount / 100
           if (i.rule === 3) {
             let aa = i.discountcodePiecediscountList[0].discountRatio
               // * this.productId[index].count
             for (let [index, j] of i.productIdsssss.entries()) {
-              this.disPrice.manjianzhe += j.price * this.productId[index].count / 100 * (1 - aa / 100)
+              for (var z of this.productId) {
+                if (z.productId == j.productId) {
+                  this.disPrice.manjianzhe += j.price * z.count / 100 * (1 - aa / 100)
+                }
+              }
             }
             this.disPrice.manjianzhe = this.disPrice.manjianzhe.toFixed(2)
             // console.log('nnn', this.disPrice.manjianzhe)
@@ -363,39 +358,6 @@
           this.chooseDiscountStatus = false
           this.chooseDisItem = []
         }
-
-        console.log('this.chooseDiscountStatus', this.chooseDiscountStatus)
-        console.log('this.flag1', this.flag1)
-        console.log('this.flag2', this.flag2)
-
-        // this.chooseDiscountStatus = !this.chooseDiscountStatus
-        // console.log('item.id', item.id)
-        // this.readyTradeItem.filter (item_ => {
-        //   console.log('item_.id', item_.id)
-        //   if (item.id!=item_.id) {
-        //     if (item_.exclusived == 1) {
-        //       if (!item_.noUse) {
-        //         this.$set(item_, 'noUse', true)
-        //       } else {
-        //         this.$set(item_, 'noUse', false)
-        //       }
-        //     } else {
-        //       if (item_.exclusived == 1) {
-        //         if (!item_.noUse) {
-        //           this.$set(item_, 'noUse', true)
-        //         } else {
-        //           this.$set(item_, 'noUse', false)
-        //         }
-        //       } else {
-        //         if (!item_.noUse) {
-        //           this.$set(item_, 'noUse', true)
-        //         } else {
-        //           this.$set(item_, 'noUse', false)
-        //         }
-        //       }
-        //     }
-        //   }
-        // })
       },
       showDiscountEvent () { // 显示折扣码弹窗
         this.showDiscount = true
@@ -406,7 +368,6 @@
           .then(res => {
             if (res.data.code === 200) {
               let a = res.data.couponUseProductInfos[0]
-              console.log('fsfa', res.data.couponUseProductInfos[0])
               this.readyTradeItem = a.couponProductUseInfo
               this.readyTradeItem = a.couponProductUseInfo.concat(a.couponProductNoUseInfo)
               this.okUse = a.couponProductUseInfo.length - 1

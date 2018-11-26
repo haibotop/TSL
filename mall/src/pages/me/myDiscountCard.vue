@@ -175,10 +175,10 @@
       <div v-else class="cardList"  v-for="(item,index) in loseEfficacyItem">
         <div class="cardList_left" style="background-color: #8B8B8B">
           <p class="disPrice" v-if="item.rule  === 1 || item.rule  === 2">￥{{item.discountAmount/100}}</p>
-          <p class="disPrice" v-if="item.rule   === 3">{{item.discountcodePiecediscountList[0].min_quantity/10}}折</p>
+          <p class="disPrice" v-if="item.rule   === 3">{{item.discountcodePiecediscountList[0].discountRatio/10}}折</p>
           <p class="manjian" v-if="item.rule   === 2">直减</p>
           <div class="manjian" v-if="item.rule   === 3" >
-            <p >满{{item.discountcodePiecediscountList[0].discountRatio}}件打{{item.discountcodePiecediscountList[0].min_quantity/10}}折</p>
+            <p >满{{item.discountcodePiecediscountList[0].min_quantity}}件打{{item.discountcodePiecediscountList[0].discountRatio/10}}折</p>
           </div>
           <p class="manjian" v-if="item.rule === 1">满{{item.minExpense/100}}减{{item.discountAmount/100}}</p>
           <p class="reUse"><img src="../../assets/icons/icon_overlay.png" alt=""><span>可叠加使用</span></p>
@@ -240,23 +240,17 @@ export default {
       }
       this.$http.post(...disAPI.cashingDiscountcode(parms))
         .then(res => {
-          console.log('2222', res.data)
-          if (res.data.code == 20053) {
+          if (res.data.code === 200) {
             this.$vux.alert.show({
               title: '提示',
-              content: '该折扣码已兑换！'
-            })
-          } else if (res.data.code == 20055) {
-            this.$vux.alert.show({
-              title: '提示',
-              content: '折扣码输入有误！'
-            })
-          } else if (res.data.code == 200) {
-            this.$vux.alert.show({
-              title: '提示',
-              content: '兑换成功！'
+              content: res.data.message
             })
             this.readyTrade() // 已兑换折扣码
+          } else {
+            this.$vux.alert.show({
+              title: '提示',
+              content: res.data.message
+            })
           }
         })
     },
