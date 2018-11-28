@@ -15,7 +15,7 @@
       <group class="pin-group">
         <p class="pin-tip">短信验证码已经发送到</p>
         <p class="pin-phone">{{ phone }}</p>
-        <x-input v-model="pin" type="number" placeholder="请输入验证码" :show-clear="false">
+        <x-input v-model="pin" placeholder="请输入验证码" :show-clear="false">
           <div slot="label" class="label-icon"></div>
           <div slot="right"><Button @click="pinBtn">{{ pinBtnText }}</Button></div>
         </x-input>

@@ -72,6 +72,31 @@
           background-color: #d6d6d6;
         }
       }
+      .discountBottom{
+        position: fixed;
+        bottom: 0;
+        width: calc(100% - 30px);
+        padding: 15px;
+        background-color: #F8F8F8;
+        input{
+          padding-left: 5px;
+          width: 65%;
+          height: 36px;
+          outline: none;
+          border-color: transparent;
+          font-size: 16px;
+        }
+        span{
+          display: inline-block;
+          width: 30%;
+          height: 40px;
+          line-height: 40px;
+          text-align: center;
+          background: #352665;
+          color: #fff;
+          float: right;
+        }
+      }
     }
   }
 </style>
@@ -93,10 +118,11 @@
       </tab-item>
     </tab>
     <div class="group" v-show="tabIndex === 0">
+      <div style="margin-bottom: 70px">
       <div class="cardList" v-for="(item,index) in readyTradeItem">
         <div class="cardList_left">
           <p class="disPrice" v-if="item.rule  === 1 || item.rule  === 2">￥{{item.discountAmount/100}}</p>
-          <p class="disPrice" v-if="item.rule   === 3">满件折</p>
+          <p class="disPrice" v-if="item.rule   === 3">{{item.discountcodePiecediscountList[0].min_quantity/10}}折</p>
           <p class="manjian" v-if="item.rule   === 2">直减</p>
           <div class="manjian" v-if="item.rule   === 3" >
             <p >满{{item.discountcodePiecediscountList[0].discountRatio}}件打{{item.discountcodePiecediscountList[0].min_quantity/10}}折</p>
@@ -111,16 +137,21 @@
           <p class="lookDetail" @click="lookDetail1(index)">查看明细<img src="../../assets/icons/icon_drop_down.png" alt=""></p>
         </div>
         <div class="cardList_bottom" v-show="lookDetailIndex1 == index">
-          <p class="lookGoods">查看适用商品</p>
-          <p class="explain" v-if="item.memo">说明：{{item.memo || '无'}}</p>
+          <p class="lookGoods" @click="disUseNow(item.id)">查看适用商品</p>
+          <p class="explain" >说明：<span v-if="item.memo">{{item.memo || '无'}}</span></p>
         </div>
+      </div>
+      </div>
+      <div class="discountBottom">
+        <input type="text" v-model="cashingDiscount" placeholder="请输入折扣码">
+        <span class="exchange" @click="changeDiscount">兑换</span>
       </div>
     </div>
     <div class="group" v-show="tabIndex === 1">
       <div class="cardList" v-for="(item,index) in readyUsedItem">
         <div class="cardList_left" style="background-color: #8B8B8B">
           <p class="disPrice" v-if="item.rule  === 1 || item.rule  === 2">￥{{item.discountAmount/100}}</p>
-          <p class="disPrice" v-if="item.rule   === 3">满件折</p>
+          <p class="disPrice" v-if="item.rule   === 3">{{item.discountcodePiecediscountList[0].min_quantity/10}}折</p>
           <p class="manjian" v-if="item.rule   === 2">直减</p>
           <div class="manjian" v-if="item.rule   === 3" >
             <p >满{{item.discountcodePiecediscountList[0].discountRatio}}件打{{item.discountcodePiecediscountList[0].min_quantity/10}}折</p>
@@ -144,10 +175,10 @@
       <div v-else class="cardList"  v-for="(item,index) in loseEfficacyItem">
         <div class="cardList_left" style="background-color: #8B8B8B">
           <p class="disPrice" v-if="item.rule  === 1 || item.rule  === 2">￥{{item.discountAmount/100}}</p>
-          <p class="disPrice" v-if="item.rule   === 3">满件折</p>
+          <p class="disPrice" v-if="item.rule   === 3">{{item.discountcodePiecediscountList[0].discountRatio/10}}折</p>
           <p class="manjian" v-if="item.rule   === 2">直减</p>
           <div class="manjian" v-if="item.rule   === 3" >
-            <p >满{{item.discountcodePiecediscountList[0].discountRatio}}件打{{item.discountcodePiecediscountList[0].min_quantity/10}}折</p>
+            <p >满{{item.discountcodePiecediscountList[0].min_quantity}}件打{{item.discountcodePiecediscountList[0].discountRatio/10}}折</p>
           </div>
           <p class="manjian" v-if="item.rule === 1">满{{item.minExpense/100}}减{{item.discountAmount/100}}</p>
           <p class="reUse"><img src="../../assets/icons/icon_overlay.png" alt=""><span>可叠加使用</span></p>
@@ -191,7 +222,8 @@ export default {
       userId: '', // memberId
       readyTradeItem: [],
       readyUsedItem: [],
-      loseEfficacyItem: []
+      loseEfficacyItem: [],
+      cashingDiscount: '' // 输入折扣码
     }
   },
   mounted: function () {
@@ -201,6 +233,27 @@ export default {
     this.loseEfficacy() // 已失效
   },
   methods: {
+    changeDiscount () { // 兑换折扣码
+      let parms = {
+        couponIds: [this.cashingDiscount],
+        userId: this.userId
+      }
+      this.$http.post(...disAPI.cashingDiscountcode(parms))
+        .then(res => {
+          if (res.data.code === 200) {
+            this.$vux.alert.show({
+              title: '提示',
+              content: res.data.message
+            })
+            this.readyTrade() // 已兑换折扣码
+          } else {
+            this.$vux.alert.show({
+              title: '提示',
+              content: res.data.message
+            })
+          }
+        })
+    },
     disUseNow (id) {
       this.$router.push({path: '/couponPl', query: {'discountcode': id}})
     },
@@ -212,7 +265,7 @@ export default {
         this.$http.post(...disAPI.getDiscountList(params))
           .then(res => {
             this.readyTradeItem = res.data.couponIds || []
-            console.log('this.readyTradeItem', this.readyTradeItem)
+            // console.log('this.readyTradeItem', this.readyTradeItem)
           })
     },
     readyUsed () { // 已使用

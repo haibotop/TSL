@@ -13,7 +13,7 @@
 
     <div>
       <group class="phone-group">
-        <x-input v-model="phone" type="text" placeholder="请输入注册时的手机号码" show-clear ref="numInput" @on-change="handlePhone">
+        <x-input v-model="phone" type="text" placeholder="请输入注册时的手机号码" show-clear ref="numInput" :max="11" @on-change="handlePhone">
           <div slot="label" class="label-icon"></div>
         </x-input>
         <x-button class="stepBtn" @click.native="step1Btn" :show-loading="loading">下一步</x-button>

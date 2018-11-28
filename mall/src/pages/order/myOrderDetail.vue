@@ -12,7 +12,7 @@
             <div v-if="orderItem.status === 2">买家已付款</div>
             <div v-if="orderItem.status === 3">
               <div>卖家已发货</div>
-              <clocker class="clocker" :time="orderItem.timeDifference > 0 ? new Date().getTime() + Math.abs(parseInt(orderItem.timeDifference) * 1000) : 0" format="剩 %D 天 %H 小时 %M 分 %S 秒自动关闭"></clocker>              
+              <clocker class="clocker" :time="orderItem.timeDifference > 0 ? new Date().getTime() + Math.abs(parseInt(orderItem.timeDifference) * 1000) : 0" format="剩 %D 天 %H 小时 %M 分 %S 秒自动关闭"></clocker>
             </div>
             <div v-if="orderItem.status === 4">订单已完成</div>
             <div v-if="orderItem.status === 5">订单已关闭</div>
@@ -47,7 +47,8 @@
         <group>
           <cell title="商品总价"><div class="price-text">￥{{calcSum()}}</div></cell>
           <cell title="运费">免运费</cell>
-          <cell title="优惠券"></cell>
+          <cell title="优惠券"><div class="price-text"></div></cell>
+          <cell title="折扣码优惠"><div class="price-text"></div></cell>
         </group>
 
         <group>
