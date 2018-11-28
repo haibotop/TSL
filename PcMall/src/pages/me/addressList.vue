@@ -67,10 +67,11 @@
             </div>
           </div>
         </div>
-        <div class="Mfooter" >
-            <Button @click.native="hideAddressList" style="margin-right: 30px; width: 200px;height: 50px;font-size: 16px;">取消</Button>
-            <Button @click.native="saveAddressList1" style="width: 200px;height: 50px;font-size: 16px; background-color: #352665;color: #fff;">保存</Button>
-        </div>
+        
+      </div>
+      <div class="Mfooter" >
+          <Button @click.native="hideAddressList" style="margin-right: 30px; width: 200px;height: 50px;font-size: 16px;">取消</Button>
+          <Button @click.native="saveAddressList1" style="width: 200px;height: 50px;font-size: 16px; background-color: #352665;color: #fff;">保存</Button>
       </div>
       <div class="NAfooter" v-if="noAddress  && menuName == 1">
           无收货地址信息
@@ -109,6 +110,10 @@
             <!--</div>-->
           <!--</div>-->
         <!--</group>-->
+      </div>
+      <div class="Mfooter" >
+          <Button @click.native="hideAddressList" style="margin-right: 30px; width: 200px;height: 50px;font-size: 16px;">取消</Button>
+          <Button @click.native="saveAddressList2" style="width: 200px;height: 50px;font-size: 16px; background-color: #352665;color: #fff;">保存</Button>
       </div>
     </div>
   </div>
@@ -156,6 +161,7 @@
       this.bus.$on('addNewAddress',()=>{
           // console.log(1)
           this.noAddress = false
+          console.log(addressInfos, 'addressInfos')
           this.getAddressData((addressInfos) => {
               this.setDefault(addressInfos)
           })
@@ -182,70 +188,79 @@
     },
     methods: {
       //隐藏收获地址
-        hideAddressList(){
-            this.addressChooseIndex = '-1'
-            this.selfaddressChooseIndex = '-1'
-            this.checkClickParam = []
-            this.$parent.$parent.hideAddressModel()
-        },
-        //保存地址
-        saveAddressList2(){
-            console.log("this.selfaddressChooseIndex",this.selfaddressChooseIndex)
-            if(this.selfaddressChooseIndex == '-1'){
-                this.$Modal.warning({
-                    title: "提示",
-                    content: '请选择一个自提地址'
-                })
-                return
-            }
-            let choose = this.selfaddressChooseIndex
-            let data = {
-                'id': this.selfLiftingAddress[choose].id,
-                'receiverName': this.selfLiftingAddress[choose].receiverName,
-                'receiverMobile': this.selfLiftingAddress[choose].receiverMobile,
-                'receiverAddress': this.selfLiftingAddress[choose].receiverAddress,
-                'default_status': this.selfLiftingAddress[choose].default_status
-            }
-            this.$store.commit('setAddress', data)
+      hideAddressList(){
+          this.addressChooseIndex = '-1'
+          this.selfaddressChooseIndex = '-1'
+          this.checkClickParam = []
+          this.$parent.$parent.hideAddressModel()
+      },
+      //保存地址
+      saveAddressList2(){
+          console.log("this.selfaddressChooseIndex",this.selfaddressChooseIndex)
+          if(this.selfaddressChooseIndex == '-1'){
+              this.$Modal.warning({
+                  title: "提示",
+                  content: '请选择一个自提地址'
+              })
+              return
+          }
+          let choose = this.selfaddressChooseIndex
+          let data = {
+              'id': this.selfLiftingAddress[choose].id,
+              'receiverName': this.selfLiftingAddress[choose].receiverName,
+              'receiverMobile': this.selfLiftingAddress[choose].receiverMobile,
+              'receiverAddress': this.selfLiftingAddress[choose].receiverAddress,
+              'default_status': this.selfLiftingAddress[choose].default_status
+          }
+          this.$store.commit('setAddress', data)
+          if (this.$parent.$parent.getSettlementDate !== undefined) {
             this.$parent.$parent.getSettlementDate()
-            this.$Modal.success({
-                title: "提示",
-                content: "保存成功",
-                onOk: () => {
-                    this.$parent.$parent.hideAddressModel()
-                }
-            })
+          }
+          this.$Modal.success({
+              title: "提示",
+              content: "保存成功",
+              onOk: () => {
+                  this.$parent.$parent.hideAddressModel()
+              }
+          })
         },
         saveAddressList1(){
-            //默认地址
-            if(this.checkClickParam.length != 0){
-                this.putshippingAddress(this.checkClickParam)
-            }
-            // console.log('this.addressChooseIndex',this.addressChooseIndex)
-            if(this.addressChooseIndex == '-1'){
-                this.$Modal.warning({
-                    title: "提示",
-                    content: '请选择一个收获地址'
-                })
-                return
-            }
-            this.setAddress(this.addressChooseIndex)
-            this.$Modal.success({
-                title: "提示",
-                content: "保存成功",
-                onOk: () => {
-                    this.$parent.$parent.hideAddressModel()
-                }
-            })
-        },
-      //增加配送地址
-        showCreatAddressModel(){
+          //默认地址
+          if(this.checkClickParam.length != 0){
+              this.putshippingAddress(this.checkClickParam)
+          }
+          // console.log('this.addressChooseIndex',this.addressChooseIndex)
+          if(this.addressChooseIndex == '-1'){
+              this.$Modal.warning({
+                  title: "提示",
+                  content: '请选择一个收货地址'
+              })
+              return
+          }
+          this.setAddress(this.addressChooseIndex)
+          this.$Modal.success({
+              title: "提示",
+              content: "保存成功",
+              onOk: () => {
+                  this.$parent.$parent.hideAddressModel()
+              }
+          })
+      },
+    //增加配送地址
+      showCreatAddressModel(){
+        console.log(this.$parent, 'one')
+        console.log(this.$parent.$parent, 'tow')
+        if (this.$parent.$parent.showCreatAddressModel != undefined) {
             this.$parent.$parent.showCreatAddressModel()
-        },
-      //导航切换
-        menuChoose(name){
-            this.menuName = name
-        },
+        } else {
+          this.$parent.showCreatAddressModel()
+        }
+          
+      },
+    //导航切换
+      menuChoose(name){
+          this.menuName = name
+      },
       // ios android 切换
       IosOrAndroid () {
         /* Navigator 是HTML DOM中的内置对象，
@@ -326,7 +341,11 @@
       // 编辑地址操作
       editAddress (edit) {
         this.catchSession(edit)
-        this.$parent.$parent.showEditAddressModel()
+        if (this.$parent.$parent.showEditAddressModel !== undefined) {
+           this.$parent.$parent.showEditAddressModel()
+        } else {
+           this.$parent.showEditAddressModel()
+        }
         this.bus.$emit('setSession')
       },
       // 选择地址操作
@@ -381,7 +400,10 @@
           'default_status': this.addressInfo[index].default_status
         }
         this.$store.commit('setAddress', data)
-        this.$parent.$parent.getSettlementDate()
+        if (this.$parent.$parent.getSettlementDate !== undefined) {
+          this.$parent.$parent.getSettlementDate()
+        }
+        
         // this.addressChooseIndex = index
 
       },
@@ -408,12 +430,13 @@
         }
         this.checkClickParam = param
         console.log('safsafsfsf',param)
-        // this.putshippingAddress(param)
+        this.putshippingAddress(param)
       },
-      getSelfLiftingAddress () {
+      getSelfLiftingAddress () { //自提地址
         this.$http.get(myAPI.selfLiftingAddress()).then(res => {
+              console.log('111',res.data.addressInfos)
           if (res.data.code === 200) {
-              // console.log('2222222222222222222',res.data.addressInfos)
+              console.log('2222222222222222222',res.data.addressInfos)
             this.selfLiftingAddress_bs = res.data.addressInfos
             this.selfLiftingAddress = res.data.addressInfos
           }
@@ -598,8 +621,8 @@
     }
   }
   .Mfooter{
-      position: fixed;
-      bottom: 120px;
+      position: absolute;
+      bottom: -70px;
       left: 50%;
       margin-left: -214px;
   }

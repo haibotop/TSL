@@ -16,7 +16,7 @@
 </style>
 <template>
   <div id="editAddress">
-    <p solt="header" style="margin: 10px 0 0 30px; font-size: 24px;color: #352665;text-align: left;">编辑收获地址</p>
+    <p solt="header" style="margin: 10px 0 0 30px; font-size: 24px;color: #352665;text-align: left;">编辑收货地址</p>
     <!--<x-header title="编辑地址" :left-options="{backText: ''}">-->
       <!--<a slot="right" @click="saveAddress()">保存</a></x-header>-->
     <!--</x-header>-->
@@ -282,7 +282,9 @@
             .then((response) => {
                 // console.log('response',response)
               if (response.status === 200) {
-                  this.$parent.$parent.getSettlementDate()
+                  if (this.$parent.$parent.getSettlementDate !== undefined) {
+                      this.$parent.$parent.getSettlementDate()
+                  }
                   this.$Modal.success({
                       title: '提示',
                       content: response.data.message,

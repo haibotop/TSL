@@ -29,6 +29,8 @@ import shoppingCart from '@/pages/shoppingCart/shoppingCart'
 import createOrder from '@/pages/order/createOrder.vue'
 import asOrders from '@/pages/order/asOrders.vue'
 import asOrderDetail from '@/pages/order/asOrderDetail.vue'
+import myOrders from '@/pages/order/myOrders.vue'
+import myOrderDetail from '@/pages/order/myOrderDetail.vue'
 
 //我的----------
 import mine from '@/pages/me/mine.vue'
@@ -38,6 +40,7 @@ import myPassword from '@/pages/me/myPassword.vue'
 import myInfo from '@/pages/me/myInfo.vue'
 import myNickname from '@/pages/me/myNickname.vue'
 import myCollection from '@/pages/me/myCollection.vue'
+import address from '@/pages/me/address.vue'
 import addressList from '@/pages/me/addressList.vue'
 import selfAddress from '@/pages/me/selfAddress.vue'
 import editAddress from '@/pages/me/editAddress.vue'
@@ -148,6 +151,39 @@ let order = [
         component: asOrders
     },
     {
+        path: '/myOrders',
+        name: 'myOrders',
+        redirect: { path: '/myOrders/0' },
+        children: [
+            {
+                path: ':status',
+                meta: {
+                    intercept: true
+                }
+            }
+        ],
+        meta: {
+            intercept: true
+        },
+        component: myOrders
+    },
+    {
+        path: '/myOrderDetail',
+        name: 'myOrderDetail',
+        children: [
+            {
+                path: ':orderNum',
+                meta: {
+                    intercept: true
+                }
+            }
+        ],
+        meta: {
+            intercept: true
+        },
+        component: myOrderDetail
+    },
+    {
         path: '/asOrderDetail',
         name: 'asOrderDetail',
         children: [
@@ -220,6 +256,14 @@ let myModal = [
             intercept: true
         },
         component: myCollection
+    },
+    {
+        path: '/address',
+        name: 'address',
+        meta: {
+            intercept: true
+        },
+        component: address
     },
     {
         path: '/addressList',
@@ -384,6 +428,7 @@ var host = [
         name: 'loginSuccess',
         component: loginSuccess,
         meta: {
+            intercept: true,
             title: '登录成功'
         },
     },

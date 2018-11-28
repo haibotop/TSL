@@ -238,13 +238,13 @@
           <!--</x-textarea>-->
         <!--</cell-box>-->
       <!--<create-address></create-address>-->
-      <Modal v-model="model1" footerHide :styles="{width: '1000px',top: '275px'}">
+      <Modal v-model="model1" footerHide :styles="{width: '1000px',top: '100px'}">
         <address-list></address-list>
       </Modal>
-      <Modal v-model="model2" footerHide :styles="{width: '1000px',top: '275px'}">
+      <Modal v-model="model2" footerHide :styles="{width: '1000px',top: '100px'}">
         <create-address @hideModelCreat="hideModelCreat"></create-address>
       </Modal>
-      <Modal v-model="model3" footerHide :styles="{width: '1000px',top: '275px'}">
+      <Modal v-model="model3" footerHide :styles="{width: '1000px',top: '100px'}">
           <edit-address @hideModelEdit="hideModelEdit"></edit-address>
       </Modal>
       <Modal v-model="model4" footerHide :styles="{width: '1000px',top: '200px'}">

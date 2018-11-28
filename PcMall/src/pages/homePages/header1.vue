@@ -60,7 +60,12 @@
                 <i><img src="../../assets/icons/icon_call.png" width="24" style="vertical-align:middle"></i>
                 <span>在线客服</span>
             </router-link>
-            <router-link tag="a" to="/login">     
+
+            <router-link tag="a" to="/login" v-if="!userInfoSession">     
+                <Icon type="ios-contact-outline" size="20"/>
+                <span>{{nickName}}</span>
+            </router-link>
+            <router-link tag="a" to="/mine" v-else>     
                 <Icon type="ios-contact-outline" size="20"/>
                 <span>{{nickName}}</span>
             </router-link>
@@ -231,10 +236,8 @@
                 this.nickName = JSON.parse(sessionStorage.getItem('userInfo')).nickName
             })
             let userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
-            console.log(userInfo)
-            if(userInfo!=null){
-                console.log(userInfo.nickName)
-                this.nickName = userInfo.nickName === null? 'admin': userInfo.nickName
+            if(JSON.parse(sessionStorage.getItem('userInfo')) !==null){
+                this.nickName = userInfo.nickName === null? '未命名': userInfo.nickName
             }else{
                 this.nickName =  '登录/注册'
             }

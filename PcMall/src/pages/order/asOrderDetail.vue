@@ -64,8 +64,7 @@
             <!-- <p>运费： {{orderItem.freightPrice ? orderItem.freightPrice : '免运费'}}</p> -->
             <p>优惠扣减： -￥{{cuponPrice}}</p>
             <p class="amount">退款金额：<span>￥{{handlePrice(orderItem.sum)}}</span></p>
-            <p class="amount" v-if="orderItem.refundOrderItem">实退金额：<span>￥{{orderItem.refundOrderItem ? handlePrice(orderItem.refundOrderItem.actuallyRefundAmount) : '--'}}</span></p>
-            
+            <p class="price-text" v-if="orderItem.refundOrderItem">实退金额：<span>￥{{orderItem.refundOrderItem ? handlePrice(orderItem.refundOrderItem.actuallyRefundAmount) : '--'}}</span></p>
         </div>
         <div class="text-center"><div class="btn-purple">联系客服</div></div>
         
@@ -74,7 +73,6 @@
     </div>
     <div class="asorder-detail-content">
       <div class="asorder-box">
-        
         <div class="ab-item">
           <Row>
             <Col span="3">收货地址:</Col>
@@ -91,36 +89,38 @@
           <Row>
             <Col span="3">订单信息:</Col>
             <Col span="21">
-              {{orderItem.orderNo}}
-              <input id="orderNumInput2" type="text" :value="orderItem.orderNo" readonly style="position:absolute;top:-30px;">
-              <button class="copy-btn" data-clipboard-target="#orderNumInput2">复制单号</button>
+              <div>
+                订单编号：{{orderItem.orderNo}}
+                <input id="orderNumInput2" type="text" :value="orderItem.orderNo" readonly style="position:absolute;top:-30px;">
+                <button class="copy-btn" data-clipboard-target="#orderNumInput2">复制单号</button>
+              </div>
+              <div>
+                退货订单编号:{{orderItem.afterSaleNo}} 
+                <input id="orderNumInput" type="text" :value="orderItem.afterSaleNo" readonly style="position:absolute;top:-30px;">
+                <button class="copy-btn" data-clipboard-target="#orderNumInput">复制单号</button>
+              </div>
+              
             </Col>
           </Row>
         </div>
         <div class="ab-item">
           <Row>
-            <Col span="3">退货订单编号:</Col>
-            <Col span="21">
-              {{orderItem.afterSaleNo}} 
-              <input id="orderNumInput" type="text" :value="orderItem.afterSaleNo" readonly style="position:absolute;bottom:-30px;">
-              <button class="copy-btn" data-clipboard-target="#orderNumInput">复制单号</button>
-            </Col>
+            <Col span="3">备注:</Col>
+            <Col span="21">{{orderItem.merchantRemark}}</Col>
           </Row>
         </div>
         <div class="ab-item">
           <Row>
-            <Col span="4">备注:</Col>
-            <Col span="20">{{orderItem.merchantRemark}}</Col>
+            <Col span="3">员工编号:</Col>
+            <Col span="21">{{orderItem.merchantRemark}}</Col>
           </Row>
         </div>
       </div>
-    </div>
-
-
+    </div> 
+    <v-footer></v-footer>
     <div>
       <confirm v-model="clipConfirm" title="已复制订单号"  cancel-text=" "></confirm>
     </div>
-    <v-footer></v-footer>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -132,20 +132,11 @@ import vTitle from "@/pages/homePages/title.vue"
 import * as tool from '@/services/myTool.es6'
 import * as orderAPI from '@/services/API/orderServices.es6'
 import cashier from '@/components/cashier.vue'
-import { XHeader, Scroller, Group, Cell, CellBox, Clocker, XButton, XTextarea, Confirm } from 'vux'
+import { Confirm } from 'vux'
 import * as cartAPI from '@/services/API/shoppingCartServices.es6'
 export default {
   name: 'asOrderDetail',
   components: { 
-    cashier, 
-    XHeader, 
-    Scroller, 
-    Group, 
-    Cell, 
-    CellBox, 
-    Clocker, 
-    XButton, 
-    XTextarea, 
     Confirm,
     header1,
     header2, 
@@ -352,6 +343,8 @@ export default {
         border-bottom: 1px solid #eee;
         padding-bottom: 35px;
         margin-bottom: 35px;
+        position: relative;
+        overflow: hidden;
 
         &:last-child {
           border-bottom: none;
@@ -359,7 +352,7 @@ export default {
         }
 
         input[readonly="readonly"] {
-          display: none;
+          // opacity: 0;
         }
       }
   }
@@ -474,10 +467,19 @@ export default {
   .btn-purple {
     background-color: #352665;
     color: #fff;
-    padding: 8px 30px;
+    padding: 8px 40px;
     display: inline-block;
     cursor: pointer;
-    margin-top: 20px;
+    margin: 20px 10px 0;
+  }
+  .btn-white {
+    background-color: #fff;
+    color: #352665;
+    padding: 7px 40px;
+    display: inline-block;
+    cursor: pointer;
+    margin: 20px 10px 0;
+    border: 1px solid #352665;
   }
   
 </style>

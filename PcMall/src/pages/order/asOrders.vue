@@ -197,10 +197,9 @@
           }
 
           .amount {
-            font-size: 16px;
             line-height: 33px;
             span {
-              color: red;
+              margin-left: 8px;
             }
           }
           .btns {
@@ -210,6 +209,7 @@
             padding: 3px 20px;
             color: #fff;
             margin: 8px auto 0;
+            cursor: pointer;
           }
         }
       }

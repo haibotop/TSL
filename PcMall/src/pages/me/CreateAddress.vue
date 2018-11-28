@@ -16,7 +16,7 @@
 </style>
 <template>
   <div id="CreateAddress">
-      <p solt="header" style="margin: 10px 0 0 30px; font-size: 24px;color: #352665;text-align: left;">添加收获地址</p>
+      <p solt="header" style="margin: 10px 0 0 30px; font-size: 24px;color: #352665;text-align: left;">添加收货地址</p>
       <!--<a slot="right" @click="saveAddress()">保存</a></x-header>-->
       <div class="login-cont">
           <div class="addressee">
@@ -278,12 +278,12 @@
       // 提交保存收货信息
       postAddress (params) {
         this.params.memberId = JSON.parse(sessionStorage.getItem('userInfo')).memberId
-        console.log(this.params)
         this.$http.post(...myAPI.postshippingAddress(params))
           .then((response) => {
-              console.log('reee',response)
             if (response.status === 200) {
-                this.$parent.$parent.getSettlementDate()
+                if (this.$parent.$parent.getSettlementDate != undefined) {
+                    this.$parent.$parent.getSettlementDate()
+                }
                 this.bus.$emit('addNewAddress')
                 this.$Modal.success({
                     title: '提示',
@@ -305,29 +305,31 @@
               // }, 1000)
             }
           })
-          .catch((error) => {
-              console.log(error)
-            if (error.response.data.status === 500) {
-                this.$Modal.warning({
-                    title: '提示',
-                    content: '服务器错误,请重试'
-                });
-              setTimeout(() => {
-                window.location.reload()
-              }, 500)
-            }
-            if (error.response.status === 404) {
-                this.$Modal.show({
-                    title: '提示',
-                    content: '添加失败请重试'
-                });
-            } else {
-                this.$Modal.show({
-                    title: '提示',
-                    content: error.response.data.message
-                });
-            }
-          })
+        //   .catch((error) => {
+        //       console.log(this.$parent.$parent.getSettlementDate(), '-----')
+        //     //   console.error(error)
+               
+        //     if (error.response.data.status === 500) {
+        //         this.$Modal.warning({
+        //             title: '提示',
+        //             content: '服务器错误,请重试'
+        //         });
+        //       setTimeout(() => {
+        //         window.location.reload()
+        //       }, 500)
+        //     }
+        //     if (error.response.status === 404) {
+        //         this.$Modal.show({
+        //             title: '提示',
+        //             content: '添加失败请重试'
+        //         });
+        //     } else {
+        //         this.$Modal.show({
+        //             title: '提示',
+        //             content: error.response.data.message
+        //         });
+        //     }
+        //   })
       },
       // 手机号码规则处理
       handlePhone (val) {

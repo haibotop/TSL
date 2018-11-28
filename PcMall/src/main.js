@@ -112,7 +112,7 @@ Ajax.$interceptor.requestThen = function (config) {
       iView.Message.error({
         content: `用户未登录，请重新登录!`
       })
-      router.replace({path: '/home'})
+      router.replace({path: '/login'})
       if (config.source) {
         config.source.cancel()
       }
@@ -224,6 +224,7 @@ Ajax.$interceptor.responseCatch = function (error) {
 
       switch (true) {
         case /^401$/.test(status):
+          sessionStorage.removeItem('userInfo')
           iView.Message.error({
             content: `登录超时，请重新登录!`
           })

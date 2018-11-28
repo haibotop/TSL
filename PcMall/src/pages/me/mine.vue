@@ -24,10 +24,10 @@
           </div>
         </div>
         <Row class="myitems">
-          <Col span="6">我的收藏 <p> {{colletionNum}}</p></Col>
-          <Col span="6">我的购物袋 <p> {{bagNum}} </p></Col>
-          <Col span="6">我的优惠券 <p> {{couponNum}} </p></Col>
-          <Col span="6">我的折扣码 <p> {{couponNum}} </p></Col>
+          <Col span="6"><router-link tag="a" to="/myCollection" >我的收藏 <p> {{colletionNum}}</p></router-link></Col>
+          <Col span="6"><router-link tag="a" to="/shoppingCart">我的购物袋 <p> {{bagNum}} </p></router-link></Col>
+          <Col span="6"><router-link tag="a" to="/myCoupons">我的优惠券 <p> {{couponNum}} </p></router-link></Col>
+          <Col span="6"><router-link tag="a" to="/myDiscountCard">我的折扣码 <p> {{discountCardNum}}</p></router-link></Col>
         </Row>
       </div>
       <div class="mine-right">
@@ -65,7 +65,7 @@
             <span>联系客服</span> 
           </div>
           <div>
-            <router-link to="/addressList">
+            <router-link to="/address">
               <img src="../../assets/icons/odr_repair.png" style="display:block;margin:5px auto;width:50px;" alt="" >
               <span>我的收货地址</span> 
             </router-link>
@@ -203,18 +203,11 @@ export default {
       myCroppa: {}, // 头像上传组件
       show: false,
       mobile: "",
-      nickName:
-        JSON.parse(sessionStorage.getItem("userInfo")).nickName === "undefined"
-          ? "未命名"
-          : JSON.parse(sessionStorage.getItem("userInfo")).nickName,
+      nickName: '',
       userGender: JSON.parse(sessionStorage.getItem("userInfo")).sex, // 0男 1女 2无
       baseInfoModel: false,
       baseInfoFormItem: {
-        nickName:
-          JSON.parse(sessionStorage.getItem("userInfo")).nickName ===
-          "undefined"
-            ? "未命名"
-            : JSON.parse(sessionStorage.getItem("userInfo")).nickName,
+        nickName: JSON.parse(sessionStorage.getItem("userInfo")).nickName === null ? "未命名": JSON.parse(sessionStorage.getItem("userInfo")).nickName,
         gender: this.userGender
       },
       couponNum: 0, // 优惠券数量
@@ -226,25 +219,31 @@ export default {
       pendingReceiveNum: 0, // 待收货
       finishedNum: 0, // 已完成
       asOrderNum: 0, // 售后
+      discountCardNum: 0, // 折扣码
       pwdModal: false,
       pwdItem: {
         currPwd: '',
         newPwd: '',
         confNewPwd: ''
-      }
+      },
+      headPortrait: '' //头像
     };
   },
   mounted() {
     if (sessionStorage.getItem("userInfo")) {
+      if (sessionStorage.getItem("userInfo").headPortrait) {
+        this.headPortrait = this.isSessionStorage.headPortrait.replace('!56', '!352') || ''
+      }
+      this.nickName = this.isSessionStorage.nickName === null ? "未命名": this.isSessionStorage.nickName
       if (this.isSessionStorage.sex === 0) {
         this.baseInfoFormItem.gender = "0";
       } else if (this.isSessionStorage.sex === 1) {
         this.baseInfoFormItem.gender = "1";
       } else {
-        this.baseInfoFormItem.gender = "";
+        this.baseInfoFormItem.gender = "0";
       }
 
-      this.mobile = JSON.parse(sessionStorage.getItem("userInfo")).mobile;
+      this.mobile = this.isSessionStorage.mobile;
       if (!sessionStorage.getItem("sendCoupons")) {
         this.getMyCoupon(0, 1, 99);
       }
@@ -254,7 +253,7 @@ export default {
         .get(...myAPI.getProductCollect({ pageNum: 1, pageSize: 1000 }))
         .then(res => {
           if (res.data.code === 200) {
-            if (res.data.list) {
+            if (res.data.pageInfo.list) {
               this.colletionNum = res.data.pageInfo.list.length;
             }
           }
@@ -264,8 +263,10 @@ export default {
       // 接口-获取购物车数据
       this.$http.get(scAPI.getshoppingCart1()).then(res => {
         if (res.data.code === 200) {
-          if (res.data.list) {
+          if (res.data.list && res.data.list.length > 0) {
             this.bagNum = res.data.list[0].productItem.length;
+          } else {
+            this.bagNum = 0
           }
         }
       });
@@ -279,17 +280,6 @@ export default {
     }
   },
   computed: {
-    headPortrait() {
-      if (sessionStorage.getItem("userInfo")) {
-        return (
-          (
-            JSON.parse(sessionStorage.getItem("userInfo")).headPortrait || ""
-          ).replace("!56", "!352") || ""
-        );
-      } else {
-        return "";
-      }
-    },
     bgImg() {
       // return require('../../assets/images/mine-bk.png')
     },
@@ -310,6 +300,18 @@ export default {
    
   },
   methods: {
+    availabledDiscountCard () { // 已兑换折扣码
+      let params = {
+          status: 1, // 1：已兑换2：已使用3：已失效 ,
+          userId: JSON.parse(sessionStorage.getItem('userInfo')).memberId
+        }
+      this.$http.post(...disAPI.getDiscountList(params))
+        .then(res => {
+          if (res.data.couponIds && res.data.couponIds.length > 0) {
+            this.discountCardNum = res.data.couponIds.length
+          }
+        })
+    },
     logout () {
       this.$http.delete(...myAPI.logout())
       sessionStorage.removeItem('userInfo')
@@ -322,16 +324,16 @@ export default {
       this.$http.get(...orderAPI.getOrderList(params)).then(res => {
         if (res.data.code === 200) {
           if (parmas === 1) {
-            this.unpayOrder = res.data.orderItems.list.length;
+            this.unpayOrderNum = res.data.orderItems.list.length; // 待付款
           } else if (parmas === 2) {
-            this.pendingDelivery = res.data.orderItems.list.length;
+            this.pendingDeliveryNum = res.data.orderItems.list.length;  // 待发货
           } else if (parmas === 3) {
-            this.pendingReceive = res.data.orderItems.list.length;
+            this.pendingReceiveNum = res.data.orderItems.list.length; // 待收货
           } else if (parmas === 4) {
-            this.finished = res.data.orderItems.list.length;
+            this.finishedNum = res.data.orderItems.list.length; // 已完成
           }
         }
-      });
+      }); 
     },
     getAsOrders() {
       // 售后订单
@@ -383,11 +385,15 @@ export default {
         this.show = true;
         // this.$refs.photograph.click()
       } else {
-        this.$vux.toast.show({
-          type: "text",
-          text: `无网络状态`,
-          width: "200px"
+        this.$Modal.error({
+          title: '无网络状态',
+          content: '无网络状态'
         });
+        // this.$vux.toast.show({
+        //   type: "text",
+        //   text: `无网络状态`,
+        //   width: "200px"
+        // });
       }
       // this.$refs.camera.click()
     },
@@ -405,14 +411,12 @@ export default {
               this.$http
                 .put(...myAPI.updateHeadPortrait(res.data.data.pic_56))
                 .then(response => {
-                  console.log(response);
                   if (response.data.code === 200) {
-                    this.$vux.toast.show({
-                      type: "text",
-                      text: `修改成功`,
-                      width: "200px"
+                    this.$Modal.success({
+                      title: '修改成功',
+                      content: '修改头像成功!'
                     });
-                    this.headPortrait = res.data.data.pic_56;
+                    this.headPortrait = res.data.data.pic_56
                     let userInfo = JSON.parse(
                       sessionStorage.getItem("userInfo")
                     );
@@ -424,14 +428,18 @@ export default {
                     this.myCroppa.remove();
                     this.show = false;
                   } else {
-                    this.$vux.toast.show({
-                      type: "text",
-                      text: `修改失败`,
-                      width: "200px"
+                    // this.$vux.toast.show({
+                    //   type: "text",
+                    //   text: `修改失败`,
+                    //   width: "200px"
+                    // });
+                    this.$Modal.error({
+                      title: '修改失败',
+                      content: '修改头像失败！'
                     });
                     this.myCroppa.remove();
                   }
-                  this.$vux.loading.hide();
+                  // this.$vux.loading.hide();
                 });
             }
           });
@@ -457,6 +465,8 @@ export default {
       } else if (this.baseInfoFormItem.nickName.length < 3) {
         this.$Message.warning("昵称限输入3-25个字符");
         this.loading = false;
+      } else if (!this.baseInfoFormItem.gender){
+        this.$Message.warning("请选择性别");
       } else {
         this.isLoad = true;
         axios
@@ -746,6 +756,8 @@ export default {
   background-color: #ddd;
   border-radius: 50%;
   overflow: hidden;
+  border: 1px solid #ddd;
+
   img {
     display: block;
     width: 100%;
@@ -775,6 +787,7 @@ export default {
 }
 .croppa-cls {
   background-color: #fff;
+  cursor: pointer;
 }
 .ivu-modal .gender-dropdown .ivu-select-dropdown {
   min-width: 1px !important;
@@ -782,6 +795,10 @@ export default {
 }
 .myitems {
   margin-top: 30px;
+
+  a {
+    color: inherit;
+  }
 
   p {
     font-size: 16px;

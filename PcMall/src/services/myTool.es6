@@ -1,4 +1,4 @@
-// import { dateFormat } from 'vux'
+import { dateFormat } from 'vux'
 // 处理价格 返回 00.00
 export function handlePrice (price) {
   // if (!/^[0-9^\.]*$/.test(price)) {
@@ -31,11 +31,11 @@ export function handleName (name) {
   }
 }
 // 处理时间
-// export function handleDate (param) {
-//   let date = param
-//   if (/^[0-9]+$/.test(param)) { date = parseInt(param) }
-//   return dateFormat(new Date(date), 'YYYY-MM-DD HH:mm:ss')
-// }
+export function handleDate (param) {
+  let date = param
+  if (/^[0-9]+$/.test(param)) { date = parseInt(param) }
+  return dateFormat(new Date(date), 'YYYY-MM-DD HH:mm:ss')
+}
 // import * as cartAPI from '@/services/API/shoppingCartServices.es6'
 // // 合并预购物车到购物车(若存在)
 export function preCartToCart (this_, callback) {
