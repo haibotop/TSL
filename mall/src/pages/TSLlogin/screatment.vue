@@ -1,5 +1,5 @@
 <style lang="scss" rel="stylesheet/scss">
-#screatment {
+#screatment1 {
   background-color: #FFFFFF;
   height: 100%;
   .logo {
@@ -67,7 +67,7 @@
     }
     ul {
       margin-top: 0;
-      padding-left: 24px;
+      padding-left: 0;
       list-style-type: none;
     }
     .vux-close {
@@ -80,11 +80,17 @@
     .clear {
       clear: both;
     }
+    .textIndent{
+       text-indent: 2em;
+     }
+    .fontWeight{
+      font-weight: 700;
+    }
   }
 }
 </style>
 <template>
-  <div id="screatment">
+  <div id="screatment1">
     <XHeader :left-options="headerContent.leftOptions">
       <div class="logo"><img src="../../assets/icons/logo.png" alt=""></div>
     </XHeader>
@@ -106,7 +112,7 @@
       <XHeader :left-options="headerContent.slider" :title="sliderTitle" @on-click-back="sliderBack" style="position:fixed;z-index:1;width:100%"></XHeader>
       <div class="position-horizontal-demo" ref="textCon">
         <div v-if="this.sliderIndex === 0">
-          <p>隐私权保护政策适用于在中国境内(不包括香港、澳门及台湾)居住的，在TSL | 谢瑞麟 网上珠宝店（网址：http://eshop.tslj.cn，下称“本店”）订购商品之顾客（下称“用户”），本店的各项电子服务的所有权和运作权归谢瑞麟(深圳)商贸有限公司（下称“我们”）。</p>
+          <p class="textIndent">隐私权保护政策适用于在中国境内(不包括香港、澳门及台湾)居住的，在TSL | 谢瑞麟 网上珠宝店（网址：http://eshop.tslj.cn，下称“本店”）订购商品之顾客（下称“用户”），本店的各项电子服务的所有权和运作权归谢瑞麟(深圳)商贸有限公司（下称“我们”）。</p>
         </div>
         <div v-if="this.sliderIndex === 1">
           <p>2.1 我们收集个人资料，以确保我们可履行服务承诺，并在本店为用户带来个人化体验。</p>
@@ -124,7 +130,7 @@
             <li>1）回应用户的查询；</li>
             <li>2）推广新产品、在线的活动或宣传，详情请参阅「直接促销」部份；
 按用户提供的个人资料与用户沟通，如电话、电邮、短讯、智能电话应用程序的推动通知或邮寄方式；
-</li> 
+</li>
             <li>3）特定功能：如与朋友分享产品、维持用户的购物清单、维持用户在本店的购物袋，包括对用户数据的确认和安全审查及处理用户的付款；</li>
             <li>4）进行顾客市场调查，分析趋势及行为，用以提升我们的产品及服务水平；让我们可按规定作披露以符合任何具约束力的法例、法规或法院指令要求；及与上述直接有关的所有用途。</li>
           </ul>
@@ -185,7 +191,7 @@
           <p>8.3 按本政策的条款，我们有权为处理任何数据存取的要求而收取合理的费用。</p>
         </div>
         <div v-if="this.sliderIndex === 8">
-          <p>我们保留随时修订本政策的权利，并会在本店或我们的相关网站上登载相关修订内容。本隐私政策并不构成我们与用户达成的任何合约权利或任何其他法律权利。</p>
+          <p class="textIndent">我们保留随时修订本政策的权利，并会在本店或我们的相关网站上登载相关修订内容。本隐私政策并不构成我们与用户达成的任何合约权利或任何其他法律权利。</p>
         </div>
         <div class="clear"></div>
       </div>

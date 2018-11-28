@@ -72,7 +72,7 @@
     }
     ul {
       margin-top: 0;
-      padding-left: 24px;
+      padding-left: 0;
       list-style-type: none;
     }
     .vux-close {
@@ -85,6 +85,12 @@
     .clear {
       clear: both;
     }
+    .textIndent{
+      text-indent: 2em;
+    }
+    .fontWeight{
+      font-weight: 700;
+    }
   }
 }
 </style>
@@ -94,7 +100,7 @@
       <div class="logo"><img src="../../assets/icons/logo.png" alt=""></div>
     </XHeader>
     <div class="content">
-      <h1 class="text-headline">商品配送政策</h1>
+      <h1 class="text-headline">配送及退换政策</h1>
       <div class="divider bg-gray-lighter">&nbsp;</div>
       <div class="content-menu">
         <ul class="slide">
@@ -127,10 +133,10 @@
       <XHeader :left-options="headerContent.slider" :title="sliderTitle" @on-click-back="sliderBack" style="position:fixed;z-index:1;width:100%"></XHeader>
       <div class="position-horizontal-demo" ref="textfuwu">
         <div v-if="sliderIndex === 0">
-          <p>为了提升您的购物体验，我们提供快递配送/门店自提服务，您可以根据您的个人需要，选择合适的配送方式，如有任何问题，欢迎联系我们的在线客服。</p>
+          <p class="textIndent">为了提升您的购物体验，我们提供快递配送/门店自提服务，您可以根据您的个人需要，选择合适的配送方式，如有任何问题，欢迎联系我们的在线客服。</p>
         </div>
         <div v-if="sliderIndex === 1">
-          <p>您所订购的商品，将在订单付款成功后1-2周内发出。</p>
+          <p class="textIndent">您所订购的商品，将在订单付款成功后1-2周内发出。</p>
         </div>
         <div v-if="sliderIndex === 2">
           <p>3.1 指定快递：EMS中国邮政速递或顺丰快递，全场免运费（仅限中国大陆地区，不包括港澳台或海外地区）。同时，我们会为商品购买全程运输保险。</p>
@@ -147,7 +153,7 @@
             <li>
               1、北京：北京东直门银座<br>
               地址：北京市东城区东直门外大街48号银座mall一层<br>
-              电话：13810530018
+              电话：010-64171811
             </li>
             <li>
               2、上海：上海五角场万达<br>
@@ -167,7 +173,7 @@
           </ul>
         </div>
         <div v-if="sliderIndex === 4">
-          <p>我们会为每个订单，配备商品保证书、商品清单、精美首饰盒及手提袋等。</p>
+          <p class="textIndent">我们会为每个订单，配备商品保证书、商品清单、精美首饰盒及手提袋等。</p>
         </div>
       </div>
     </popup>
