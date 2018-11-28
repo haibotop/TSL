@@ -7,7 +7,7 @@
 </style>
 <template>
   <div id="createOrder">
-    <x-header v-show="!couponFlag" :left-options="{backText: ''}" title="填写订单"></x-header>
+    <x-header v-show="!couponFlag" :left-options="{backText: '',preventGoBack: true}" @on-click-back="goBack" title="填写订单" ></x-header>
     <scroller v-show="!couponFlag" lock-x height="-96" ref="scroller">
       <div :style="`min-height:${scrollerHeight}px;`">
         <group v-if="address">
@@ -173,6 +173,8 @@
               <p class="expiryDate">有效期：{{(item.startDate || '').replace("T", " ").split(' ')[0]}}至{{(item.endDate || '').replace("T", " ").split(' ')[0]}}</p>
               <p class="lookDetail" @click.stop="lookDetail1(index)">查看明细<img src="../../assets/icons/icon_drop_down.png" alt=""></p>
               <i class="rightTopCss"></i>
+              <span class="displayNone" :class="{noUseTxt : index > okUse,noUseTxt_:(item.a!=true&&flag1)||(item.a!=true&&item.exclusived==1&&flag2)}">不适用</span>
+              <i class="displayNone" :class="{noUseCss : index > okUse,noUseCss_:(item.a!=true&&flag1)||(item.a!=true&&item.exclusived==1&&flag2)}"></i>
             </div>
             <div class="cardList_bottom" v-show="lookDetailIndex1 == index">
               <p class="explain" >说明：<span v-if="item.memo">{{item.memo || '无'}}</span></p>
@@ -234,19 +236,37 @@
           'manjianzhe': 0 // 满减折
         },
         cashingDiscount: '', // 输入折扣码
-        okUse: 0,
+        okUse: 0, // 判断折扣码是否可用
         flag1: false,
-        flag2: false
+        flag2: false,
+        goBackStatus: false, // 头部返回事件
+        disParams: [] // 折扣码参数
       }
     },
-    mounted: function () {
+    // mounted: function () {
+    //   this.userId = JSON.parse(sessionStorage.getItem('userInfo')).memberId
+    //   for (var i of JSON.parse(sessionStorage.getItem('settlementProductItems'))) {
+    //     for (var j of i.productItem) {
+    //       this.productId.push({productId: j.productId, count: j.quantity})
+    //     }
+    //   }
+    //   // this.readyTrade() // 已兑换折扣码
+    //   if (sessionStorage.getItem('memberRemark')) {
+    //     this.memberRemark = sessionStorage.getItem('memberRemark')
+    //   }
+    //   this.scrollerHeight = document.body.clientHeight - 66
+    //   tool.preCartToCart(this, () => {
+    //     this.getSettlementDate()
+    //   })
+    // },
+    activated: function () {
       this.userId = JSON.parse(sessionStorage.getItem('userInfo')).memberId
       for (var i of JSON.parse(sessionStorage.getItem('settlementProductItems'))) {
         for (var j of i.productItem) {
           this.productId.push({productId: j.productId, count: j.quantity})
         }
       }
-      this.readyTrade() // 已兑换折扣码
+      // this.readyTrade() // 已兑换折扣码
       if (sessionStorage.getItem('memberRemark')) {
         this.memberRemark = sessionStorage.getItem('memberRemark')
       }
@@ -256,6 +276,14 @@
       })
     },
     methods: {
+      goBack () { // 下单成功后点头部后退按钮，返回到订单页
+        this.productId = []
+        if (this.goBackStatus == true) {
+          this.$router.replace({path: '/myOrders/1'})
+        } else {
+          this.$router.back(-1)
+        }
+      },
       changeDiscount () { // 兑换折扣码
         let parms = {
           couponIds: [this.cashingDiscount],
@@ -286,6 +314,7 @@
           'jian': 0, // 满减or直减
           'manjianzhe': 0 // 满减折
         }
+        console.log('arrr',arr)
         for (var i of arr) {
           this.disPrice.jian += i.discountAmount / 100
           if (i.rule === 3) {
@@ -293,15 +322,16 @@
               // * this.productId[index].count
             for (let [index, j] of i.productIdsssss.entries()) {
               for (var z of this.productId) {
+                console.log('j.proPrice', j.proPrice)
                 if (z.productId == j.productId) {
-                  this.disPrice.manjianzhe = j.price * z.count / 100 * (1 - aa / 100) - 0 + Number(this.disPrice.manjianzhe)
+                  this.disPrice.manjianzhe = (j.price * z.count - j.proPrice) / 100 * (1 - aa / 100) - 0 + Number(this.disPrice.manjianzhe)
                 }
               }
             }
             this.disPrice.manjianzhe = this.disPrice.manjianzhe.toFixed(2)
           }
         }
-        // console.log('this.disPrice', this.disPrice)
+        console.log('this.disPrice', this.disPrice)
         this.showDiscount = false
       },
       discountCancel () {
@@ -334,7 +364,6 @@
             if (f) {
               this.flag2 = false
             }
-
           }
         } else {
           this.$set(item, 'a', true)
@@ -360,6 +389,9 @@
       },
       showDiscountEvent () { // 显示折扣码弹窗
         this.showDiscount = true
+        if (this.chooseDiscountStatus == true) {
+          this.readyTrade ()
+        }
       },
       readyTrade () { // 已兑换折扣码
         let parms = this.productId
@@ -615,6 +647,7 @@
         this.$http.patch(...orderAPI.order(params)).then(res => {
           if (res.data.code === 200) {
             this.$vux.toast.show({type: 'text', text: '下单成功', width: '200px'})
+            this.goBackStatus = true // 下单成功后点头部后退按钮，返回到订单页
             this.goPay(res.data.orderItems[0])
             sessionStorage.removeItem('settlementProductItems')
           } else if (res.data.code === 2016) {
@@ -813,6 +846,36 @@
     .noUse_{
       background-color: #979797;
     }
+    .displayNone{
+      display: none;
+    }
+    .noUseTxt,.noUseTxt_{
+      display: inline-block;
+      position: absolute;
+      top: 5px;
+      right: 0;
+      color: #fff;
+      font-size: 12px;
+      z-index: 1;
+      transform: rotate(45deg);
+    }
+    .noUseCss,.noUseCss_{
+      display: inline-block;
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
+    .noUseCss::before,.noUseCss_::before{
+      display: inline-block;
+      position: absolute;
+      right: 0;
+      top: 0;
+      content: '';
+      display: inline-block;
+      border: 25px solid transparent;
+      border-top-color: #979797;
+      border-right-color: #979797;
+    }
     .cardList_right{
       position: absolute;
       top: 0;
@@ -888,6 +951,7 @@
     width: calc(100% - 30px);
     padding: 15px;
     background-color: #F8F8F8;
+    z-index: 9;
     input{
       padding-left: 5px;
       width: 65%;
@@ -914,6 +978,7 @@
     padding: 15px;
     background-color: #fff;
     text-align: center;
+    z-index: 9;
     .disCancel{
       display: inline-block;
       float: left;

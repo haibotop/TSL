@@ -221,11 +221,11 @@
           },
           {
             title: '操作',
-            width: 305,
+            width: 250,
             renderHeader: (h, params) => {
               return h('div', {
                 style: {
-                  'text-align': 'center'
+                  'text-align': 'center',
                 }
               }, params.column.title)
             },
@@ -286,7 +286,7 @@
                       this.$router.push({path: 'orderDetail', query: {orderNo: params.row.number}})
                     }
                   }
-                }, '查看订单详情'),
+                }, '订单详情'),
                 h('a', {
                   style: {'text-align': 'center', 'margin': '0 5px'},
                   domProps: {href: 'javascript:'},
@@ -314,7 +314,7 @@
                       this.modal2 = true
                     }
                   }
-                }, '添加备注')
+                }, '备注')
               ]
               return h('div', {}, om)
             },

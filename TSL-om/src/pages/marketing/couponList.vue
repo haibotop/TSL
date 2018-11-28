@@ -329,9 +329,9 @@
                   on: {
                     click: () => {
                       // sit
-                    //  window.location.href = `/platform/om/OperationManagement/v1/ExportCouponCoding?couponId=${params.row.id}`
+                     window.location.href = `/platform/om/OperationManagement/v1/ExportCouponCoding?couponId=${params.row.id}`
                       // uat
-                      window.location.href = `/platform/om/OperationManagement/v1/ExportCouponCoding?couponId=${params.row.id}`
+                      // window.location.href = `/platform/om/OperationManagement/v1/ExportCouponCoding?couponId=${params.row.id}`
                     }
                   }
                 }, '导出券码'),
@@ -708,6 +708,7 @@
       /* --------查看详情功能---------- */
       getCouponDetail (params) {
         // (请求优惠券详情)
+        console.log('参数',params)
         this.getCouponById(params.row.id, (res) => {
           let dtData = res.data
           let dtArr = []
@@ -740,6 +741,7 @@
         // 根据商品ID 查询类目ID (请求商品ID对应的类目ID)
         this.productSkuPidsInfo(this.dtParams, (res) => {
           console.log(res.data.pageInfo)
+          console.log('这个参数',this.dtParams)
           // 处理克数
           for (let r of res.data.pageInfo.list) {
             r.name = this.$tool.handleName(r.name)

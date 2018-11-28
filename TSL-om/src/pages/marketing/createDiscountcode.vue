@@ -127,9 +127,9 @@
         <Checkbox v-model="local.isOverlay"></Checkbox>
       </FormItem> -->
       <FormItem v-if="local.rules===3" style="width: 100%;color:#0000ff">
-        <span @click="addDiscountList" style="cursor:pointer">+添加多级促销<span style="color:#ff0000">（最多添加4级）</span></span>
+        <!-- <span @click="addDiscountList" style="cursor:pointer">+添加多级促销<span style="color:#ff0000">（最多添加4级）</span></span> -->
       </FormItem>
-      <FormItem label="不与其他活动的折扣码叠加使用" style="width: 100%;">
+      <FormItem label="可叠加使用" style="width: 100%;">
         <Checkbox v-model="local.exclusived"></Checkbox>
       </FormItem>
       <FormItem label="折扣码活动描述：" style="width: 100%;" prop="memo">
@@ -369,8 +369,8 @@
           thirdCategoryId: [
             {
               trigger: 'change',
-              validator: (rule, value, callback) => {
-                if (this.search_c.firstCategoryId !== '' && this.search_c.secondCategoryId !== '' && this.search_c.thirdCategoryId === '') {
+              validator: (rule, value, callback) => {console.log('this.search_c.thirdCategoryId',this.search_c.thirdCategoryId)
+                if (this.search_c.firstCategoryId !== '' && this.search_c.secondCategoryId !== '' && this.search_c.thirdCategoryId === ''||this.search_c.thirdCategoryId === undefined) {
                   callback(new Error('请选择三级类目'))
                 } else {
                   callback()
@@ -599,6 +599,92 @@
       }
     },
     methods: {
+      getDidcountCode(){
+        if (this.$route.params.id) {
+          alert(this.$route.params.id)
+          // this.loading = true
+          this.$http.post(...mkAPI.discountCodeLists({id:this.$route.params.id})).then((res) => {
+          // this.$http.get(...myAPI.getUpdatePromotions(this.$route.params.id)).then(res => {
+            if (res.data.code === 200) {
+              this.$http.post(...mkAPI.productSkuCidsInfo(res.data, 1, 99)).then((res_) => {
+                this.data1 = res.data.productIds
+              })
+            //   local: {
+            //     discountList: [{num1:'',num2:''}],
+            //     name: '',
+            //     total: '',
+            //     circleTimes: '',
+            //     rules: null,
+            //     minExpense: '',
+            //     discountAmount: '',
+            //     startDate: '',
+            //     endDate: '',
+            //     exclusived: false,
+            //     memo: ''
+            // },
+              console.log(res)
+              this.local.name = res.data.name
+              this.local.circleTimes = res.data.circleTimes
+              this.local.rules = res.data.rule
+              this.local.minExpense = Number(res.data.minExpense) * 100
+              this.local.discountAmount = Number(res.data.discountAmount) / 100
+              this.local.startDate = res.data.startDate
+              this.local.endDate = res.data.endDate
+              this.local.exclusived = res.data.exclusived == 1 ? false : true
+              this.local.memo = res.data.memo
+              this.local.type = res.data.type
+              this.local.discountcodePieces = res.data.discountcodePieces
+              // // this.local.productIds = ''
+              // // this.local.categoryIds = ''
+              
+              // let params = {
+              //   'type': this.tabStatus === 0 ? 1 : 2,
+              //   'name': this.local.name,
+              //   'starDate': this.local.startDate + ':00',
+              //   'endDate': this.local.endDate + ':00',
+              //   // 'total': Number(this.local.total),
+              //   'circleTimes': Number(this.local.circleTimes),
+              //   'rules': this.local.rules,
+              //   // 'minExpense': Number(this.local.minExpense),
+              //   'discountAmount': Number(this.local.discountAmount) * 100,
+              //   'exclusived': this.local.exclusived ? 2 : 1,
+              //   'memo': this.local.memo,
+              // }
+              // if (params.rules === 1) {
+              //   params.minExpense = Number(this.local.minExpense) * 100
+              // }
+              // //折扣码
+              // if(params.rules === 3){
+              //   let discountcodePieceLists = []
+              //   for(let item of this.local.discountList){
+              //     let obj = {}
+              //     obj.minQuantity = Number(item.num1)
+              //     obj.discountRatio = Number(item.num2) * 10
+              //     discountcodePieceLists.push(obj)
+              //   }           
+              //     params.discountcodePieceLists = discountcodePieceLists
+              // }
+              // let temparr = []
+              // if (params.type === 1) {
+              //   for (let i = 0; i < this.data1.length; i++) {
+              //     // temparr.push({'productId': this.data1[i].skuId})
+              //     temparr.push({'id': this.data1[i].skuId})//改动 id
+              //   }
+              //   params.productIds = temparr
+              // } else {
+              //   for (let i = 0; i < this.data4.length; i++) {
+              //     // temparr.push({'categoryId': this.data4[i].id})
+              //     temparr.push({'id': this.data4[i].id})//改动 id
+              //   }
+              //   params.categoryIds = temparr
+              // }
+
+
+              // this.getProArray(this.$route.params.id)
+            }
+          })
+        }
+      },
       onChange(){
         this.local.discountList.splice(1,this.local.discountList.length)
         this.$set(this.local.discountList[0],'num1','')
@@ -638,6 +724,16 @@
           this.$Message.warning('结束日期不能早于开始日期')
           return false
         }
+        if (new Date() > new Date(this.local.endDate)) {
+          this.$Message.warning('结束日期不能早于当前日期')
+          return false
+        }
+        if(this.local.rules === 1){
+          if (Number(this.local.minExpense) < Number(this.local.discountAmount)) {
+            this.$Message.warning('减价格不能大于满价格')
+            return false
+          }
+        }
         return true
       },
       // 提交折扣码信息
@@ -657,7 +753,7 @@
             let params = {
               'type': this.tabStatus === 0 ? 1 : 2,
               'name': this.local.name,
-              'startDate': this.local.startDate + ':00',
+              'starDate': this.local.startDate + ':00',
               'endDate': this.local.endDate + ':00',
               // 'total': Number(this.local.total),
               'circleTimes': Number(this.local.circleTimes),
@@ -675,8 +771,8 @@
               let discountcodePieceLists = []
               for(let item of this.local.discountList){
                 let obj = {}
-                obj.discountRatio = Number(item.num1)
-                obj.minQuantity = Number(item.num2) * 10
+                obj.minQuantity = Number(item.num1)
+                obj.discountRatio = Number(item.num2) * 10
                 discountcodePieceLists.push(obj)
               }           
                 params.discountcodePieceLists = discountcodePieceLists
@@ -695,7 +791,6 @@
               }
               params.categoryIds = temparr
             }
-            // console.log(params)
             const self = this
             this.loading = true
             console.log(params)
@@ -728,7 +823,7 @@
             self.productSearch()
             console.log(111)
           }, 500)
-        } else if (this.tabStatus === 1) {
+        } else if (this.tabStatus === 1) {alert()
           // this.getData3List()
           // this.data4 = []
           this.modal2 = true
@@ -943,6 +1038,8 @@
           if (this.seleList1[i].id === val) {
             this.seleList2 = this.seleList1[i].secondCategory
             this.search_c.secondCategoryId = this.seleList2[0].id
+            // this.changeSele2(this.seleList2[0].id)
+            this.seleList3 = this.seleList2[i].threeCategory
             break
           }
         }
@@ -954,6 +1051,7 @@
           for (let i in this.seleList2) {
             if (this.seleList2[i].id === val) {
               this.seleList3 = this.seleList2[i].threeCategory
+              // this.search_c.thirdCategoryId = this.seleList2[0].id 
               break
             }
           }
@@ -1108,6 +1206,7 @@
     mounted () {
       this.initDate2()
       this.getCateList()
+      this.getDidcountCode()
     }
   }
 </script>
