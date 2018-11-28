@@ -65,8 +65,8 @@
       <div class="ccSearch">
         <Form :label-width="140">
           <div class="ccItem">
-            <FormItem label="折扣码活动名称：">
-              <Input placeholder="折扣码活动名称" style="width: 150px" v-model="name"></Input>
+            <FormItem label="活动名称：">
+              <Input placeholder="活动名称" style="width: 150px" v-model="name"></Input>
             </FormItem>
           </div>
           <div class="ccItem">
@@ -81,7 +81,7 @@
       </div>
     </div>
     <div class="ccTable">
-      <pTable :pTableCoulmns="ccTable" :pTableData="ccData" :pageParams="pageParams" :tempPro="pTempPro" :refleshPage="handleComponentPageChange"></pTable>
+      <pTable :ppp="xxx" :pTableCoulmns="ccTable" :pTableData="ccData" :pageParams="pageParams" :tempPro="pTempPro" :refleshPage="handleComponentPageChange"></pTable>
     </div>
     <!-- modal -->
     <Modal v-model="couponDetailBoolean" title="折扣码活动详细信息" width="600">
@@ -89,44 +89,47 @@
         <div style="display: flex" class="cpDetail">
           <div class="" style="flex: 1; width: 32%;word-wrap:break-word;">
             <ul>
-              <li>折扣码活动名称{{cpDetailData.name}}</li>
+              <li>活动名称：{{cpDetailData.name}}</li>
               <li>开始时间：{{cpDetailData.startDate}}</li>
               <li>修改时间：{{cpDetailData.updateDate}}</li>
             </ul>
           </div>
           <div style="flex: 1; width: 32%; word-wrap:break-word;">
             <ul>
-              <li>折扣码活动描述：{{cpDetailData.memo === '' ? '无' : cpDetailData.memo}}</li>
+              <li>活动描述：{{cpDetailData.memo === '' ? '无' : cpDetailData.memo}}</li>
               <li>结束时间：{{cpDetailData.endDate}}</li>
-              <li>满{{cpDetailData.minExpense}}减{{cpDetailData.discountAmount}}</li>
+              <!-- <li>满{{cpDetailData.minExpense}}减{{cpDetailData.discountAmount}}</li> -->
+              <li>{{cpDetailData.couponTypeMemo}}</li>
             </ul>
           </div>
           <div style="flex: 1; width: 32%">
             <ul>
               <li>类型：{{cpDetailData.typeName}}</li>
               <li>创建时间：{{cpDetailData.createDate}}</li>
-              <li>折扣码可使用次数：{{cpDetailData.circleTimes}}</li>
+              <li>可使用次数：{{cpDetailData.circleTimes}}</li>
             </ul>
           </div>
         </div>
         <div style="margin: 5px;font-size: 20px">
-          <span>折扣码使用范围</span>
+          <span>使用范围</span>
         </div>
       </div>
       <div class="cpRange">
         <table ref="cpTable" v-show="cpType===1">
           <tr>
-            <td width="250">类目编码</td>
-            <td width="250">分类名称</td>
+            <td width="100">货品图片</td>
+            <td width="250">SKU编码</td>
+            <td width="250">货品名称</td>
           </tr>
           <tr v-for="item in cpDetailData.productCateInfo">
+            <td width="100"><img :src="item.picUrl" alt="货品图片" class="tdImg"></td>
             <td width="250">{{item.barCode}}</td>
             <td width="250" >{{item.name}}</td>
           </tr>
         </table>
         <table ref="cpTable" v-show="cpType===2">
           <tr>
-            <td width="300">类目编码</td>
+            <td width="300">分类编码</td>
             <td width="300">分类名称</td>
           </tr>
           <tr v-for="item in cpDetailData.productCateInfo">
@@ -209,6 +212,7 @@
     },
     data () {
       return {
+        xxx:[],
         name: '',
         cpDetailData: {},
         pTempPro: [],
@@ -220,7 +224,7 @@
           },
           {
             key: 'name',
-            title: '折扣码活动名称',
+            title: '活动名称',
             align: 'center',
             width: 150
           },
@@ -263,7 +267,7 @@
           {
             title: '操作',
             align: 'center',
-            width: 320,
+            width: 335,
             render: (h, params) => {
               return h('div', [
                 h('Button', {
@@ -300,6 +304,7 @@
                   on: {
                     click: () => {
                       // 券码列表modal
+                      console.log('params.row',params)
                       this.couponListBoolean = true
                       this.clRow = params.row
                       this.checkAllCoupons(0)
@@ -313,7 +318,23 @@
                   },
                   on: {
                     click: () => {
+                      console.log('params.row',params)
+                      // let params_ = {}
+                      this.$router.push({name: 'createDiscountcode', params:params.row})
+                    }
+                  }
+                }, '编辑'),
+                h('Button', {
+                  props: {
+                    type: 'text',
+                    size: 'small'
+                  },
+                  on: {
+                    click: () => {
+                      // let now = new Date().getTime()
+                      // let end = new Date(params.row.endDate).getTime()
                       this.$Modal.confirm({
+                        // content: now - end > 0?'是否删除这条记录':'是否删除这条记录<br><p style="color:red">注：该折扣码还在活动期间内</p>',
                         content: '是否删除这条记录',
                         onOk: () => {
                           let self = this
@@ -563,7 +584,7 @@
         for (let p of this.pTempPro) {
           params.couponIds.push(p)
         }
-        console.log(params)
+        console.log('pTempPro',pTempPro)
         this.$Modal.confirm({
           content: `是否删除${this.pTempPro.length}条记录`,
           onOk: () => {
@@ -597,9 +618,11 @@
       /* --------查看详情功能---------- */
       getCouponDetail (params) {
         // (请求优惠券详情)
+        console.log('参数',params)
         this.discountCodeLists({id:params.row.id}, (res) => {
           let dtData = res.data
           let dtArr = []
+          console.log('asaasd',dtData)
           // dtData.type ===1 单品
           if (dtData.type === 1) {
             this.cpType = 1
@@ -613,8 +636,8 @@
             // dtData.type ===2 类目
           } else if (dtData.type === 2) {
             this.cpType = 2
-            if (dtData.categoryId.length > 0) {
-              for (let p of dtData.categoryId) {
+            if (dtData.categoryIds.length > 0) {
+              for (let p of dtData.categoryIds) {
                 dtArr.push(p.id)
               }
             }
@@ -626,9 +649,11 @@
       },
       // 单品根据商品ID 查询类目ID 分页!
       proSkuIdsInfo (dtData) {
+        // this.dtParams.arr[0] = '117864464457826312'
         // 根据商品ID 查询类目ID (请求商品ID对应的类目ID)
         this.productSkuPidsInfo(this.dtParams, (res) => {
           console.log(res.data.pageInfo)
+          console.log('这个参数',this.dtParams)
           // 处理克数
           for (let r of res.data.pageInfo.list) {
             r.name = this.$tool.handleName(r.name)
@@ -706,10 +731,20 @@
       // 渲染优惠券详情
       reviewCouponDetail (dtData) {
         // 类型
-        dtData.typeName = dtData.rule === 1 ? '满减优惠' : '直降优惠'
+        if(dtData.rule === 1) {
+          dtData.typeName = '满减优惠'
+        }else if(dtData.rule === 2) {
+          dtData.typeName = '直降优惠'
+        }else {
+          dtData.typeName = '满件打折'
+        }
         console.log(dtData)
         // 分转元
-        // dtData.couponTypeMemo = dtData.fullSubtract === null ? `立减${this.$tool.handlePrice(dtData.subtract)}元` : `满${this.$tool.handlePrice(dtData.fullSubtract)}减${this.$tool.handlePrice(dtData.subtract)}`
+        if(dtData.discountcodePieces.length){
+          dtData.couponTypeMemo = `满${dtData.discountcodePieces[0].minQuantity}件打${dtData.discountcodePieces[0].discountRatio/10}折`
+        }else{
+          dtData.couponTypeMemo = dtData.minExpense == 0 || dtData.fullSubtract === null? `立减${this.$tool.handlePrice(dtData.discountAmount)}元` : `满${this.$tool.handlePrice(dtData.minExpense)}减${this.$tool.handlePrice(dtData.discountAmount)}`     
+        }
         this.cpDetailData = dtData
       },
       // 优惠券详情分页
@@ -819,9 +854,10 @@
           let data_ = []
           for (let i of data) {
             data_.push({
-              'discountCode': i['折扣码'],
-              'operator': i['系统员工编号']
+              'discountCode': i['折扣码']||"",
+              'operator': i['系统员工编号']||i['系统员工编码']
             })
+
           }
           this.ProsConfirmData = data_
           this.ProsConfirmFlag = true
@@ -833,6 +869,16 @@
           couponIds: this.ProsConfirmData,
           id: this.clRow.id
         }
+        let reg = /^[\da-z]+$/i
+        let flag = this.ProsConfirmData.every(item=>{
+          item.discountCode = item.discountCode.replace(/\s+/g,"")
+          return item.discountCode.length == 12 && reg.test(item.discountCode)
+        }) 
+        console.log('setObj',setObj)
+        if(!flag){
+          this.$Message.warning('折扣码长度必须为12位的数字或字母')
+          return
+        }
         this.$http.post(...mkAPI.discountCodeimportListsList(setObj)).then(res => {
           if (res.data.code === 200) {
             var discountCodedata = res.data.discountCodeFailsImporresult
@@ -841,13 +887,13 @@
               for (var i = 0; discountCodedata.length > i; i++) {
                 msgArry = msgArry + discountCodedata[i].discountCode + ','
               }
-              this.$Message.success('折扣码为' + msgArry + '已存在')
+              this.$Message.warning('折扣码为' + msgArry + '已存在')
             } else {
               this.$Message.success('发布成功')
             }
             this.ProsConfirmFlag = false
           } else {
-            this.$Message.success('发布失败')
+            this.$Message.error('发布失败')
             this.ProsConfirmFlag = false
           }
         })

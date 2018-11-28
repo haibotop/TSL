@@ -3,7 +3,7 @@
 </style>
 <template>
   <div id="pTable">
-    <Table :border="pTableBorder" height="500" :columns="pTableCoulmns" :data="pTableData" @on-selection-change="selectTion" @on-select="handleSelectOne" @on-select-cancel="cancelSelectOne" @on-select-all="handleSelectAll"></Table>
+    <Table :border="pTableBorder" height="500" :columns="pTableCoulmns" :data="pTableData" @on-selection-change="selectTion" @on-select="handleSelectOne" @on-select-cancel="cancelSelectOne" @on-select-all="handleSelectAll" @on-select-all-cancel="handleCancelSelectAll"></Table>
     <div class="page-class">
       <Page :current="pageParams.pageNum" :total="pageParams.pageTotal" :page-size="pageParams.pageSize"
             @on-change="pageChange" show-total></Page>
@@ -56,6 +56,7 @@
       },
       // Table单选操作
       handleSelectOne (sel, row) {
+        console.log('this.tempPro',this.tempPro)
         let canPush = true
         for (let t of this.tempPro) {
           if (row.id === t) {
@@ -78,6 +79,7 @@
       // Table选中所有
       handleSelectAll (sel) {
         console.log('sel', sel)
+        console.log('this.tempPro',this.tempPro)
         for (let s of sel) {
           let canPush = true
           for (let t of this.tempPro) {
@@ -87,12 +89,16 @@
             }
           }
           if (canPush) {
-            if (parseInt(s.status) !== 1) {
+            // if (parseInt(s.status) !== 1) {
               this.tempPro.push(s.id)
-            }
+            // }
           }
         }
         console.log('tempPro', this.tempPro)
+      },
+      //取消所有
+      handleCancelSelectAll (sel) {
+
       },
       // Tabel 取消选中操作(this.relateBoolean = true)
       selectTion (sel) {

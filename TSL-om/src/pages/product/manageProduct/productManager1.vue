@@ -155,6 +155,11 @@ color: red;
               </Row>
             </FormItem>
           </div>
+          <div class="onSearch">
+            <FormItem label="设计编码 :">
+              <Input v-model="localsearch.barCode" placeholder="请输入" size="small" style="width: 140px"></Input>
+            </FormItem>
+          </div>
         </div>
         <div class="inline">
           <div class="onSearch">
@@ -1077,9 +1082,9 @@ color: red;
         // pro环境下
         // QRCode.toCanvas(this.canvas, `http://eshop.tslj.cn/#/previewPd/${skuId}`, (error) => {
         // uat环境下
-        QRCode.toCanvas(this.canvas, `http://eshopuat.tslj.cn/#/previewPd/${skuId}`, (error) => {
+        // QRCode.toCanvas(this.canvas, `http://eshopuat.tslj.cn/#/previewPd/${skuId}`, (error) => {
         // sit环境
-        // QRCode.toCanvas(this.canvas, `http://www.isszp.com/#/previewPd/${skuId}`, (error) => {
+        QRCode.toCanvas(this.canvas, `http://www.isszp.com/#/previewPd/${skuId}`, (error) => {
           if (error) {
             console.log(error)
           } else {
@@ -1091,17 +1096,17 @@ color: red;
         // pro环境下
         // return `http://eshop.tslj.cn/#/previewPd/${skuId}`
         // uat环境下
-        return `http://eshopuat.tslj.cn/#/previewPd/${skuId}`
+        // return `http://eshopuat.tslj.cn/#/previewPd/${skuId}`
         // sit环境
-        // return `http://www.isszp.com/#/previewPd/${skuId}`
+        return `http://www.isszp.com/#/previewPd/${skuId}`
       },
       createPop: function (skuId) {
         // pro环境下
         // let url = `http://eshop.tslj.cn/#/previewPd/${skuId}`
         // uat环境下
-        let url = `http://eshopuat.tslj.cn/#/previewPd/${skuId}`
+        // let url = `http://eshopuat.tslj.cn/#/previewPd/${skuId}`
         // sit环境
-      //  let url = `http://www.isszp.com/#/previewPd/${skuId}`
+       let url = `http://www.isszp.com/#/previewPd/${skuId}`
         let phoneWrap = document.getElementById('phone-wrap')
         phoneWrap.innerHTML = ''
         let iframe = document.createElement('iframe')

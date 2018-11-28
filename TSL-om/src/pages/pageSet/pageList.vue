@@ -102,10 +102,10 @@
                       // 生产环境
                     //  this.link = params.row.isFlag ? 'eshop.tslj.cn' : `eshop.tslj.cn/#/page/${a}/${b}/${c}`
                       // uat 环境下的
-                      this.link = params.row.isFlag ? 'eshopuat.tslj.cn' : `eshopuat.tslj.cn/#/page/${a}/${b}/${c}`
+                      // this.link = params.row.isFlag ? 'eshopuat.tslj.cn' : `eshopuat.tslj.cn/#/page/${a}/${b}/${c}`
 //                      this.link = params.row.isFlag ? 'eshopuat.tslj.cn' : `eshopuat.tslj.cn/#/page/${params.row.classify}/${params.row.name}/${params.row.id}`
                       // sit 环境下的
-                    //  this.link = params.row.isFlag ? 'www.isszp.com' : `www.isszp.com/#/page/${params.row.classify}/${params.row.name}/${params.row.id}`
+                     this.link = params.row.isFlag ? 'www.isszp.com' : `www.isszp.com/#/page/${params.row.classify}/${params.row.name}/${params.row.id}`
                       this.copyModalFlag = true
                     }}
                   }, '复制链接'

@@ -61,6 +61,18 @@
           </FormItem>
         </div>
         <div class="onSearch">
+          <FormItem label="设计编码 :">
+            <Input v-model="barCode" placeholder="请输入" size="small" style="width: 140px"></Input>
+          </FormItem>
+        </div>
+        <div class="onSearch">
+          <FormItem label="商品状态 :">
+            <Select v-model="cateSelect" size="small" style="width:140px">
+              <Option v-for="(item, index) in statusCate" :value="item" :key="index">{{ item }}</Option>
+            </Select>
+          </FormItem>
+        </div>
+        <div class="onSearch">
           <FormItem label="商品类目 :">
             <Select v-model="firSele" size="small" style="width:100px" @on-change="list1Change">
               <Option v-for="item1 in seleList1" :value="item1.name" :key="item1.name">{{ item1.name }}</Option>
@@ -80,13 +92,6 @@
               ~
               <DatePicker type="datetime" format="yyyy-MM-dd HH:mm:ss" placeholder="选择日期和时间" size="small" style="width: 146px" v-model="endTime" @on-open-change="judgeEndTime"></DatePicker>
             </Row>
-          </FormItem>
-        </div>
-        <div class="onSearch">
-          <FormItem label="商品状态 :">
-            <Select v-model="cateSelect" size="small" style="width:140px">
-              <Option v-for="(item, index) in statusCate" :value="item" :key="index">{{ item }}</Option>
-            </Select>
           </FormItem>
         </div>
         <div class="searchBtn">
@@ -158,6 +163,8 @@ export default {
       forSellParams: {},
       // 商品名称查询
       querryName: null,
+      //设计编码
+      barCode: null,
       // 商品类目
       firSele: null,
       secSele: null,
@@ -473,7 +480,8 @@ export default {
         'startTime': startTime,
         'endTime': endTime,
         'status': statusP,
-        'sort': null
+        'sort': null,
+        'barCode': this.barCode
       }
       this.pageNum = 1
       this.getForSell(this.pageNum, this.pageSize, this.forSellParams)
@@ -484,6 +492,7 @@ export default {
       this.startTime = null
       this.endTime = null
       this.spuNum = null
+      this.barCode =  null
       // 类目重置
       this.firSele = null
       this.secSele = null

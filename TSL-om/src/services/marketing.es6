@@ -134,7 +134,7 @@ export function delByDiscountIds (ids) {
     ids
   ]
 }
-// 查看活动码折扣详情
+// 查看活动码折扣详情--------------
 export function discountCodeLists (params) {
   return [`/om/OperationManagement/v1/discountCode/lists`, params]
 }

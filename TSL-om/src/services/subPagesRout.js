@@ -269,6 +269,7 @@ export default
   },
   //discount
   {
+    name: 'createDiscountcode',
     path: 'createDiscountcode',
     component: createDiscountcode,
     meta: {

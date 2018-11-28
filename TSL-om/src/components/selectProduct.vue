@@ -67,20 +67,21 @@
           {
             title: '商品名称',
             render: (h, params) => {
-              return tool.handleName(params.row.skuName)
+              return h('span',{},tool.handleName(params.row.skuName))
             }
           },
           {
             title: '售价',
             width: 100,
             render: (h, params) => {
-              return tool.handlePrice(params.row.price)
+              return h('span',{},tool.handleName(params.row.price))
             }
           },
           {
             title: '类目',
             render: (h, params) => {
-              return [params.row.firstCategory, params.row.secondCategory, params.row.threeCategory].join('>>')
+              // return [params.row.firstCategory, params.row.secondCategory, params.row.threeCategory].join('>>')
+              return h('span',{},`${params.row.firstCategory}>>${params.row.secondCategory}>>${params.row.threeCategory}`)
             }
           }
         ],
@@ -211,7 +212,7 @@
                 data1.push(obj)
               })
             }
-            console.log(data1)
+            console.log('data1',data1)
             this.data1 = data1
             this.totalCount = res.data.pageInfo.total
           }
