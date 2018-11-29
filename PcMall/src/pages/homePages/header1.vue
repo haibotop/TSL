@@ -56,10 +56,10 @@
             </Dropdown>
         </div>     
         <div class="header-right">
-            <router-link tag="a" to="/login">     
+            <a href="javascript:void()" onclick="qimoChatClick()">     
                 <i><img src="../../assets/icons/icon_call.png" width="24" style="vertical-align:middle"></i>
                 <span>在线客服</span>
-            </router-link>
+            </a>
 
             <router-link tag="a" to="/login" v-if="!userInfoSession">     
                 <Icon type="ios-contact-outline" size="20"/>

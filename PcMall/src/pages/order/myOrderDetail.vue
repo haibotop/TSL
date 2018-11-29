@@ -74,10 +74,10 @@
             <div class="text-center">  
               <span class="btn-white" v-if="orderItem.status === 1" @click="cancelOrder(orderItem)">取消订单</span> <!-- 待付款-->
               <span class="btn-purple" v-if="orderItem.status === 1" @click="goPay(orderItem)">立即付款</span> <!-- 待付款-->
-              <span class="btn-white" v-if="[2, 3].indexOf(orderItem.status) !== -1">联系客服</span><!-- 待发货-->
+              <span class="btn-white" v-if="[2, 3].indexOf(orderItem.status) !== -1" onclick="qimoChatClick()">联系客服</span><!-- 待发货-->
               <span class="btn-purple" v-if="[2, 3].indexOf(orderItem.status) !== -1" @click="goPayAgain(orderItem)" :class="{'btn-white': orderItem.status === 3}">再来一单</span><!-- 待发货、待收货-->
               <span class="btn-purple" v-if="orderItem.status === 3" @click="confirmGet(orderItem)">确认收货</span> <!-- 待收货-->
-              <span class="btn-white" v-if="orderItem.status === 4" onclick="qimoChatClick();">申请售后</span><!-- 已完成-->
+              <span class="btn-white" v-if="orderItem.status === 4" onclick="qimoChatClick()">申请售后</span><!-- 已完成-->
               <span class="btn-purple" v-if="orderItem.status === 4" @click="goPayAgain(orderItem)">再来一单</span> <!-- 已完成-->
               <span class="btn-purple" v-if="orderItem.status === 5" @click="goPayAgain(orderItem)">重新下单</span> <!-- 已关闭-->
             </div>

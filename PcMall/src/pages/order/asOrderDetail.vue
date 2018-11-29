@@ -66,7 +66,7 @@
             <p class="amount">退款金额：<span>￥{{handlePrice(orderItem.sum)}}</span></p>
             <p class="price-text" v-if="orderItem.refundOrderItem">实退金额：<span>￥{{orderItem.refundOrderItem ? handlePrice(orderItem.refundOrderItem.actuallyRefundAmount) : '--'}}</span></p>
         </div>
-        <div class="text-center"><div class="btn-purple">联系客服</div></div>
+        <div class="text-center"><div class="btn-purple" onclick="qimoChatClick()">联系客服</div></div>
         
       </div>
 
@@ -76,7 +76,7 @@
         <div class="ab-item">
           <Row>
             <Col span="3">收货地址:</Col>
-            <Col span="21">
+            <Col span="21" v-if="orderItem.orderAddressItem">
               <div>
                 <span class="receiverName">{{orderItem.orderAddressItem.receiverName}}</span>
                 <span class="receiverMobile">{{`${orderItem.orderAddressItem.receiverMobile.substring(0, 3)}****${orderItem.orderAddressItem.receiverMobile.substring(7, 11)}`}}</span>
