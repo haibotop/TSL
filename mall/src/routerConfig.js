@@ -310,8 +310,7 @@ let order = [
     path: '/createOrder',
     name: 'createOrder',
     meta: {
-      intercept: true,
-      keepAlive: true
+      intercept: true
     },
     component: createOrder
   },

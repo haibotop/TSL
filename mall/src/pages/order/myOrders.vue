@@ -220,11 +220,11 @@
         return arr1.join(' ')
       },
       handleAmount (order) {
-        console.log(order)
-        let amount = 0
-        for (let i of order.orderProductItems) {
-          amount += i.sum
-        }
+        console.log(order, 'order')
+        let amount = order.amount
+        // for (let i of order.orderProductItems) {
+        //   amount += i.sum
+        // }
         return this.handlePrice(amount)
       },
       pulldown () {

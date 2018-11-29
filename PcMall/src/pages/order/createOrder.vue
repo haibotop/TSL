@@ -238,19 +238,19 @@
           <!--</x-textarea>-->
         <!--</cell-box>-->
       <!--<create-address></create-address>-->
-      <Modal v-model="model1" footerHide :styles="{width: '1000px',top: '100px'}">
+      <Modal v-model="model1" footerHide :styles="{width: '1000px',top: '20%'}">
         <address-list></address-list>
       </Modal>
-      <Modal v-model="model2" footerHide :styles="{width: '1000px',top: '100px'}">
+      <Modal v-model="model2" footerHide :styles="{width: '1000px',top: '20%'}">
         <create-address @hideModelCreat="hideModelCreat"></create-address>
       </Modal>
-      <Modal v-model="model3" footerHide :styles="{width: '1000px',top: '100px'}">
+      <Modal v-model="model3" footerHide :styles="{width: '1000px',top: '20%'}">
           <edit-address @hideModelEdit="hideModelEdit"></edit-address>
       </Modal>
-      <Modal v-model="model4" footerHide :styles="{width: '1000px',top: '200px'}">
+      <Modal v-model="model4" footerHide :styles="{width: '1000px',top: '20%'}">
           <useCoupons ref="useCoupons" :merchants="merchants" @selected="getSelected"></useCoupons>
       </Modal>
-      <Modal v-model="cashierFlag" footerHide :styles="{width: '1000px',top: '200px'}">
+      <Modal v-model="cashierFlag" footerHide :styles="{width: '1000px',top: '20%'}">
           <!--<useCoupons ref="useCoupons" :merchants="merchants" @selected="getSelected"></useCoupons>-->
           <cashier v-model="cashierFlag" :price="payAmount" :orderNum="orderNum"></cashier>
       </Modal>

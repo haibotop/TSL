@@ -168,13 +168,13 @@
                 <span v-if="item.exclusived === 1">不</span><span>可叠加使用</span>
               </p>
             </div>
-            <div class="cardList_right" :class="item.a == true ? 'cardActived' : ''">
+            <div class="cardList_right" :class="{cardActived : item.a == true}">
               <p class="zkmCode">折扣码：{{item.discountcode}}</p>
               <p class="expiryDate">有效期：{{(item.startDate || '').replace("T", " ").split(' ')[0]}}至{{(item.endDate || '').replace("T", " ").split(' ')[0]}}</p>
               <p class="lookDetail" @click.stop="lookDetail1(index)">查看明细<img src="../../assets/icons/icon_drop_down.png" alt=""></p>
               <i class="rightTopCss"></i>
-              <span class="displayNone" :class="{noUseTxt : index > okUse,noUseTxt_:(item.a!=true&&flag1)||(item.a!=true&&item.exclusived==1&&flag2)}">不适用</span>
-              <i class="displayNone" :class="{noUseCss : index > okUse,noUseCss_:(item.a!=true&&flag1)||(item.a!=true&&item.exclusived==1&&flag2)}"></i>
+              <span class="displayNone" :class="{noUseTxt : index > okUse}">不适用</span>
+              <i class="displayNone" :class="{noUseCss : index > okUse}"></i>
             </div>
             <div class="cardList_bottom" v-show="lookDetailIndex1 == index">
               <p class="explain" >说明：<span v-if="item.memo">{{item.memo || '无'}}</span></p>
@@ -243,23 +243,7 @@
         disParams: [] // 折扣码参数
       }
     },
-    // mounted: function () {
-    //   this.userId = JSON.parse(sessionStorage.getItem('userInfo')).memberId
-    //   for (var i of JSON.parse(sessionStorage.getItem('settlementProductItems'))) {
-    //     for (var j of i.productItem) {
-    //       this.productId.push({productId: j.productId, count: j.quantity})
-    //     }
-    //   }
-    //   // this.readyTrade() // 已兑换折扣码
-    //   if (sessionStorage.getItem('memberRemark')) {
-    //     this.memberRemark = sessionStorage.getItem('memberRemark')
-    //   }
-    //   this.scrollerHeight = document.body.clientHeight - 66
-    //   tool.preCartToCart(this, () => {
-    //     this.getSettlementDate()
-    //   })
-    // },
-    activated: function () {
+    mounted: function () {
       this.userId = JSON.parse(sessionStorage.getItem('userInfo')).memberId
       for (var i of JSON.parse(sessionStorage.getItem('settlementProductItems'))) {
         for (var j of i.productItem) {
@@ -859,13 +843,13 @@
       z-index: 1;
       transform: rotate(45deg);
     }
-    .noUseCss,.noUseCss_{
+    .noUseCss{
       display: inline-block;
       position: absolute;
       top: 0;
       right: 0;
     }
-    .noUseCss::before,.noUseCss_::before{
+    .noUseCss::before{
       display: inline-block;
       position: absolute;
       right: 0;
@@ -896,7 +880,7 @@
         }
       }
     }
-    .cardList_right.cardActived::before{
+    .cardList_right.cardActived::before, .cardList_right.cardActived_::before{
       position: absolute;
       right: 0;
       top: 0;
@@ -951,20 +935,22 @@
     width: calc(100% - 30px);
     padding: 15px;
     background-color: #F8F8F8;
+    box-shadow: 10px 10px 50px #000;
     z-index: 9;
     input{
       padding-left: 5px;
       width: 65%;
-      height: 36px;
+      height: 46px;
       outline: none;
       border-color: transparent;
-      font-size: 16px;
+      font-size: 18px;
     }
     span{
       display: inline-block;
       width: 30%;
-      height: 40px;
-      line-height: 40px;
+      height: 50px;
+      line-height: 50px;
+      font-size: 20px;
       text-align: center;
       background: #352665;
       color: #fff;
@@ -977,22 +963,24 @@
     width: calc(100% - 30px);
     padding: 15px;
     background-color: #fff;
+    box-shadow: 10px 10px 50px #000;
     text-align: center;
     z-index: 9;
+    font-size: 20px;
     .disCancel{
       display: inline-block;
       float: left;
       width: 46%;
-      height: 38px;
-      line-height: 38px;
+      height: 48px;
+      line-height: 48px;
       border: 1px solid #979797;
     }
     .disUse{
       display: inline-block;
       float: right;
       width: 46%;
-      height: 38px;
-      line-height: 38px;
+      height: 48px;
+      line-height: 48px;
       border: 1px solid #352665;
       background-color: #352665;
       color: #fff;
