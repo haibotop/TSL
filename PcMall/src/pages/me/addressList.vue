@@ -159,27 +159,22 @@
       // this.getRouter()
       this.memberId = JSON.parse(sessionStorage.getItem('userInfo')).memberId
       this.bus.$on('addNewAddress',()=>{
-          // console.log(1)
           this.noAddress = false
-          console.log(addressInfos, 'addressInfos')
           this.getAddressData((addressInfos) => {
               this.setDefault(addressInfos)
           })
       })
       this.bus.$on('deleteAddress11',()=>{
-          // console.log(2)
           this.getAddressData((addressInfos) => {
               this.setDefault(addressInfos)
           })
       })
         this.bus.$on('openAdress',()=>{
-            // console.log(3)
             this.getAddressData((addressInfos) => {
                 this.setDefault(addressInfos)
             })
         })
         this.bus.$on('fun',()=>{
-            console.log(4)
             this.getAddressData((addressInfos) => {
                 this.setDefault(addressInfos)
             })

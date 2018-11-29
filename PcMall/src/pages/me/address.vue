@@ -117,14 +117,15 @@
       padding: 15px 15px 125px;
     }
 
-    #addressList {
+    .myAddress #addressList {
       background-color: #fff;
+      height: auto !important;
     }
-    #addressList  > p {
+    .myAddress #addressList  > p {
       display: none;
     }
-    #addressList .addressContentBig {
-      height: 450px !important;
+    .myAddress #addressList .addressContentBig {
+      height: auto !important;
     }
   </style>
   
