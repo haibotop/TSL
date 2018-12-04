@@ -126,7 +126,10 @@ export function createDiscount (params) {
 export function discountCodeList (params, pageSize, pageNum) {
   return [`/om/OperationManagement/v1/discountCodeListsByConditions/list?pageSize=${pageSize}&pageNum=${pageNum}`, params]
 }
-
+// 编辑折扣码
+export function updateDiscountcode (params) {
+  return [`/om/OperationManagement/v1/updateDiscountcode`, params]
+}
 // 根据ID删除折扣码。
 export function delByDiscountIds (ids) {
   return [

@@ -163,7 +163,7 @@
           </div>
         </Form>
       </div>
-      <Tabs type="card" @on-click="couponTabsCheck">
+      <Tabs type="card" v-model="couponLabel" @on-click="couponTabsCheck">
         <TabPane label="未兑换折扣码">
           <cpTableCm :dataList="couponListData"></cpTableCm>
         </TabPane>
@@ -305,8 +305,10 @@
                     click: () => {
                       // 券码列表modal
                       console.log('params.row',params)
+                      this.couponLabel = 0
                       this.couponListBoolean = true
                       this.clRow = params.row
+                      this.couponTabsData.discountCode = ''
                       this.checkAllCoupons(0)
                     }
                   }
@@ -323,7 +325,7 @@
                       this.$router.push({name: 'createDiscountcode', params:params.row})
                     }
                   }
-                }, '编辑'),
+                }, '编辑'), 
                 h('Button', {
                   props: {
                     type: 'text',
@@ -784,30 +786,39 @@
         this.checkAllCoupons(this.couponLabel)
       },
       handleListData (res) {
-        for (let r of res.data.discountCoderesultStatusListInners.list) {
-          switch (r.status) {
-            case 0: {
-              r.statusName = '未兑换'
-              break
-            }
-            case 1: {
-              r.statusName = '已兑换'
-              break
-            }
-            case 2: {
-              r.statusName = '已使用'
-              break
+        if (res.data.discountCoderesultStatusListInners.list!==null){
+          for (let r of res.data.discountCoderesultStatusListInners.list) {
+            switch (r.status) {
+              case 1: {
+                r.statusName = '未兑换'
+                break
+              }
+              case 2: {
+                r.statusName = '已兑换'
+                break
+              }
+              case 3: {
+                r.statusName = '已使用'
+                break
+              }
             }
           }
+          this.couponListData = res.data.discountCoderesultStatusListInners.list
+          this.clParams.pageTotal = res.data.discountCoderesultStatusListInners.total
+        }else {
+          this.couponListData = []
+          this.clParams.pageTotal = 0
         }
-        this.couponListData = res.data.discountCoderesultStatusListInners.list
-        this.clParams.pageSize = res.data.discountCoderesultStatusListInners.pageSize
+        
+        
+        
+        // this.clParams.pageSize = res.data.discountCoderesultStatusListInners.pageSize
         if (res.data.discountCoderesultStatusListInners.pageNum === 0) {
           this.clParams.pageNum = 1
         } else {
           this.clParams.pageNum = res.data.discountCoderesultStatusListInners.pageNum
         }
-        this.clParams.pageTotal = res.data.discountCoderesultStatusListInners.total
+        
         console.log(this.couponListData)
       },
       // 渲染列表
@@ -938,6 +949,7 @@
       },
       couponLabel: function () {
         this.clParams.pageNum = 1
+        // this.couponListData = []
         this.checkAllCoupons(this.couponLabel)
       }
     }

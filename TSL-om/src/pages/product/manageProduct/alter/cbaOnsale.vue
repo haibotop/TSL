@@ -258,7 +258,7 @@
         },
         baseInfoRules: {
           name: [{required: true, message: '此项不可为空'}],
-          adverMes: [{required: true, message: '此项不可为空'}],
+          // adverMes: [{required: true, message: '此项不可为空'}],
           designCode: [{required: true, message: '此项不可为空'}],
           keyWord: [
             {

@@ -72,8 +72,8 @@ router.beforeEach((to, from, next) => {
       if (ok > 0) {
         from.path === '/home/addProduct' ? iView.Modal.confirm(config) : next()
       } else {
-        // from.path === '/home/addProduct' ? iView.Modal.confirm(config) : next({ path: '/home/default' })
-        from.path === '/home/addProduct' ? iView.Modal.confirm(config) : next()
+        from.path === '/home/addProduct' ? iView.Modal.confirm(config) : next({ path: '/home/default' })
+        // from.path === '/home/addProduct' ? iView.Modal.confirm(config) : next()
       }
     } else {
       next({ path: '/' })

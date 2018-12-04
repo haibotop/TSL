@@ -131,4 +131,137 @@
             }
         }
     }
+
+
+
+
+
+DiscountCodeParamInnerss {
+discountCodeParamInnerss (DiscountCodeParamInner, optional),
+id (string, optional)
+}
+DiscountCodeParamInner {
+categoryIds (Array[DiscountCodeParamInnerCategoryId], optional),
+circleTimes (integer, optional): 折扣码可使用次数 ,
+discountAmount (integer, optional): 优惠金额 ,
+discountcodePieceLists (Array[DiscountcodePiece], optional),
+endDate (string, optional): 结束时间 ,
+exclusived (integer, optional): 能否与其他折扣码叠加使用：1不能、2能 ,
+memo (string, optional): 描述 ,
+minExpense (integer, optional): 满减最低消费额度 ,
+name (string, optional): 折扣码名称 ,
+productIds (Array[DiscountCodeParamInnerProductId], optional),
+rules (integer, optional): 规则 ,
+starDate (string, optional): 开始时间 ,
+type (integer, optional): 类型：1单品2类目
+}
+DiscountCodeParamInnerCategoryId {
+id (string, optional): 类目id
+}
+DiscountcodePiece {
+discountRatio (number, optional): 多少折，示例：88折 ,
+minQuantity (integer, optional): 满额，单位：分
+}
+DiscountCodeParamInnerProductId {
+id (string, optional): 商品id
+}
+
+
+DiscountCodeParamInner {
+categoryIds (Array[DiscountCodeParamInnerCategoryId], optional),
+circleTimes (integer, optional): 折扣码可使用次数 ,
+discountAmount (integer, optional): 优惠金额 ,
+discountcodePieceLists (Array[DiscountcodePiece], optional),
+endDate (string, optional): 结束时间 ,
+exclusived (integer, optional): 能否与其他折扣码叠加使用：1不能、2能 ,
+memo (string, optional): 描述 ,
+minExpense (integer, optional): 满减最低消费额度 ,
+name (string, optional): 折扣码名称 ,
+productIds (Array[DiscountCodeParamInnerProductId], optional),
+rules (integer, optional): 规则 ,
+starDate (string, optional): 开始时间 ,
+type (integer, optional): 类型：1单品2类目
+}
+DiscountCodeParamInnerCategoryId {
+id (string, optional): 类目id
+}
+DiscountcodePiece {
+discountRatio (number, optional): 多少折，示例：88折 ,
+minQuantity (integer, optional): 满额，单位：分
+}
+DiscountCodeParamInnerProductId {
+id (string, optional): 商品id
+}
+
+
+
+
+
+{
+  "discountCodeParamInner": {
+    "categoryIds": [
+      {
+        "id": "string"
+      }
+    ],
+    "circleTimes": 11,
+    "discountAmount": 0,
+    "discountcodePieceLists": [
+             {
+        "discountRatio": 90,
+        "minQuantity": 1
+      }
+    ],
+    "endDate": "2018-12-31 00:00:00:00",
+    "exclusived": 2,
+    "memo": "邹磊 专属45454545",
+    "minExpense": 0,
+    "name": "邹磊 满件折",
+    "productIds": [
+      {
+        "id": "117864464457826312"
+      }
+    ],
+    "rules": 3,
+    "starDate": "2018-12-03 00:00:00:00",
+    "type": 1
+  },
+  "id": "146764347627036672"
+}
+
+{   
+"discountCodeParamInner": {
+    "categoryIds": [
+        {
+            "id": "string"
+        }
+    ],
+    "circleTimes": 11,
+    "discountAmount": 0,
+    "discountcodePieceLists": [
+        {"minQuantity": 1, "discountRatio": 90}
+    ],
+    "endDate": "2018-12-31 00:00:00:00",
+    "exclusived": 2,
+    "memo": "邹磊 专属45454545",
+    "minExpense": 0,
+    "name": "邹磊 满件折",
+    "productIds": [
+        {"id": "117864464457826312"}
+    ],
+    "rules": 3,
+    "starDate": "2018-12-03 00:00:00:00",
+    "type": 1
+},
+"id":"146764347627036672"
+}
+
+
+
+
+
+
+
+
+
 </script>

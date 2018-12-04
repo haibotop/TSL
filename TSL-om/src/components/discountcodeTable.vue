@@ -24,7 +24,7 @@
           <td width="150" style="text-align: center;border: 1px solid black;">{{list.consumer}}</td>
           <td width="150" style="text-align: center;border: 1px solid black;">{{list.costTime}}</td>
           <td width="150" style="text-align: center;border: 1px solid black;">{{list.consumeOrder}}</td>
-          <td width="150" style="text-align: center;border: 1px solid black;">{{list.orderMoney}}</td>
+          <td width="150" style="text-align: center;border: 1px solid black;">{{list.orderMoney / 100}}</td>
         </tr>
       </table>
     </div>

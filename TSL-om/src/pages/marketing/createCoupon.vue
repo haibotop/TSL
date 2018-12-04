@@ -165,7 +165,7 @@
       </Form>
 
       <div class="tableBox">
-        <Button :disabled="outputData.length===0" @click="delAllHandler" style="margin-bottom:5px;">取消所有选择</Button>
+        <Button :disabled="selectedProduct.length===0" @click="delAllHandler" style="margin-bottom:5px;">取消所有选择</Button>
         <Table :height="300" ref="cp_table2" :columns="column2" :data="data2" @on-selection-change="selectChange" @on-select="selectHandler" @on-select-cancel="cancelHandler" @on-select-all="selectAllHandler"></Table>
       </div>
       <div slot="footer">
@@ -216,6 +216,7 @@
         modal1: false,
         modal2: false,
         modal3: false,
+        selectedProduct: [],//选中的所有商品
         // 初始化
         local: {
           name: '',
@@ -732,15 +733,22 @@
               self.mloading = false
               if (response.data.code === 200) {
                 // modal状态呈现已选中项
-                for (let i in response.data.goodsPageInfo.list) {
-                  response.data.goodsPageInfo.list[i].listid = (Number(i) + 1) + (self.page2.pageNum - 1) * self.page2.pageSize
-                  for (let j in self.outputData) {
-                    if (response.data.goodsPageInfo.list[i].skuId === self.outputData[j].skuId) {
-                      response.data.goodsPageInfo.list[i]._checked = true
-                      break
+                // for (let i in response.data.goodsPageInfo.list) {
+                //   response.data.goodsPageInfo.list[i].listid = (Number(i) + 1) + (self.page2.pageNum - 1) * self.page2.pageSize
+                //   for (let j in self.outputData) {
+                //     if (response.data.goodsPageInfo.list[i].skuId === self.outputData[j].skuId) {
+                //       response.data.goodsPageInfo.list[i]._checked = true
+                //       break
+                //     }
+                //   }
+                // }
+                response.data.goodsPageInfo.list.forEach(item=>{
+                  this.data1.forEach(item_=>{
+                    if(item.skuId === item_.skuId){
+                      item._checked = true
                     }
-                  }
-                }
+                  })
+                })
                 self.data2 = response.data.goodsPageInfo.list
                 self.page2.total = response.data.goodsPageInfo.total
               }
@@ -794,13 +802,36 @@
             break
           }
         }
+
+        for (let i = 0; i < this.data1.length; i++) {
+          if (this.data1[i].skuId === skuId) {
+            this.data1.splice(i, 1)
+            break
+          }
+        }
       },
       onOutput () {
-        this.outputData.sort(this.outputDataSort)
-        this.data1 = JSON.parse(JSON.stringify(this.outputData))
-        if (this.data1.length === 0) {
+      //   this.outputData.sort(this.outputDataSort)
+      //   this.data1 = JSON.parse(JSON.stringify(this.outputData))
+        // this.data1 = this.data1.concat(JSON.parse(JSON.stringify(this.outputData)))
+        // let newArr = []
+        // this.data1.forEach(item=>{
+        //   let flag = false
+        //   newArr.forEach(item_=>{
+        //     if(item.skuId == item_.skuId){
+        //       flag = true
+              
+        //     }
+        //   })
+        //   if(!flag){
+        //     newArr.push(item)
+        //   }
+        // })
+        // this.data1 = newArr.sort(this.outputDataSort)
+        if (this.selectedProduct.length === 0) {
           this.$Message.warning('请选择商品')
         } else {
+          this.data1 = JSON.parse(JSON.stringify(this.selectedProduct.sort(this.outputDataSort)))
           this.modal1 = false
         }
       },
@@ -810,11 +841,21 @@
       // 处理 没选 或 取消当页所有选中
       selectChange: function (sel) {
         console.log(sel)
+        // if (sel.length === 0) {
+        //   for (let i in this.data2) {
+        //     for (let j in this.outputData) {
+        //       if (this.data2[i].skuId === this.outputData[j].skuId) {
+        //         this.outputData.splice(j, 1)
+        //         break
+        //       }
+        //     }
+        //   }
+        // }
         if (sel.length === 0) {
           for (let i in this.data2) {
-            for (let j in this.outputData) {
-              if (this.data2[i].skuId === this.outputData[j].skuId) {
-                this.outputData.splice(j, 1)
+            for (let j in this.selectedProduct) {
+              if (this.data2[i].skuId === this.selectedProduct[j].skuId) {
+                this.selectedProduct.splice(j, 1)
                 break
               }
             }
@@ -823,44 +864,64 @@
       },
       // 选中单项
       selectHandler: function (sel, row) {
+        this.selectedProduct.push(row)
         let canPush = true
-        for (let item of this.outputData) {
-          if (row.skuId === item.skuId) {
-            canPush = false
-            break
-          }
-        }
-        if (canPush) {
-          this.outputData.push(row)
-        }
+        // for (let item of this.outputData) {
+        //   if (row.skuId === item.skuId) {
+        //     canPush = false
+        //     break
+        //   }
+        // }
+        // if (canPush) {
+        //   this.outputData.push(row)
+        // }
       },
       // 取消单项
       cancelHandler: function (sel, row) {
-        for (let i in this.outputData) {
-          if (row.skuId === this.outputData[i].skuId) {
-            this.outputData.splice(i, 1)
+        // for (let i in this.outputData) {
+        //   if (row.skuId === this.outputData[i].skuId) {
+        //     this.outputData.splice(i, 1)
+        //     break
+        //   }
+        // }
+        for (let i in this.selectedProduct) {
+          if (row.skuId === this.selectedProduct[i].skuId) {
+            this.selectedProduct.splice(i, 1)
             break
           }
         }
       },
       // 选中当页所有项
       selectAllHandler: function (sel) {
+        // for (let i in sel) {
+        //   let canPush = true
+        //   for (let j in this.outputData) {
+        //     if (sel[i].skuId === this.outputData[j].skuId) {
+        //       canPush = false
+        //       break
+        //     }
+        //   }
+        //   if (canPush) {
+        //     this.outputData.push(sel[i])
+        //   }
+        // }
+
         for (let i in sel) {
-          let canPush = true
-          for (let j in this.outputData) {
-            if (sel[i].skuId === this.outputData[j].skuId) {
-              canPush = false
+          let flag = true
+          for (let j in this.selectedProduct) {
+            if (sel[i].skuId === this.selectedProduct[j].skuId) {
+              flag = false
               break
             }
           }
-          if (canPush) {
-            this.outputData.push(sel[i])
+          if (flag) {
+            this.selectedProduct.push(sel[i])
           }
         }
       },
       // 取消所有选中
       delAllHandler: function () {
-        this.outputData = []
+        this.selectedProduct = []
         this.$refs.cp_table2.selectAll(false)
       },
       // 一级类目选择

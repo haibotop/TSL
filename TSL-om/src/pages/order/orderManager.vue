@@ -79,7 +79,7 @@
         <Input class="my-date" v-model="local.amountTo" placeholder="最大金额" style="width: 140px;"/>
       </FormItem>
       <FormItem label="折扣码：" class="width-24" :label-wdth="110">
-        <Input class="order-input" v-model="local.discountCode"/>
+        <Input class="order-input" v-model="local.discountcode"/>
       </FormItem>
       <FormItem label="订单状态：" class="width-40" :label-width="110">
         <Select class="order-input" v-model="local.status" >
@@ -91,7 +91,7 @@
         <DatePicker v-model="local.createDateTo" type="date" format="yyyy-MM-dd" placeholder="选择日期和时间" style="width: 140px"></DatePicker>
       </FormItem>
       <FormItem label="系统员工编号：" class="width-24 " :label-width="110">
-        <Input class="order-input" style="width:151px" v-model="local.systemStaffNum" :maxlength="11"/>
+        <Input class="order-input" style="width:151px" v-model="local.sysOperator" :maxlength="11"/>
       </FormItem>
       <FormItem label="设计编码：" class="width-40 receiver-width" :label-width="110">
         <Input class="order-input" v-model="local.merchantName"></Input>
@@ -101,7 +101,7 @@
         <DatePicker v-model="local.payDateTo" type="date" format="yyyy-MM-dd" @clearable = 'true' placeholder="选择日期和时间" style="width: 140px"></DatePicker>
       </FormItem>
       <FormItem label="员工编号：" class="width-24" :label-wdth="110">
-        <Input class="order-input" v-model="local.StaffNum"/>
+        <Input class="order-input" v-model="local.operator"/>
       </FormItem>
       <FormItem label="用户注册手机：" class="width-40 receiver-width" :label-width="110">
         <Input class="order-input" v-model="local.memberMobile" :maxlength="11"/>
@@ -456,19 +456,19 @@
           },
           {
             title: '折扣码',
-            key: 'discountCode',
+            key: 'discountcode',
             width: 180,
             align: 'center'
           },
           {
             title: '系统员工编码',
-            key: 'systemStaffNum',
+            key: 'sysOperator',
             width: 180,
             align: 'center'
           },
           {
             title: '员工编码',
-            key: 'StaffNum',
+            key: 'operator',
             width: 180,
             align: 'center'
           },
@@ -878,9 +878,9 @@
         this.local.tslNo = null
         this.local.productName = null
         this.local.merchantName = null
-        this.local.discountCode = null,
-        this.local.systemStaffNum = null,
-        this.local.StaffNum = null
+        this.local.discountcode = null,
+        this.local.sysOperator = null,
+        this.local.operator = null
       },
       cancelSend () {
         this.modal1 = false

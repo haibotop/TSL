@@ -60,6 +60,7 @@
 </style>
 <template>
   <div id="createCoupon">
+    <Loading :isload="sloading"></Loading>
     <Breadcrumb  class="margin-10">
       <BreadcrumbItem>营销管理</BreadcrumbItem>
       <BreadcrumbItem>创建折扣码</BreadcrumbItem>
@@ -76,7 +77,7 @@
         <span class="tips-text">还能输入{{`${20 - local.name.length}`}}个字</span>
       </FormItem>
       <FormItem :label="labeltxt1" class="ivu-form-item-required" style="width: 100%;">
-        <Button class="ivu-btn ivu-btn-primary" @click="promotionProduct">{{buttonContent}}</Button>
+        <Button class="ivu-btn ivu-btn-primary" @click="promotionProduct" :disabled="pointerevents">{{buttonContent}}</Button>
       </FormItem>
       <FormItem :label="labeltxt2"  style="width: 100%;">
         <div class="tableBox">
@@ -97,28 +98,28 @@
         <Input  style="width:238px" v-model="local.limitGet"></Input>折扣码可使用次数
       </FormItem> -->
       <FormItem label="折扣码可使用次数：" style="width: 100%;" prop="circleTimes">
-        <Input  style="width:238px" v-model="local.circleTimes"></Input>
+        <Input  style="width:238px" v-model="local.circleTimes" :disabled="pointerevents"></Input>
       </FormItem>
       <FormItem label="选择规则：" class="ivu-form-item-required" style="width: 100%;" prop="rules">
-        <Select v-model="local.rules" @on-change="onChange" style="width:238px">
+        <Select v-model="local.rules" @on-change="onChange" style="width:238px" :disabled="pointerevents">
           <Option v-for="item in rulesList" :value="item.value" :key="item.value">{{ item.label }}</Option>
         </Select>
       </FormItem>
       <FormItem v-if="local.rules===1" label="满：" style="width: 100%;" prop="minExpense">
-        <Input v-model="local.minExpense" style="width:238px"></Input> 元
+        <Input v-model="local.minExpense" style="width:238px" :disabled="pointerevents"></Input> 元
       </FormItem>
       <FormItem v-if="local.rules!==null&&local.rules!==3" label="减：" style="width: 100%;" prop="discountAmount">
-        <Input v-model="local.discountAmount" style="width:238px"></Input> 元
+        <Input v-model="local.discountAmount" style="width:238px" :disabled="pointerevents"></Input> 元
       </FormItem>
       <!-- 折扣码 -->
       <div v-if="local.rules===3" v-for="(list,index) in local.discountList" :key="index" class="discountCode">
         <FormItem label="满" style="width: 29%;" :prop="'discountList.' + index + '.num1'" :rules="local_rule.minQuantity">
-          <Input v-model="list.num1" style="width:100px;margin-right:6px"></Input> 件
+          <Input v-model="list.num1" style="width:100px;margin-right:6px" :disabled="pointerevents"></Input> 件
         </FormItem>
         <FormItem label="打" class="ppppp" style="margin-left: -150px;width: 40%;" :prop="'discountList.' + index + '.num2'" :rules="local_rule.discountRatio">
           <Tooltip placement="right">
             <div slot="content"><p>请输入1~9.9之间的数</p><p>小数点后保留1位</p></div>
-            <Input v-model.trim="list.num2" :maxlength="4" style="width:100px;margin-left:6px;margin-right:6px"></Input> 折
+            <Input v-model.trim="list.num2" :maxlength="4" style="width:100px;margin-left:6px;margin-right:6px" :disabled="pointerevents"></Input> 折
           </Tooltip>
           <span v-if="index!==0" @click="delDiscountList(index)" style="color:#0000ff;cursor:pointer;margin-left:10px">-删除本级促销</span>
         </FormItem>
@@ -130,7 +131,7 @@
         <!-- <span @click="addDiscountList" style="cursor:pointer">+添加多级促销<span style="color:#ff0000">（最多添加4级）</span></span> -->
       </FormItem>
       <FormItem label="可叠加使用" style="width: 100%;">
-        <Checkbox v-model="local.exclusived"></Checkbox>
+        <Checkbox v-model="local.exclusived" :disabled="pointerevents"></Checkbox>
       </FormItem>
       <FormItem label="折扣码活动描述：" style="width: 100%;" prop="memo">
         <Input type="textarea" v-model.trim="local.memo" :maxlength="100" style="width:500px;" :autosize="{minRows:4}"></Input>
@@ -193,8 +194,8 @@
       </Form>
 
       <div class="tableBox">
-        <Button :disabled="outputData.length===0" @click="delAllHandler" style="margin-bottom:5px;">取消所有选择</Button>
-        <Table :height="300" ref="cp_table2" :columns="column2" :data="data2" @on-selection-change="selectChange" @on-select="selectHandler" @on-select-cancel="cancelHandler" @on-select-all="selectAllHandler"></Table>
+        <Button :disabled="selectedProduct.length===0" @click="delAllHandler" style="margin-bottom:5px;">取消所有选择</Button>
+        <Table :height="300" ref="cp_table2" :columns="column2" :data="data2" @on-selection-change="selectChange" @on-select="selectHandler" @on-select-cancel="cancelHandler" @on-select-all="selectAllHandler" ></Table>
       </div>
       <div slot="footer">
         <Page :total="page2.total" :current="page2.pageNum" :page-size="page2.pageSize" @on-change="page2Change" show-total class="marginPage" v-if="data2.length>0"></Page>
@@ -235,15 +236,18 @@
     components: {Loading},
     data () {
       return {
+        pointerevents: false,
         labeltxt1: '选择商品：',
         labeltxt2: '已选择商品：',
         loading: false,
         mloading: false,
+        sloading: false,
         tabStatus: 0,
         buttonContent: '选择参与折扣码的商品',
         modal1: false,
         modal2: false,
         modal3: false,
+        selectedProduct: [],//选中的所有商品
         // 初始化
         local: {
             discountList: [{num1:'',num2:''}],
@@ -447,7 +451,10 @@
                 h('a', {
                   style: {'display': 'block', 'text-align': 'center', 'line-height': '2'},
                   domProps: {
-                    href: 'javascript:'
+                    href: 'javascript:',
+                  },
+                  attrs: {
+                    disabled: this.pointerevents
                   },
                   on: {
                     click: () => {
@@ -570,13 +577,17 @@
             title: '操作',
             width: 135,
             render: (h, params) => {
+              let pointerevents = this.pointerevents === false ? 'auto' : 'none'
               let a
               let om = [
                 a,
                 h('a', {
-                  style: {'display': 'block', 'text-align': 'center', 'line-height': '2'},
+                  style: {'display': 'block', 'text-align': 'center', 'line-height': '2', 'pointer-events':pointerevents},
                   domProps: {
-                    href: 'javascript:'
+                    href: 'javascript:',
+                  },
+                  attrs: {
+                    disabled: this.pointerevents
                   },
                   on: {
                     click: () => {
@@ -601,86 +612,74 @@
     methods: {
       getDidcountCode(){
         if (this.$route.params.id) {
-          alert(this.$route.params.id)
-          // this.loading = true
+          this.pointerevents = true
+          this.sloading = true
           this.$http.post(...mkAPI.discountCodeLists({id:this.$route.params.id})).then((res) => {
-          // this.$http.get(...myAPI.getUpdatePromotions(this.$route.params.id)).then(res => {
             if (res.data.code === 200) {
-              this.$http.post(...mkAPI.productSkuCidsInfo(res.data, 1, 99)).then((res_) => {
-                this.data1 = res.data.productIds
+              let dtData = res.data
+              let dtArr = []
+              if (res.data.type === 1) { 
+                if (dtData.productIds.length > 0) {
+                  for (let p of dtData.productIds) {
+                    dtArr.push(p.id)
+                  }
+                }              
+                this.$http.post(...mkAPI.productSkuPidsInfo(dtArr, 1, 99)).then((res2) => {
+                  if(res2.data.code === 200){
+                    // this.$http.post(...myAPI.getPromProducts('146317319311745024', 1, 99)).then(res2_ => {
+                    //   console.log(res2_)
+                    // })
+                    for(let [index,i] of res2.data.pageInfo.list.entries()){
+                      let obj = {}
+                      obj.picture = i.picUrl
+                      obj.skuId = dtArr[index]
+                      let arr = []
+                      // arr.push(dtArr[index])
+                      obj.specArray =  arr
+                      obj.skuName = i.name
+                      this.data1.push(obj)
+                    }
+                    this.sloading = false
+                  }
+                })
+                // dtData.type ===2 类目
+              } else if (res.data.type === 2) {
+                if (dtData.categoryIds.length > 0) {
+                  for (let p of dtData.categoryIds) {
+                    dtArr.push(p.id)
+                  }
+                }
+                this.$http.post(...mkAPI.productSkuCidsInfo(dtArr, 1, 99)).then((res3) => {
+                  if(res3.data.code === 200){
+                    console.log('res3.data.list',res3.data.pageInfo.list)
+                    for(let i of res3.data.pageInfo.list){
+                      let obj = {}
+                      obj.id = i.categoryId
+                      this.data4.push(obj)
+                    }
+                    this.data4 = this.data4.sort((a,b)=>b.id - a.id)
+                    this.sloading = false
+                  }
+                })
+              }
+              this.local.name = dtData.name
+              this.local.circleTimes = JSON.stringify(dtData.circleTimes)
+              this.local.rules = dtData.rule
+              this.local.minExpense = JSON.stringify(dtData.minExpense * 100)
+              this.local.discountAmount = JSON.stringify(dtData.discountAmount / 100)
+              this.local.startDate = dtData.startDate
+              this.local.endDate = dtData.endDate
+              this.local.exclusived = dtData.exclusived == 1 ? false : true
+              this.local.memo = dtData.memo
+              this.local.type = dtData.type
+              this.tabStatus = dtData.type - 1
+              this.local.discountList = []
+              dtData.discountcodePieces.forEach(item=>{
+                let obj = {}
+                obj.num1 =  JSON.stringify(item.minQuantity)
+                obj.num2 = JSON.stringify(item.discountRatio / 10)
+                this.local.discountList.push(obj)
               })
-            //   local: {
-            //     discountList: [{num1:'',num2:''}],
-            //     name: '',
-            //     total: '',
-            //     circleTimes: '',
-            //     rules: null,
-            //     minExpense: '',
-            //     discountAmount: '',
-            //     startDate: '',
-            //     endDate: '',
-            //     exclusived: false,
-            //     memo: ''
-            // },
-              console.log(res)
-              this.local.name = res.data.name
-              this.local.circleTimes = res.data.circleTimes
-              this.local.rules = res.data.rule
-              this.local.minExpense = Number(res.data.minExpense) * 100
-              this.local.discountAmount = Number(res.data.discountAmount) / 100
-              this.local.startDate = res.data.startDate
-              this.local.endDate = res.data.endDate
-              this.local.exclusived = res.data.exclusived == 1 ? false : true
-              this.local.memo = res.data.memo
-              this.local.type = res.data.type
-              this.local.discountcodePieces = res.data.discountcodePieces
-              // // this.local.productIds = ''
-              // // this.local.categoryIds = ''
-              
-              // let params = {
-              //   'type': this.tabStatus === 0 ? 1 : 2,
-              //   'name': this.local.name,
-              //   'starDate': this.local.startDate + ':00',
-              //   'endDate': this.local.endDate + ':00',
-              //   // 'total': Number(this.local.total),
-              //   'circleTimes': Number(this.local.circleTimes),
-              //   'rules': this.local.rules,
-              //   // 'minExpense': Number(this.local.minExpense),
-              //   'discountAmount': Number(this.local.discountAmount) * 100,
-              //   'exclusived': this.local.exclusived ? 2 : 1,
-              //   'memo': this.local.memo,
-              // }
-              // if (params.rules === 1) {
-              //   params.minExpense = Number(this.local.minExpense) * 100
-              // }
-              // //折扣码
-              // if(params.rules === 3){
-              //   let discountcodePieceLists = []
-              //   for(let item of this.local.discountList){
-              //     let obj = {}
-              //     obj.minQuantity = Number(item.num1)
-              //     obj.discountRatio = Number(item.num2) * 10
-              //     discountcodePieceLists.push(obj)
-              //   }           
-              //     params.discountcodePieceLists = discountcodePieceLists
-              // }
-              // let temparr = []
-              // if (params.type === 1) {
-              //   for (let i = 0; i < this.data1.length; i++) {
-              //     // temparr.push({'productId': this.data1[i].skuId})
-              //     temparr.push({'id': this.data1[i].skuId})//改动 id
-              //   }
-              //   params.productIds = temparr
-              // } else {
-              //   for (let i = 0; i < this.data4.length; i++) {
-              //     // temparr.push({'categoryId': this.data4[i].id})
-              //     temparr.push({'id': this.data4[i].id})//改动 id
-              //   }
-              //   params.categoryIds = temparr
-              // }
-
-
-              // this.getProArray(this.$route.params.id)
             }
           })
         }
@@ -794,14 +793,25 @@
             const self = this
             this.loading = true
             console.log(params)
-            this.$http.post(...mkAPI.createDiscount(params)).then((response) => {
-              self.loading = false
-              if (response.data.code === 200) {
-                this.modal3 = true
-              }
-            }).catch((res) => {
-              self.loading = false
-            })
+            if(this.$route.params.id){
+              this.$http.post(...mkAPI.updateDiscountcode(Object.assign({discountCodeParamInner:params},{id:this.$route.params.id}))).then((response) => {
+                self.loading = false
+                if (response.data.code === 200) {
+                  this.modal3 = true
+                }
+              }).catch((res) => {
+                self.loading = false
+              })
+            }else {
+              this.$http.post(...mkAPI.createDiscount(params)).then((response) => {
+                self.loading = false
+                if (response.data.code === 200) {
+                  this.modal3 = true
+                }
+              }).catch((res) => {
+                self.loading = false
+              })
+            } 
           } else {
             console.log('Fail!')
           }
@@ -823,7 +833,7 @@
             self.productSearch()
             console.log(111)
           }, 500)
-        } else if (this.tabStatus === 1) {alert()
+        } else if (this.tabStatus === 1) {
           // this.getData3List()
           // this.data4 = []
           this.modal2 = true
@@ -901,15 +911,24 @@
               self.mloading = false
               if (response.data.code === 200) {
                 // modal状态呈现已选中项
-                for (let i in response.data.goodsPageInfo.list) {
-                  response.data.goodsPageInfo.list[i].listid = (Number(i) + 1) + (self.page2.pageNum - 1) * self.page2.pageSize
-                  for (let j in self.outputData) {
-                    if (response.data.goodsPageInfo.list[i].skuId === self.outputData[j].skuId) {
-                      response.data.goodsPageInfo.list[i]._checked = true
-                      break
+                // for (let i in response.data.goodsPageInfo.list) {
+                //   response.data.goodsPageInfo.list[i].listid = (Number(i) + 1) + (self.page2.pageNum - 1) * self.page2.pageSize
+                //   for (let j in self.outputData) {
+                //     if (response.data.goodsPageInfo.list[i].skuId === self.outputData[j].skuId) {
+                //       response.data.goodsPageInfo.list[i]._checked = true
+                //       break
+                //     }
+                //   }
+                // }
+                //modal状态呈现已选中项
+                response.data.goodsPageInfo.list.forEach(item=>{
+                  this.data1.forEach(item_=>{
+                    if(item.skuId === item_.skuId){
+                      item._checked = true
                     }
-                  }
-                }
+                  })
+                })
+                console.log('this.data2',this.data2)
                 self.data2 = response.data.goodsPageInfo.list
                 self.page2.total = response.data.goodsPageInfo.total
               }
@@ -942,6 +961,7 @@
         this.search_c.endPutawayDate = enddate + ':00'
       },
       page2Change (page) {
+        // this.AllselectedProduct = this.AllselectedProduct.concat(this.selectedProduct)
         this.page2.pageNum = page
         this.productSearch()
       },
@@ -957,6 +977,13 @@
         }
       },
       delProduct (skuId) {
+        for (let i = 0; i < this.selectedProduct.length; i++) {
+          if (this.selectedProduct[i].skuId === skuId) {
+            this.selectedProduct.splice(i, 1)
+            break
+          }
+        }
+
         for (let i = 0; i < this.data1.length; i++) {
           if (this.data1[i].skuId === skuId) {
             this.data1.splice(i, 1)
@@ -965,11 +992,31 @@
         }
       },
       onOutput () {
-        this.outputData.sort(this.outputDataSort)
-        this.data1 = JSON.parse(JSON.stringify(this.outputData))
-        if (this.data1.length === 0) {
+        // this.outputData.sort(this.outputDataSort)
+        // this.data1 = JSON.parse(JSON.stringify(this.outputData))
+
+
+        // this.data1 = this.data1.concat(JSON.parse(JSON.stringify(this.outputData)))
+        // let newArr = []
+        // this.data1.forEach(item=>{
+        //   let flag = false
+        //   newArr.forEach(item_=>{
+        //     if(item.skuId == item_.skuId){
+        //       flag = true
+              
+        //     }
+        //   })
+        //   if(!flag){
+        //     item._checked = true
+        //     newArr.push(item)
+        //   }
+        // })
+        // this.data1 = newArr.sort(this.outputDataSort)
+
+        if (this.selectedProduct.length === 0) {
           this.$Message.warning('请选择商品')
         } else {
+          this.data1 = JSON.parse(JSON.stringify(this.selectedProduct.sort(this.outputDataSort)))
           this.modal1 = false
         }
       },
@@ -978,12 +1025,24 @@
       },
       // 处理 没选 或 取消当页所有选中
       selectChange: function (sel) {
-        console.log(sel)
+        console.log('sel',sel)
+        // this.selectedProduct = sel
+        // if (sel.length === 0) {
+        //   for (let i in this.data2) {
+        //     for (let j in this.outputData) {
+        //       if (this.data2[i].skuId === this.outputData[j].skuId) {
+        //         this.outputData.splice(j, 1)
+        //         break
+        //       }
+        //     }
+        //   }
+        // }
+
         if (sel.length === 0) {
           for (let i in this.data2) {
-            for (let j in this.outputData) {
-              if (this.data2[i].skuId === this.outputData[j].skuId) {
-                this.outputData.splice(j, 1)
+            for (let j in this.selectedProduct) {
+              if (this.data2[i].skuId === this.selectedProduct[j].skuId) {
+                this.selectedProduct.splice(j, 1)
                 break
               }
             }
@@ -992,44 +1051,65 @@
       },
       // 选中单项
       selectHandler: function (sel, row) {
+        this.selectedProduct.push(row)
         let canPush = true
-        for (let item of this.outputData) {
-          if (row.skuId === item.skuId) {
-            canPush = false
-            break
-          }
-        }
-        if (canPush) {
-          this.outputData.push(row)
-        }
+        // for (let item of this.outputData) {
+        //   if (row.skuId === item.skuId) {
+        //     canPush = false
+        //     break
+        //   }
+        // }
+        // if (canPush) {
+        //   this.outputData.push(row)
+        // }
       },
       // 取消单项
       cancelHandler: function (sel, row) {
-        for (let i in this.outputData) {
-          if (row.skuId === this.outputData[i].skuId) {
-            this.outputData.splice(i, 1)
+        for (let i in this.selectedProduct) {
+          if (row.skuId === this.selectedProduct[i].skuId) {
+            this.selectedProduct.splice(i, 1)
             break
           }
         }
+
+        // for (let i in this.outputData) {
+        //   if (row.skuId === this.outputData[i].skuId) {
+        //     this.outputData.splice(i, 1)
+        //     break
+        //   }
+        // }
       },
       // 选中当页所有项
       selectAllHandler: function (sel) {
+        // for (let i in sel) {
+        //   let canPush = true
+        //   for (let j in this.outputData) {
+        //     if (sel[i].skuId === this.outputData[j].skuId) {
+        //       canPush = false
+        //       break
+        //     }
+        //   }
+        //   if (canPush) {
+        //     this.outputData.push(sel[i])
+        //   }
+        // }
+        
         for (let i in sel) {
-          let canPush = true
-          for (let j in this.outputData) {
-            if (sel[i].skuId === this.outputData[j].skuId) {
-              canPush = false
+          let flag = true
+          for (let j in this.selectedProduct) {
+            if (sel[i].skuId === this.selectedProduct[j].skuId) {
+              flag = false
               break
             }
           }
-          if (canPush) {
-            this.outputData.push(sel[i])
+          if (flag) {
+            this.selectedProduct.push(sel[i])
           }
         }
       },
       // 取消所有选中
       delAllHandler: function () {
-        this.outputData = []
+        this.selectedProduct = []
         this.$refs.cp_table2.selectAll(false)
       },
       // 一级类目选择
@@ -1146,6 +1226,7 @@
           }
         }
         this.data4 = temparr
+        console.log('this.data4',this.data4)
       },
       delCate (id) {
         for (let i = 0; i < this.data4.length; i++) {
