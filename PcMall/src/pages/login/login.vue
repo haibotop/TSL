@@ -34,10 +34,54 @@
         }
     }
     .login-content{
+        position: relative;
         margin: 0 10%;
         padding: 80px 0;
         width: 80%;
         background: #fff;
+        .changeTab{
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            cursor: pointer;
+            img{
+                width: 80px;
+                height: 80px;
+            }
+            .saoma_txt{
+                position: absolute;
+                top: 40px;
+                right: 65px;
+                width: 130px;
+                display: inline-block;
+                font-size: 12px;
+                padding: 5px 10px;
+                border: 1px solid #352665;
+                color: #352665;
+            }
+            .saoma_txt:before{
+                content: '';
+                display: inline-block;
+                position: absolute;
+                top: 9px;
+                right: -4px;
+                width: 8px;
+                height: 8px;
+                background: #fff;
+                border: 1px solid transparent;
+                border-top-color: #352665;
+                border-right-color: #352665;
+                transform: rotate(45deg);
+            }
+        }
+        .backHomePage{
+            padding-bottom: 8px;
+            width: 200px;
+            height: 50px;
+            font-size: 16px;
+            color:#fff;
+            background-color: #352665;
+        }
         .login-cont{
             width: 650px;
             margin: 0 auto;
@@ -56,6 +100,10 @@
                     width: 400px;
                     height: 40px;
                 }
+            }
+            img{
+                display: block;
+                margin: 35px auto;
             }
             .password{
                 margin-top: 30px;
@@ -106,7 +154,17 @@
           <div class="login-t">普通用户 <span class="xiegang"></span> 登录</div>
       </div>
       <div class="login-content">
-          <div class="login-cont">
+          <div class="changeTab" >
+              <img :src="loginSrc" @click="loginStatus = !loginStatus">
+              <span class="saoma_txt" v-show="!loginStatus">也可用手机扫码登录</span>
+              <span class="saoma_txt" v-show="loginStatus">点此切换到账号登录</span>
+          </div>
+          <div class="login-cont" v-show="loginStatus">
+              <p>若已有TSL会员账号，打开微信扫描二维码即可完成登录：</p>
+              <img src="../../assets/images/login_qrcode_b.png" alt="">
+              <Button class="backHomePage"  @click.native="backHomePage" >返回首页</Button>
+          </div>
+          <div class="login-cont" v-show="!loginStatus">
               <div class="phoneNum">
                   <span>手机号</span>
                   <Input v-model="account" ref="numInput" placeholder="请输入您的手机号码" :maxlength=11  @on-change="handlePhone" />
@@ -130,7 +188,7 @@
                       <Button @click.native="signBtn" style="width: 200px;height: 50px;font-size: 16px; background-color: #352665;color: #fff;">注册</Button>
                   </div>
               </Modal>
-        </div>
+          </div>
       </div>
   </div>
 <v-footer></v-footer>
@@ -162,9 +220,18 @@ export default {
       userId: '',
       isWeChat: false,
       model1: false,
+      loginStatus: false
     }
   },
+  computed: {
+      loginSrc(){
+          return this.loginStatus == false ? require('../../assets/icons/login_qrcode_s.png') : require('../../assets/icons/login_pc.png')
+      }
+  },
   methods: {
+    backHomePage () {
+        this.$router.replace({path:'/home'})
+    },
     getUrlParam () {
       let url = window.location.href
       let obj = {}

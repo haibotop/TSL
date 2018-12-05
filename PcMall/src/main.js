@@ -11,13 +11,13 @@ import store from '@/store/index.js'
 
 
 //省市区三级联动
-import 'vue-area-linkage/dist/index.css'; // v2 or higher
-import VueAreaLinkage from 'vue-area-linkage';
+// import 'vue-area-linkage/dist/index.css'; // v2 or higher
+// import VueAreaLinkage from 'vue-area-linkage';
 
 //loading
 import VueLoading from 'vue-loading-template'
 
-Vue.use(VueAreaLinkage);
+// Vue.use(VueAreaLinkage);
 
 // config custom iconfonts
 Vue.use(VueRouter)

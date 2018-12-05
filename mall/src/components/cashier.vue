@@ -106,6 +106,18 @@
           }
         })
       },
+      unionPay () { // 测试
+        let params = [{'orderNo': this.orderNum, 'terminalIp': '192.168.0.1', 'productDescription': '甄品商城', 'currency': 'CNY'}]
+        this.$http.post(...orderAPI.unionpay(params), {async: false}).then((response) => {
+          if (response.data.code === 200) {
+            document.write(response.data.resultHtml)
+          } else if (response.data.code === 5001) {
+            this.$vux.toast.show({ type: 'text', text: response.data.message, width: '200px' })
+          } else if (response.data.code === 9990) {
+            this.$vux.toast.show({ type: 'text', text: '重复提交，请20s后重试', width: '200px' })
+          }
+        })
+      },
       isWeiXin () {
         let ua = window.navigator.userAgent.toLowerCase()
         // alert(ua)

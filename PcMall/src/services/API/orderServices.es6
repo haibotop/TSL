@@ -55,4 +55,8 @@ export function orderListName (params) {
 export function getSettleMent (params) {
   return [`settlement/settlement/v1/newstatements/`, params]
 }
+// POST  测试
+export function h5Test (params) {
+    return [`payment/payment/v1/commerceunionSMPay`, params]
+}
 

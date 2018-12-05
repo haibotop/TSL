@@ -75,9 +75,18 @@
             }
         }
 
+        .backHomePage{
+            padding-bottom: 8px;
+            width: 200px;
+            height: 50px;
+            font-size: 16px;
+            color:#fff;
+            background-color: #352665;
+        }
         .login-content{
+            position: relative;
             margin: 0 10%;
-            padding-bottom: 80px;
+            padding: 80px 0;
             width: 80%;
             background: #fff;
             .login-cont{
@@ -115,7 +124,10 @@
                         }
                     }
                 }
-
+                img{
+                    display: block;
+                    margin: 35px auto;
+                }
                 .login-footer{
                     margin-top: 60px;
                     .sign{
@@ -134,7 +146,41 @@
                     }
                 }
             }
-
+            .changeTab{
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                cursor: pointer;
+                img{
+                    width: 80px;
+                    height: 80px;
+                }
+                .saoma_txt{
+                    position: absolute;
+                    top: 40px;
+                    right: 65px;
+                    width: 130px;
+                    display: inline-block;
+                    font-size: 12px;
+                    padding: 5px 10px;
+                    border: 1px solid #352665;
+                    color: #352665;
+                }
+                .saoma_txt:before{
+                    content: '';
+                    display: inline-block;
+                    position: absolute;
+                    top: 9px;
+                    right: -4px;
+                    width: 8px;
+                    height: 8px;
+                    background: #fff;
+                    border: 1px solid transparent;
+                    border-top-color: #352665;
+                    border-right-color: #352665;
+                    transform: rotate(45deg);
+                }
+            }
         }
         .xiegang:after{
             content: '';
@@ -158,7 +204,17 @@
             <div class="login-t">普通用户 <span class="xiegang"></span> 注册</div>
         </div>
         <div class="login-content">
-            <div class="login-cont">
+            <div class="changeTab" >
+                <img :src="loginSrc" @click="loginStatus = !loginStatus">
+                <span class="saoma_txt" v-show="!loginStatus">也可用手机扫码注册</span>
+                <span class="saoma_txt" v-show="loginStatus">点此切换到账号注册</span>
+            </div>
+            <div class="login-cont" v-show="loginStatus">
+                <p>打开微信扫描二维码，可以在手机上完成注册：</p>
+                <img src="../../assets/images/login_qrcode_b.png" alt="">
+                <Button class="backHomePage"  @click.native="backHomePage" >返回首页</Button>
+            </div>
+            <div class="login-cont" v-show="!loginStatus">
                 <flow class="flowBar">
                     <flow-state state="1" title="填写手机号" is-done></flow-state>
                     <flow-line></flow-line>
@@ -219,10 +275,19 @@
                 index: 0,
                 loading: false,
                 phone: '',
-                agree: true
+                agree: true,
+                loginStatus: false
+            }
+        },
+        computed: {
+            loginSrc(){
+                return this.loginStatus == false ? require('../../assets/icons/login_qrcode_s.png') : require('../../assets/icons/login_pc.png')
             }
         },
         methods: {
+            backHomePage () {
+                this.$router.replace({path:'/home'})
+            },
             submitPhone (phone) {
                 console.log(phone)
                 this.$http.get(myAPI.phone(phone)).then((response) => {

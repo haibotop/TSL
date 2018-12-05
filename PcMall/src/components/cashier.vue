@@ -110,6 +110,20 @@
     },
     methods: {
       pay () {
+          // let params = [{'amount':0.1,'payType': 14,'orderNo': this.orderNum, 'terminalIp': '192.168.0.1', 'productDescription': '支付测试', 'currency': 'CNY'}]
+          // this.$http.post(...orderAPI.h5Test(params), {async: false}).then((response) => {
+          //     console.log(response)
+          //     if (response.data.code === 200) {
+          //         // document.write(response.data.resultHtml)
+          //         console.log('1', response.data.resultHtml)
+          //         document.write(response.data.resultHtml)
+          //     } else if (response.data.code === 5001) {
+          //         alert('2', response.data.message)
+          //     } else if (response.data.code === 9990) {
+          //         alert('3', response.data.message)
+          //     }
+          //     // 所有支付 无此订单 5001 重复提交 9990
+          // })
         if (this.orderNum) {
           if (this.payway === 'alipay') {
             this.isWeiXin() ? this.$vux.toast.show({ type: 'text', text: '微信内无法支付宝支付', width: '200px' }) : this.h5Alipay()
