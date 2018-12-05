@@ -15,6 +15,7 @@
           color: #8b8b8b;
         }
         .cardList_left{
+          display: inline-block;
           padding: 20px 0;
           width: 30%;
           background-color: #352665;
@@ -30,10 +31,8 @@
           }
         }
         .cardList_right{
-          position: absolute;
-          top: 0;
-          left: 30%;
-          padding: 20px;
+          display: inline-block;
+          padding-left: 5%;
           width: 60%;
           .useNow{
             display: inline-block;
@@ -119,7 +118,7 @@
     </tab>
     <div class="group" v-show="tabIndex === 0">
       <div style="margin-bottom: 70px">
-      <div class="cardList" v-for="(item,index) in readyTradeItem">
+      <div class="cardList" v-for="(item,index) in readyTradeItem" v-bind:hidden="item.discountAmount == null && item.discountcodePiecediscountList == null">
         <div class="cardList_left">
           <p class="disPrice" v-if="item.rule  === 1 || item.rule  === 2">￥{{item.discountAmount/100}}</p>
           <p class="disPrice" v-if="item.rule   === 3">{{item.discountcodePiecediscountList[0].discountRatio/10}}折</p>
@@ -143,12 +142,12 @@
       </div>
       </div>
       <div class="discountBottom">
-        <input type="text" v-model="cashingDiscount" placeholder="请输入折扣码">
+        <input type="text" v-model="cashingDiscount" placeholder="请输入折扣码" @foucs="onTheSoftKeyboard" @blur="killTheSoftKeyboard">
         <span class="exchange" @click="changeDiscount">兑换</span>
       </div>
     </div>
     <div class="group" v-show="tabIndex === 1">
-      <div class="cardList" v-for="(item,index) in readyUsedItem">
+      <div class="cardList" v-for="(item,index) in readyUsedItem" v-bind:hidden="item.discountAmount == null && item.discountcodePiecediscountList == null">
         <div class="cardList_left" style="background-color: #8B8B8B">
           <p class="disPrice" v-if="item.rule  === 1 || item.rule  === 2">￥{{item.discountAmount/100}}</p>
           <p class="disPrice" v-if="item.rule   === 3">{{item.discountcodePiecediscountList[0].discountRatio/10}}折</p>
@@ -171,7 +170,7 @@
       </div>
     </div>
     <div class="group" v-show="tabIndex === 2">
-      <div class="cardList"  v-for="(item,index) in loseEfficacyItem">
+      <div class="cardList"  v-for="(item,index) in loseEfficacyItem" v-bind:hidden="item.discountAmount == null && item.discountcodePiecediscountList == null">
         <div class="cardList_left" style="background-color: #8B8B8B">
           <p class="disPrice" v-if="item.rule  === 1 || item.rule  === 2">￥{{item.discountAmount/100}}</p>
           <p class="disPrice" v-if="item.rule   === 3">{{item.discountcodePiecediscountList[0].discountRatio/10}}折</p>
@@ -198,6 +197,7 @@
 
 <script type="text/ecmascript-6">
 import * as disAPI from '../../services/API/discountServices.es6'
+import * as tool from '@/services/myTool.es6'
 import { XHeader, Tab, TabItem, Group, XInput, XButton, Toast, debounce } from 'vux'
 
 export default {
@@ -295,6 +295,24 @@ export default {
     },
     lookDetail3 (index) { // 查看已失效明细
       this.lookDetailIndex3 = this.lookDetailIndex3 == index ? -1 : index
+    },
+    // ----------踩上软键盘
+    onTheSoftKeyboard () {
+      if (tool.isIOS()) {
+        return
+      }
+      let h = document.body.clientHeight
+      setTimeout(() => {
+        this.scrollerHeight = h / 2 * 3
+        this.$refs.scroller.reset({top: h / 2})
+      }, 500)
+    },
+    // ----------收起软键盘
+    killTheSoftKeyboard () {
+      setTimeout(() => {
+        this.scrollerHeight = document.body.clientHeight - 66
+        this.$refs.scroller.reset({top: 0})
+      }, 500)
     }
   }
 }

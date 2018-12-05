@@ -87,13 +87,7 @@
               this.$emit('selected', selected)
           }
           this.$emit('input', false)
-          this.$Modal.success({
-              title: '提示',
-              content: '保存成功',
-              onOk: ()=> {
-                  this.$parent.$parent.hideCoupons()
-              }
-          })
+          this.$parent.$parent.hideCoupons()
       },
       init () {
         console.log('couponUseProductInfos', this.couponUseProductInfos)

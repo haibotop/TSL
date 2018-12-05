@@ -37,7 +37,7 @@
         }
         .content{
             margin: 0 10%;
-            padding: 40px 50px 0;
+            padding: 25px 50px 0;
             width: 80%;
             /*height: 600px;*/
             background: #fff;
@@ -50,20 +50,64 @@
                 width: 100%;
                 height: 130px;
                 overflow: hidden;
-                /*border-bottom: 1px solid #eaeaea;*/
+                border-bottom: 1px solid #eaeaea;
             }
             .change-coupon,.change-address{
-                position: absolute;
-                right: 20px;
                 color: #4A90E2;
                 cursor: pointer;
             }
             .change-address{
-                top: 30px;
+                position: absolute;
+                top: 20px;
                 right: 35px;
             }
             .no-address{
                 display: inline-block;
+            }
+            .beizhu-left{
+                display: inline-block;
+                padding: 30px 50px 40px 0;
+                width: calc(50% - 25px);
+                border-right: 1px solid #eaeaea;
+                .bz-txt{
+                    line-height: 40px;
+                    color: #352665;
+                }
+                .bz-num{
+                    float: right;
+                    line-height: 40px;
+                    color: #979797;
+                }
+                textarea{
+                    width: 100%;
+                    padding: 5px 10px;
+                    font-size: 12px;
+                }
+                .member-num{
+                    p{
+                        color: #352665;
+                        line-height: 40px;
+                    }
+                    input{
+                        padding: 5px 10px;
+                        width: 100%;
+                        font-size: 12px;
+                    }
+                }
+            }
+            .total-right{
+                display: inline-block;
+                padding: 30px 0;
+                width: calc(50% + 20px);
+                vertical-align: top;
+                .couponCon{
+                    display: inline-block;
+                    width: 50%;
+                    padding-right: 10px;
+                }
+                .change-coupon,.price{
+                    vertical-align: top;
+                }
             }
         }
         .footer{
@@ -78,7 +122,15 @@
         .marBot10{
             margin-bottom: 10px;
         }
-
+        .marRight40{
+            margin-right: 40px;
+        }
+        .borderNone{
+            border: none;
+        }
+        .textAlignR{
+            text-align: right;
+        }
     }
 </style>
 <template>
@@ -92,37 +144,26 @@
     <!--<x-header v-show="!couponFlag" :left-options="{backText: ''}" title="填写订单"></x-header>-->
     <!--<scroller v-show="!couponFlag" lock-x height="-96" ref="scroller">-->
       <div class="content marBot10">
-        <!--<group v-if="address">-->
-          <!--<cell-box is-link link="/addressList">-->
-            <!--<div v-if="address.id" class="address">-->
-              <!--<div class="address-bar1"><span class="receiverName">{{address.receiverName}}</span><span class="receiverMobile">{{address.receiverMobile}}</span></div>-->
-              <!--<div class="address-bar2"><x-icon type="ios-location-outline" size="15" style="position:absolute;left:10px;"></x-icon><p>{{address.receiverAddress}}</p></div>-->
-            <!--</div>-->
-            <!--<div v-else class="address">-->
-              <!--<div class="address-bar2"><x-icon type="ios-location-outline" size="15" style="position:absolute;left:10px;"></x-icon><p>请输入收货地址</p></div>-->
-            <!--</div>-->
-          <!--</cell-box>-->
-        <!--</group>-->
-
-        <!-- <group v-for="(item, index) in tempOrders" :key="index">
-          <cell-box v-for="(item2, index2) in item.SettlementProductItem" :key="index2">
-            <div style="width: 100%;overfloat:hidden;">
-              <div class="default-picture"><img :src="item2.product.defaultPicture" :alt="item2.product.name"></div>
-              <div class="text-info">
-                <p>{{handleName(item2.product.name)}}</p>
-                <span class="price">￥{{ handlePrice(item2.product.price) }}</span>
-                <span class="quantity">×{{item2.quantity}}</span>
+          <div class="account borderNone">
+              <span class="title" style="margin-right: 55px;">收货地址</span>
+              <div >
+                  <div v-if="address" class="address">
+                      <div class="address-bar1"><span class="receiverName">{{address.receiverName}}</span><span class="receiverMobile">{{address.receiverMobile}}</span></div>
+                      <div class="address-bar2"><p>{{address.receiverAddress}}</p></div>
+                      <span class="change-address" @click="showAddressModel">更换地址</span>
+                  </div>
+                  <div v-else class="no-address">
+                      <p style="padding-bottom:20px;color: #111;">目前您没有设置配送地址</p>
+                      <!--<span class="change-address" @click="showAddressModel">更换地址</span>-->
+                      <p style="color: #4A90E2;cursor: pointer;" @click="showCreatAddressModel">
+                          <Icon type="ios-add-circle-outline" style="position: relative;top: -3px;margin-right: 5px;font-size: 20px;"/>
+                          增加配送地址
+                      </p>
+                  </div>
               </div>
-            </div>
-          </cell-box>
-          <cell title="运费" value="免运费"></cell>
-          <cell-box>
-            <div class="account">
-              <span>共计{{calcQuantity(item.SettlementProductItem)}}件商品</span>
-              <span>合计:<span class="price">￥{{handlePrice(item.amount)}}</span></span>
-            </div>
-          </cell-box>
-        </group> -->
+          </div>
+      </div>
+      <div class="content marBot10">
         <div v-for="(merchant, index) in merchants" :key="index" class="goodsList">
           <div v-for="(promotion, index2) in merchant.promotionItems" :key="index2">
             <!--<div class="promotion-info">-->
@@ -140,89 +181,100 @@
                 </div>
                 <div class="text-info">
                   <p>{{handleName(product.name)}}</p>
-                  <p class="price">￥{{ handlePrice(product.price) }} ×{{product.quantity}}</p>
-                    <!--<span class="quantity">×{{product.quantity}}</span>-->
                   <p  class="specs">{{toolFun('specValues', product.specValues)}}</p>
                 </div>
                 <div class="text-info-right">
-                    <p class="price">价格：￥{{ handlePrice(product.price) }}</p>
-                    <p style="margin:20px 0;">运费：免运费</p>
-                    <p>（新客户免运费）</p>
+                    <p class="price">￥{{ handlePrice(product.price) }}</p>
+                    <p style="margin-top: 5px; text-align: right;color: #352665;"> ×{{product.quantity}}</p>
                 </div>
               </div>
             </div>
           </div>
-          <!--<cell title="运费" value="免运费"></cell>-->
-          <!--<cell>-->
-            <!--<div class="account">-->
-              <!--<span class="discount">促销优惠：<span class="price">￥ -{{calcDiscountedPrice}}</span></span>-->
-            <!--</div>-->
-          <!--</cell>-->
-          <!--<cell-box>-->
-            <!--<div class="account">-->
-              <!--<span>共计{{calcQuantity2(merchant)}}件商品</span>-->
-              <!--<span>合计:<span class="price">￥{{merchant.afterPromotion}}</span></span>-->
-            <!--</div>-->
-          <!--</cell-box>-->
+        <div class="account textAlignR">
+            <span class="marRight40">促销优惠：</span>
+            <span class="price ">￥ -{{calcDiscountedPrice}}</span>
+        </div>
+        <div class="account textAlignR borderNone">
+            <span>共计{{calcQuantity2(merchant)}}件商品</span>
+            <span class="marRight40">合计:</span>
+            <span class="price">￥{{merchant.afterPromotion}}</span>
+        </div>
         </div>
       </div>
-      <div class="content">
-        <div class="account">
-            <span class="title">配送地址：</span>
-            <div >
-                <div v-if="address" class="address">
-                    <div class="address-bar1"><span class="receiverName">{{address.receiverName}}</span><span class="receiverMobile">{{address.receiverMobile}}</span></div>
-                    <div class="address-bar2"><p>{{address.receiverAddress}}</p></div>
-                    <span class="change-address" @click="showAddressModel">更换地址</span>
-                </div>
-                <div v-else class="no-address">
-                    <p style="padding-bottom:20px;color: #111;">目前您没有设置配送地址</p>
-                    <!--<span class="change-address" @click="showAddressModel">更换地址</span>-->
-                    <p style="color: #4A90E2;cursor: pointer;" @click="showCreatAddressModel">
-                        <Icon type="ios-add-circle-outline" style="position: relative;top: -3px;margin-right: 5px;font-size: 20px;"/>
-                        增加配送地址
-                    </p>
-                </div>
-            </div>
-        </div>
-        <!--<div v-if="merchants.length > 0">-->
-          <!--<cell-box is-link class="coupon" title="优惠券" @click.native="openCoupon">-->
+      <div class="content marBot10" style="padding-top: 0">
+          <div class="beizhu-left">
+              <div>
+                  <span class="bz-txt">备注</span>
+                  <span class="bz-num">0/50字</span>
+              </div>
+              <textarea v-model="memberRemark" name="" id="" cols="50" rows="5 " placeholder="请输入"></textarea>
+              <div class="member-num">
+                  <p>员工编号</p>
+                  <input type="text" placeholder="请输入为您服务的员工编号，如无则无需填写">
+              </div>
+          </div>
+          <div class="total-right">
+              <div class="account" >
+                  <span class="title">优惠券：</span>
+                  <span class="couponCon" v-if="selected.length == 0">暂无</span>
+                  <span class="couponCon" v-else v-for="item in selected" :key="item.code">
+                      （已使用{{item.rules === 1 ? `满${item.fullSubtract / 100}减${item.subtract / 100}` : `直减${item.subtract / 100}`}}）
+                  </span>
+                  <span class="change-coupon" @click="showCouponModel">更换</span>
+                  <span class="price">￥ {{handlePrice(couponsValue) * -1}}</span>
+              </div>
+              <div class="account" >
+                  <span class="title">折扣码：</span>
+                  <span class="couponCon" v-if="chooseDisItem.length == 0">暂无</span>
+                  <span class="couponCon" v-else>
+                      <span v-for="item in chooseDisItem" :key="item.code">
+                        <span v-if="item.rule === 1">满{{item.minExpense/100}}减{{item.discountAmount/100}}</span>
+                        <span v-if="item.rule === 2">直减{{item.discountAmount/100}}</span>
+                        <span v-if="item.rule === 3">满{{item.discountcodePiecediscountList[0].min_quantity}}件打{{item.discountcodePiecediscountList[0].discountRatio/10}}折</span>
+                      </span>
+                  </span>
+                  <span class="change-coupon" @click="showDiscountModel">兑换</span>
+                  <span class="price">￥ {{(Number(disPrice.jian) + Number(disPrice.manjianzhe)).toFixed(2) * -1}}</span>
+              </div>
+              <div class="account" >
+                  <span class="title">运费：</span>
+                  <span class="couponCon" >免运费</span>
+                  <span class="price">￥ 0.00</span>
+              </div>
+              <div class="account borderNone" >
+                  <span class="title">合计：</span>
+                  <span class="price">￥{{calcAmount}}</span>
+                  <div style="clear: both;"></div>
+              </div>
+              <!--<div class="account">-->
+                  <!--<span class="discount">备注：</span>-->
+                  <!--<Input v-model="memberRemark" :maxlength="50" style="width: 300px" placeholder="请输入"/>-->
+              <!--</div>-->
+          </div>
+        <!--<div >-->
             <!--<div class="account" >-->
-              <!--<span class="title">-->
-                <!--<span class="dis-coupon">优惠券</span>-->
-                <!--<span class="discount" v-for="item in selected" :key="item.code">{{item.rules === 1 ? `满${item.fullSubtract / 100}减${item.subtract / 100}` : `直减${item.subtract / 100}`}}</span>-->
+              <!--<span class="title">优惠券：</span>-->
+              <!--<span class="price">￥ {{handlePrice(couponsValue) * -1}}-->
+                  <!--<span v-for="item in selected" :key="item.code">（已使用{{item.rules === 1 ? `满${item.fullSubtract / 100}减${item.subtract / 100}` : `直减${item.subtract / 100}`}}）</span>-->
               <!--</span>-->
+              <!--<span class="change-coupon" @click="showDiscountModel">更换优惠券</span>-->
             <!--</div>-->
-          <!--</cell-box>-->
+            <!--<div class="account">-->
+                <!--<span class="discount">促销优惠：</span>-->
+                <!--<span class="price">￥ -{{calcDiscountedPrice}}</span>-->
+            <!--</div>-->
+            <!--<div class="account">-->
+                <!--<span class="discount">备注：</span>-->
+                <!--<Input v-model="memberRemark" :maxlength="50" style="width: 300px" placeholder="请输入"/>-->
+            <!--</div>-->
         <!--</div>-->
-        <div v-if="merchants.length > 0">
-            <!--<div class="account" >-->
-              <!--<span class="title">商品总价</span>-->
-              <!--<span><span class="price">￥{{afterPromotion}}</span></span>-->
-            <!--</div>-->
-            <div class="account" >
-              <span class="title">优惠券：</span>
-              <span class="price">￥ {{handlePrice(couponsValue) * -1}}
-                  <span v-for="item in selected" :key="item.code">（已使用{{item.rules === 1 ? `满${item.fullSubtract / 100}减${item.subtract / 100}` : `直减${item.subtract / 100}`}}）</span>
-              </span>
-              <span class="change-coupon" @click="showDiscountModel">更换优惠券</span>
-            </div>
-            <div class="account">
-                <span class="discount">促销优惠：</span>
-                <span class="price">￥ -{{calcDiscountedPrice}}</span>
-            </div>
-            <div class="account">
-                <span class="discount">备注：</span>
-                <Input v-model="memberRemark" :maxlength="50" style="width: 300px" placeholder="请输入"/>
-            </div>
-        </div>
       </div>
       <div class="footer">
           <div class="sub-bar">
               <div class="amount" v-for="(merchant, index) in merchants" :key="index">
                 <span>共{{calcQuantity2(merchant)}}件商品，</span>
                 <span>待付款:<span class="price">￥{{calcAmount}}</span></span>
-                <p style="color: #352665">优惠已抵扣：￥{{-Number(calcDiscountedPrice) + Number(handlePrice(couponsValue) * -1)}}</p>
+                <p style="color: #352665">优惠已抵扣：￥{{-Number(calcDiscountedPrice) + Number(handlePrice(couponsValue) * -1 + Number(disPrice.jian) + Number(disPrice.manjianzhe)).toFixed(2) * -1}}</p>
               </div>
               <!--<div class="amount">合计:<span class="price">￥{{calcAmount}}</span></div>-->
               <div id="percreateorder" class="order-btn" @click="order">结算<Icon type="ios-arrow-forward" style="position: absolute;top: 33px;right: 30px;font-size: 15px;"/></div>
@@ -251,8 +303,10 @@
           <useCoupons ref="useCoupons" :merchants="merchants" @selected="getSelected"></useCoupons>
       </Modal>
       <Modal v-model="cashierFlag" footerHide :styles="{width: '1000px',top: '20%'}">
-          <!--<useCoupons ref="useCoupons" :merchants="merchants" @selected="getSelected"></useCoupons>-->
           <cashier v-model="cashierFlag" :price="payAmount" :orderNum="orderNum"></cashier>
+      </Modal>
+      <Modal v-model="model5" footerHide :styles="{width: '1000px',top: '20%'}">
+          <useDiscount ref="useDiscount" :merchants="merchants" @chooseDisItem="getDiscount"></useDiscount>
       </Modal>
       </div>
     <!--</scroller>-->
@@ -272,6 +326,7 @@
   import cashier from '@/components/cashier.vue'
   import { XHeader, Group, Cell, CellBox, XTextarea, Scroller, debounce } from 'vux'
   import useCoupons from '@/pages/promotion/useCoupons.vue'
+  import useDiscount from '@/pages/promotion/useDiscount.vue'
     import {mapState} from 'vuex'
   export default {
     name: 'createOrder',
@@ -282,6 +337,7 @@
         addressList,
         createAddress,
         editAddress,
+        useDiscount
     },
     data () {
       return {
@@ -296,17 +352,30 @@
         orderAble: true,
         memberRemark: '',
         selected: [], // 已选优惠券
+        chooseDisItem: [], // 已选折扣码
+        disPrice: { // 折扣码优惠
+            'jian': 0, // 满减or直减
+            'manjianzhe': 0 // 满减折
+        },
         sum: 0,
         model1: false,
         model2: false,
         model3: false,
         model4: false,
+        model5: false,
       }
     },
       updated(){
           console.log('xxx',this.address)
           console.log('vux',this.$store.state.address)
       },
+    watch: {
+        cashierFlag(val,oldVal){
+            if(oldVal == true){
+                this.$router.replace({path: '/myOrders/0'})
+            }
+        }
+    },
     mounted: function () {
         this.bus.$on('fun',()=>{
             console.log('9999999')
@@ -348,9 +417,13 @@
       hideModelEdit(){
           this.model3 = !this.model3
       },
-      //隐藏编辑收获地址
+      //隐藏优惠券
       hideCoupons(){
           this.model4 = !this.model4
+      },
+      //隐藏折扣码
+      hideCDiscount(){
+          this.model5 = !this.model5
       },
       //隐藏新建收获地址
       hideModelCreat(){
@@ -361,8 +434,13 @@
           this.model1 = !this.model1
       },
       //显示更换优惠券
-      showDiscountModel(){
+        showCouponModel(){
           this.model4 = true
+      },
+      //显示更换折扣码
+      showDiscountModel(){
+          this.model5 = true
+          this.bus.$emit('readyTrade')
       },
       //显示更换地址
       showAddressModel(){
@@ -532,7 +610,7 @@
             afterPromotion += +afterPromotion1
           }
           merchants[index].amount = amount
-          merchants[index].afterPromotion = afterPromotion
+          merchants[index].afterPromotion = afterPromotion.toFixed(2)
         }
         this.merchants = merchants
         this.getCouponOrderInfo()
@@ -642,8 +720,14 @@
         })
       }, 500),
       getSelected (selected) {
-        console.log('selected', selected)
+        // console.log('selected', selected)
         this.selected = selected
+      },
+      getDiscount (chooseDisItem,disPrice) {
+            console.log('-----------', chooseDisItem)
+            console.log('-----------', disPrice)
+        this.chooseDisItem = chooseDisItem
+        this.disPrice = disPrice
       },
       // ----------去付款
       goPay (order) {
@@ -670,15 +754,24 @@
         }
         return afterPromotion
       },
-      calcAmount () {
-        let couponsValue = tool.handlePrice(this.couponsValue)
-        return (this.afterPromotion - couponsValue).toFixed(2)
-      },
-      payAmount () {
-        let couponsValue = tool.handlePrice(this.couponsValue)
-        let payPrice = (this.afterPromotion - couponsValue).toFixed(2) * 100
-        return payPrice
-      },
+        calcAmount () {
+            let couponsValue = tool.handlePrice(this.couponsValue)
+            return ((this.afterPromotion - couponsValue).toFixed(2) - this.disPrice.jian - this.disPrice.manjianzhe).toFixed(2)
+        },
+        payAmount () {
+            let couponsValue = tool.handlePrice(this.couponsValue)
+            let payPrice = (((this.afterPromotion - couponsValue) - this.disPrice.jian - this.disPrice.manjianzhe) * 100).toFixed(2)
+            return Number(payPrice)
+        },
+      // calcAmount () {
+      //   let couponsValue = tool.handlePrice(this.couponsValue)
+      //   return (this.afterPromotion - couponsValue).toFixed(2)
+      // },
+      // payAmount () {
+      //   let couponsValue = tool.handlePrice(this.couponsValue)
+      //   let payPrice = (this.afterPromotion - couponsValue).toFixed(2) * 100
+      //   return payPrice
+      // },
       calcDiscountedPrice () {
         let amount = 0
         for (let i of this.merchants) {
@@ -727,8 +820,7 @@
 .account .discount, .account .title{
     display: inline-block;
     width: 70px;
-    margin-right: 50px;
-    color: #352665;
+    color: #111;
 }
 .promotion-info {
   /*min-height: 25px;*/
@@ -792,6 +884,7 @@
     color: #352665;
   }
   .specs{
+      margin-top: 20px;
       color: #352665;
   }
   .quantity {
@@ -807,9 +900,6 @@
     .price{
         color: #352665;
     }
-    p{
-        color: #111;
-    }
 }
 .coupon {
   background: #fff;
@@ -821,13 +911,13 @@
   font-size: 14px;
   border-bottom: 1px solid #eaeaea;
   .title {
-      float: left;
+  float: left;
     width: 70px;
     font-size: 14px;
-    color: #352665;
+    color: #111;
     .dis-coupon {
       float: left;
-      color: #352665;
+      color: #111;
     }
     .discount {
       color: #111;;
@@ -838,8 +928,11 @@
     }
   }
   .price {
-    font-size: 14px;
-    color: #111;
+      display: inline-block;
+      width: 90px;
+      color: #352665;
+      text-align: right;
+      float: right;
   }
 }
 .account>div{

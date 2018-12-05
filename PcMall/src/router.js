@@ -45,10 +45,12 @@ import addressList from '@/pages/me/addressList.vue'
 import selfAddress from '@/pages/me/selfAddress.vue'
 import editAddress from '@/pages/me/editAddress.vue'
 import createAddress from '@/pages/me/CreateAddress.vue'
-// 促销、优惠券----------
+// 促销、优惠券、折扣码----------
 // import useCoupons from '@/pages/promotion/useCoupons.vue'
 // import sendCoupons from '@/pages/promotion/sendCoupons.vue'
 import myCoupons from '@/pages/promotion/myCoupons.vue'
+import myDiscountCard from '@/pages/promotion/myDiscountCard.vue'
+import couponPl from '@/pages/promotion/couponPl.vue'
 // import pdCoupons from '@/pages/promotion/pdCoupons.vue'
 
 var routers = [];
@@ -93,17 +95,17 @@ let searchModel = [
             }
         ]
     },
-    // {
-    //   path: '/couponPl',
-    //   name: 'couponPl',
-    //   component: couponPl,
-    //   children: [
-    //     {
-    //       path: ':keyword',
-    //       component: couponPl
-    //     }
-    //   ]
-    // }
+    {
+      path: '/couponPl',
+      name: 'couponPl',
+      component: couponPl,
+      children: [
+        {
+          path: ':keyword',
+          component: couponPl
+        }
+      ]
+    }
 ]
 
 // 商品详情
@@ -248,14 +250,6 @@ let myModal = [
             intercept: true
         },
         component: myNickname
-    },
-    {
-        path: '/myCollection',
-        name: 'myCollection',
-        meta: {
-            intercept: true
-        },
-        component: myCollection
     },
     {
         path: '/address',
@@ -448,6 +442,10 @@ let promotion = [
       path: '/myCoupons',
       name: 'myCoupons',
       component: myCoupons
+    },{
+      path: '/myDiscountCard',
+      name: 'myDiscountCard',
+      component: myDiscountCard
     },
     // {
     //   path: '/pdCoupons',

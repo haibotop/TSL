@@ -29,4 +29,19 @@ export function getCouponOrderInfo (ids) {
 // GET /Campaign/{params} 下单查询最优优惠券
 export function getOptimal (params) {
   return [`campaign/Campaign/v1/getOptimalCouponOrderInfo`, params]
+}// 获取折扣码列表
+export function getDiscountList (params) {
+    return [`/OperationManagement/OperationManagement/v1/DiscountCode/list`, params]
+}
+// 展示可使用折扣码，包括可用和不可用
+export function getDiscountInfo (params) {
+    return [`/OperationManagement/OperationManagement/v1/getDiscountCodeOrderInfo`, params]
+}
+// 用户兑换折扣码
+export function cashingDiscountcode (params) {
+    return [`/OperationManagement/OperationManagement/v1/cashingDiscountcode`, params]
+}
+// 根据折扣码获取相关商品信息
+export  function getDiscountProduct (param, pagesize, pageNum) {
+    return [`/OperationManagement/OperationManagement/v1/getDiscountcodeProducts?pageSize=${pagesize}&pageNum=${pageNum}`, param]
 }

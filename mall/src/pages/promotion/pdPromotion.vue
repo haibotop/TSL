@@ -43,6 +43,11 @@
         selected: ''
       }
     },
+    mounted: function () {
+      this.getPromotions(this.$route.params.skuId, () => {
+        this.bestPromotion()
+      })
+    },
     methods: {
       getPromotions (skuId, callback) {
         this.$http.get(API.getProductPromotions(skuId)).then(res => {
@@ -72,46 +77,63 @@
         return text
       },
       bestPromotion () {
-        let price = this.$parent.$parent.$parent.skuInfo.sku.price
-        if (!price) { return }
+        var this_ = this
+        let price
+        try {
+          price = this.$parent.$parent.$parent.skuInfo.sku.price
+        } catch (e) {
+          setTimeout(() => {
+            this_.price = this.$parent.$parent.$parent.skuInfo.sku.price
+            // console.log(e.toString(), '000000000')
+            // console.log(this_.price, '11111111')
+            this.bestPromotion ()
+          }, 1000)
+        }
+       // let price = this.$parent.$parent.$parent.skuInfo.sku.price
+        // if (!price) { return }
         let selected = ''
         let youhui = 0
-        for (let promotion of this.promotionInfos) {
-          if (promotion.type === 1) {
-            for (let j of promotion.pdsArray) {
-              if (j.fullLimit <= price && j.subtract > youhui) {
-                youhui = j.subtract
+        if (!this.promotionInfos.length) {
+          this.$emit('limitNum', null)
+        } else {
+          for (let promotion of this.promotionInfos) {
+            if (promotion.type === 1) {
+              for (let j of promotion.pdsArray) {
+                if (j.fullLimit <= price && j.subtract > youhui) {
+                  youhui = j.subtract
+                  selected = promotion
+                }
+              }
+              this.$emit('limitNum', null)
+            } else if (promotion.type === 2) {
+              for (let j of promotion.pdsArray) {
+                if (j.fullLimit <= price && price - price * j.discount * 0.01 > youhui) {
+                  youhui = price - price * j.discount * 0.01
+                  selected = promotion
+                }
+              }
+              this.$emit('limitNum', null)
+            } else if (promotion.type === 3) {
+              if (price - price * promotion.discount * 0.01 > youhui) {
+                youhui = price - price * promotion.discount * 0.01
                 selected = promotion
               }
-            }
-          } else if (promotion.type === 2) {
-            for (let j of promotion.pdsArray) {
-              if (j.fullLimit <= price && price - price * j.discount * 0.01 > youhui) {
-                youhui = price - price * j.discount * 0.01
+              this.$emit('limitNum', promotion.limitNum)
+            } else if (promotion.type === 4) {
+              if (promotion.directAmount > youhui) {
+                youhui = promotion.directAmount
                 selected = promotion
               }
+              this.$emit('limitNum', null)
             }
-          } else if (promotion.type === 3) {
-            if (price - price * promotion.discount * 0.01 > youhui) {
-              youhui = price - price * promotion.discount * 0.01
-              selected = promotion
-            }
-          } else if (promotion.type === 4) {
-            if (promotion.directAmount > youhui) {
-              youhui = promotion.directAmount
-              selected = promotion
-            }
+            // console.log('limitNum', promotion.limitNum)
+            // console.log(promotion, youhui)
           }
-          console.log(promotion, youhui)
         }
+
         console.log('selected', selected)
         this.selected = selected
       }
-    },
-    mounted: function () {
-      this.getPromotions(this.$route.params.skuId, () => {
-        this.bestPromotion()
-      })
     },
     computed: {
       scrollerHeight () {

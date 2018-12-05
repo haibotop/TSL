@@ -52,7 +52,7 @@
           <!-- <Cell is-link v-show="specStr.length > 0" @click.native="openSpecModal('')">
             <div slot="title" class="my-cell-title" style="display: inline-block;">促销</div>
           </Cell> -->
-          <pdPromotion ref="pdPromotion" v-if="getSkuCompeleted"></pdPromotion>
+          <pdPromotion ref="pdPromotion" v-show="getSkuCompeleted" @limitNum="limitNum"></pdPromotion>
         </Group>
         <div style="height:30px;"></div>
         <div class="more-popup" :style="moreStyle">
@@ -99,8 +99,8 @@
         <img src="../../assets/icons/customer.svg" type="image/svg+xml" style="width:24px;height:24px;fill:#352665;display:block;margin:5px auto 3px;"/>客服
       </div>
       <!--<div v-show="canBuy" class="customer-service" onclick="qimoChatClick();">客服</div>-->
-      <div v-show="!disabledBuy" :class="cartBtnStyle" @click="openSpecModal('0')">加入购物袋</div>
-      <div v-show="!disabledBuy" :class="buyBtnStyle" @click="openSpecModal('1')">直接购买</div>
+      <div v-show="!disabledBuy" :class="cartBtnStyle" @click="openSpecModal0()">加入购物袋</div>
+      <div v-show="!disabledBuy" :class="buyBtnStyle" @click="openSpecModal1()">直接购买</div>
       <div v-show="disabledBuy" class="call-service" onclick="qimoChatClick();">联系客服</div>
     </div>
 
@@ -239,7 +239,8 @@
         pullupStep1: false,
         // 菜单
         menuFlag: false,
-        getSkuCompeleted: false
+        getSkuCompeleted: false,
+        limitNumm: 0
       }
     },
     mounted: function () {
@@ -622,8 +623,17 @@
         this.couponFlag = true
       },
       // ---------- 直接购买 创建订单
+      limitNum(params){
+        this.limitNumm = params
+      },
       createOrder () {
         console.log('直接购买')
+        if(this.limitNumm != null){
+          if(this.num > this.limitNumm){
+            this.$vux.toast.show({text: `此商品限购${this.limitNumm}件`, type: 'text', width: '200px'})
+            return
+          }
+        }
         if (this.skuInfo.sku.stock === 0) { return }
         if (sessionStorage.getItem('userInfo')) {
           let cartItemData  = {
@@ -714,8 +724,16 @@
           return arr.join(',')
         }
       },
-      openSpecModal (model) {
-        this.modalmodel = model
+      openSpecModal0 () {
+        this.modalmodel = '0'
+        if (this.skuInfo.sku) {
+          this.specFlag = this.skuInfo.sku.status === 1 ? true : false
+        } else {
+          this.specFlag = false
+        }
+      },
+      openSpecModal1 () {
+        this.modalmodel = '1'
         if (this.skuInfo.sku) {
           this.specFlag = this.skuInfo.sku.status === 1 ? true : false
         } else {
