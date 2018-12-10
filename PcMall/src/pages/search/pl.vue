@@ -1,5 +1,6 @@
 <style lang="scss" rel="stylesheet/scss">
     .page-fenye{
+        text-align: right;
         padding: 50px 0;
         .ivu-page-item:hover, .ivu-page-item-active, .ivu-page-next:hover,
         .ivu-page-prev:hover, .ivu-page-options-elevator input:hover, .ivu-page-options-elevator input:focus{
@@ -243,7 +244,6 @@
                         <div class="vertical-middel">
                             <p class="explain">{{handleName(item.spuName)}}</p>
                             <p class="price" :style="`color: ${color};`">{{ '￥' + handlePrice(item.price) }}</p>
-                            <p class="price_">￥1.009</p>
                         </div>
                     </div>
                 </li>
@@ -378,7 +378,7 @@
               this.currentSort = num;
               this.currTabSort = 1
           }else if(num == 2){
-              this.filterTxt = '价格升序'
+              this.filterTxt = '时间'
               this.currentSort = num;
               this.currTabSort = 2
           }else if(num == 3){
@@ -386,7 +386,7 @@
               this.currentSort = num;
               this.currTabSort = 3
           }else if(num == 4){
-              this.filterTxt = '时间'
+              this.filterTxt = '价格升序'
               this.currentSort = num;
               this.currTabSort = 4
           }
@@ -404,7 +404,7 @@
           this.catalogType = this.$route.query.type
         }
         if (this.$route.params.keyword) {
-            console.log('11',this.$route.params)
+            // console.log('11',this.$route.params)
           this.keyword = this.$route.params.keyword
             this.getPl ()
         }
@@ -414,21 +414,20 @@
         query.currentPage = this.currentPage
         query.pageSize = this.pageSize
         // sort 1：价格升序、2：价格降序、3:销量降序、4：评论数降序、5：时间降序
-          console.log(this.currTabSort)
         switch (this.currTabSort) {
           case 0: break
           case 1: query.sort = 3; break
-          case 2: query.sort = 1; break
+          case 2: query.sort = 5; break
           case 3: query.sort = 2; break
-          case 4: query.sort = 5; break
+          case 4: query.sort = 1; break
         }
         if (this.keyword) {
           this.keyword = this.keyword.replace(/s+/g, '')
           query.keyword = this.keyword
-          console.log('搜索词',this.keyword)
+          // console.log('搜索词',this.keyword)
           this.query(query)
         } else if (this.catalogId) {
-          console.log('keyword',this.keyword)
+          // console.log('keyword',this.keyword)
           query.catalogId = this.catalogId
           query.catalogName = this.catalogName
           query.type = this.catalogType

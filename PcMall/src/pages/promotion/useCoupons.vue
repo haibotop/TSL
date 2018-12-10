@@ -14,7 +14,6 @@
       <div class="couponsBox" >
         <div v-if="this.couponUseProductInfos.length == 0" style="font-size: 16px;text-align: center;">暂无可使用的优惠券</div>
         <div v-for="(couponInfo, index2) in couponUseProductInfos" :key="index2" style="display: inline-block">
-            {{couponUseProductInfos}}321311
           <div class="coupon-wrapper" >
             <Checkbox class="coupon-check" v-model="checkObj[couponInfo.code]" >
                 <span class="chooseDiscount" v-if="!checkObj[couponInfo.code]">选择</span>

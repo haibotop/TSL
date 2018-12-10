@@ -91,7 +91,7 @@
           </Col>
           <Col span="18">
             <FormItem label="昵称">
-                <Input v-model="baseInfoFormItem.nickName"></Input>
+                <Input v-model="baseInfoFormItem.nickName" :maxlength="25" ></Input>
             </FormItem>
             <FormItem label="性别">
                 <Select v-model="baseInfoFormItem.gender" style="width:130px">
@@ -245,7 +245,8 @@ export default {
 
       this.mobile = this.isSessionStorage.mobile;
       if (!sessionStorage.getItem("sendCoupons")) {
-        this.getMyCoupon(0, 1, 99);
+        this.getMyCoupon(1, 1, 99);
+        this.readyTrade()
       }
 
       // 获取收藏数量
@@ -300,18 +301,18 @@ export default {
    
   },
   methods: {
-    availabledDiscountCard () { // 已兑换折扣码
-      let params = {
-          status: 1, // 1：已兑换2：已使用3：已失效 ,
-          userId: JSON.parse(sessionStorage.getItem('userInfo')).memberId
-        }
-      this.$http.post(...disAPI.getDiscountList(params))
-        .then(res => {
-          if (res.data.couponIds && res.data.couponIds.length > 0) {
-            this.discountCardNum = res.data.couponIds.length
-          }
-        })
-    },
+    // availabledDiscountCard () { // 已兑换折扣码
+    //   let params = {
+    //       status: 1, // 1：已兑换2：已使用3：已失效 ,
+    //       userId: JSON.parse(sessionStorage.getItem('userInfo')).memberId
+    //     }
+    //   this.$http.post(...disAPI.getDiscountList(params))
+    //     .then(res => {
+    //       if (res.data.couponIds && res.data.couponIds.length > 0) {
+    //         this.discountCardNum = res.data.couponIds.length
+    //       }
+    //     })
+    // },
     logout () {
       this.$http.delete(...myAPI.logout())
       sessionStorage.removeItem('userInfo')
@@ -379,6 +380,23 @@ export default {
           }
         });
     },
+      readyTrade () { // 已兑换折扣码
+          this.loading = true
+          let params = {
+              status: 1, // 1：已兑换2：已使用3：已失效 ,
+              userId: JSON.parse(sessionStorage.getItem('userInfo')).memberId
+          }
+          this.$http.post(...mkApi.getDiscountList(params))
+              .then(res => {
+                  if (res.data.couponIds) {
+                      if (res.data.couponIds.length > 0) {
+                          this.discountCardNum = res.data.couponIds.length;
+                          this.existCoupons = true;
+                      }
+                  }
+                  // console.log('this.readyTradeItem', this.readyTradeItem)
+              })
+      },
     // --------------------上传头像--------------------
     uploadImg() {
       if (tool.isOnline()) {
@@ -731,8 +749,9 @@ export default {
   background: #fff;
 }
 .myOrder {
-  text-align: right;
+  float: right;
   margin-bottom: 30px;
+  cursor: pointer;
 }
 .baseinfo-modal {
   width: 850px;

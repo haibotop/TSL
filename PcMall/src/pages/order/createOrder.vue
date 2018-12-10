@@ -210,15 +210,17 @@
               <textarea v-model="memberRemark" name="" id="" cols="50" rows="5 " placeholder="请输入"></textarea>
               <div class="member-num">
                   <p>员工编号</p>
-                  <input type="text" placeholder="请输入为您服务的员工编号，如无则无需填写">
+                  <input v-model="memberNumber" type="text" placeholder="请输入为您服务的员工编号，如无则无需填写">
               </div>
           </div>
           <div class="total-right">
               <div class="account" >
                   <span class="title">优惠券：</span>
                   <span class="couponCon" v-if="selected.length == 0">暂无</span>
-                  <span class="couponCon" v-else v-for="item in selected" :key="item.code">
-                      （已使用{{item.rules === 1 ? `满${item.fullSubtract / 100}减${item.subtract / 100}` : `直减${item.subtract / 100}`}}）
+                  <span class="couponCon" v-else >
+                      <span v-for="item in selected" :key="item.code">
+                      已使用{{item.rules === 1 ? `满${item.fullSubtract / 100}减${item.subtract / 100}` : `直减${item.subtract / 100}`}}
+                      </span>
                   </span>
                   <span class="change-coupon" @click="showCouponModel">更换</span>
                   <span class="price">￥ {{handlePrice(couponsValue) * -1}}</span>
@@ -228,9 +230,9 @@
                   <span class="couponCon" v-if="chooseDisItem.length == 0">暂无</span>
                   <span class="couponCon" v-else>
                       <span v-for="item in chooseDisItem" :key="item.code">
-                        <span v-if="item.rule === 1">满{{item.minExpense/100}}减{{item.discountAmount/100}}</span>
-                        <span v-if="item.rule === 2">直减{{item.discountAmount/100}}</span>
-                        <span v-if="item.rule === 3">满{{item.discountcodePiecediscountList[0].min_quantity}}件打{{item.discountcodePiecediscountList[0].discountRatio/10}}折</span>
+                        <span v-if="item.rule === 1">满{{item.minExpense/100}}减{{item.discountAmount/100}} </span>
+                        <span v-if="item.rule === 2">直减{{item.discountAmount/100}}  </span>
+                        <span v-if="item.rule === 3">满{{item.discountcodePiecediscountList[0].min_quantity}}件打{{item.discountcodePiecediscountList[0].discountRatio/10}}折 </span>
                       </span>
                   </span>
                   <span class="change-coupon" @click="showDiscountModel">兑换</span>
@@ -274,9 +276,10 @@
               <div class="amount" v-for="(merchant, index) in merchants" :key="index">
                 <span>共{{calcQuantity2(merchant)}}件商品，</span>
                 <span>待付款:<span class="price">￥{{calcAmount}}</span></span>
-                <p style="color: #352665">优惠已抵扣：￥{{-Number(calcDiscountedPrice) + Number(handlePrice(couponsValue) * -1 + Number(disPrice.jian) + Number(disPrice.manjianzhe)).toFixed(2) * -1}}</p>
+                <p style="color: #352665">优惠已抵扣：￥{{-Number(calcDiscountedPrice) - Number(handlePrice(couponsValue) * -1 - Number(disPrice.jian) - Number(disPrice.manjianzhe)).toFixed(2) * -1}}</p>
               </div>
               <!--<div class="amount">合计:<span class="price">￥{{calcAmount}}</span></div>-->
+              <loading v-if="loading"></loading>
               <div id="percreateorder" class="order-btn" @click="order">结算<Icon type="ios-arrow-forward" style="position: absolute;top: 33px;right: 30px;font-size: 15px;"/></div>
               <!--<div v-show="!orderAble" class="order-btn-disable">下单</div>-->
           </div>
@@ -327,7 +330,8 @@
   import { XHeader, Group, Cell, CellBox, XTextarea, Scroller, debounce } from 'vux'
   import useCoupons from '@/pages/promotion/useCoupons.vue'
   import useDiscount from '@/pages/promotion/useDiscount.vue'
-    import {mapState} from 'vuex'
+  import loading from '@/pages/homePages/loading.vue'
+  import {mapState} from 'vuex'
   export default {
     name: 'createOrder',
     components: { cashier, XHeader, Group, Cell, CellBox, XTextarea, Scroller, debounce, useCoupons,
@@ -337,7 +341,8 @@
         addressList,
         createAddress,
         editAddress,
-        useDiscount
+        useDiscount,
+        loading
     },
     data () {
       return {
@@ -357,7 +362,9 @@
             'jian': 0, // 满减or直减
             'manjianzhe': 0 // 满减折
         },
+        memberNumber: '',
         sum: 0,
+        loading: false,
         model1: false,
         model2: false,
         model3: false,
@@ -365,10 +372,13 @@
         model5: false,
       }
     },
-      updated(){
-          console.log('xxx',this.address)
-          console.log('vux',this.$store.state.address)
-      },
+      // updated(){
+      //     console.log('xxx',this.address)
+      //     console.log('vux',this.$store.state.address)
+      // },
+    beforeMount () {
+        this.loading = true
+    },
     watch: {
         cashierFlag(val,oldVal){
             if(oldVal == true){
@@ -409,7 +419,7 @@
                     }
 
                 })
-                console.log('1111',msg)
+                // console.log('1111',msg)
                 return msg_
             }
         },
@@ -440,7 +450,9 @@
       //显示更换折扣码
       showDiscountModel(){
           this.model5 = true
-          this.bus.$emit('readyTrade')
+          if(this.$refs.useDiscount.chooseDiscountStatus == true){
+              this.bus.$emit('readyTrade')
+          }
       },
       //显示更换地址
       showAddressModel(){
@@ -486,8 +498,8 @@
         })
       },
       renderData2 (tempOrder) {
-          console.log('77777',tempOrder[0].address)
-          console.log('88888',this.$store.state.address)
+          // console.log('77777',tempOrder[0].address)
+          // console.log('88888',this.$store.state.address)
           // this.address = this.$store.state.address
         if (this.$store.state.address.id && tempOrder[0].address != null) {
               // console.log('ppppp')
@@ -614,6 +626,7 @@
         }
         this.merchants = merchants
         this.getCouponOrderInfo()
+        this.loading = false
       },
       getCouponOrderInfo () {
         let ids = []
@@ -671,7 +684,9 @@
         let params = {
           addressId: this.address.id,
           remark: this.memberRemark,
-          couponList: []
+          discountcodeList: [],
+          couponList: [],
+          operator: this.memberNumber
         }
         for (let i of this.selected) {
           params.couponList.push({
@@ -679,16 +694,31 @@
             code: i.code
           })
         }
+        // console.log('~~~', this.chooseDisItem.slice(0,this.chooseDisItem.length-1))
+          if(this.chooseDisItem.length <= 2 && this.chooseDisItem.length > 0){
+            let a = this.chooseDisItem.slice(0, this.chooseDisItem.length - 1)
+              params.discountcodeList.push({
+                  discountcodeId: a[0].discountcodeRecordId
+              })
+          } else {
+              for (let i of this.chooseDisItem.slice(0,this.chooseDisItem.length-1)) {
+                  params.discountcodeList.push({
+                      discountcodeId: i.discountcodeRecordId
+                  })
+              }
+          }
+          // this.chooseDisItem.shift().forEach((item,index)=>{
+          //   params.discountcodeList.push({
+          //       discountcodeId: item[index].discountcodeRecordId
+          //   })
+
         // this.goPay()
         console.log('params',params)
+        this.loading = true
         this.$http.patch(...orderAPI.order(params)).then(res => {
-            console.log('1211111',res.data)
           if (res.data.code === 200) {
-          //   // this.$vux.toast.show({type: 'text', text: '下单成功', width: '200px'})
-          //     this.$Modal.success({
-          //         title: '提示',
-          //         content: '下单成功'
-          //     })
+            this.loading = false
+              // console.log('555555555555555',res.data.orderItems[0])
             this.goPay(res.data.orderItems[0])
             sessionStorage.removeItem('settlementProductItems')
           } else if (res.data.code === 2016) {
@@ -778,7 +808,8 @@
           amount = +i.amount + amount
         }
         let discountPrice = tool.handlePrice(amount) - this.afterPromotion
-        console.log(discountPrice)
+        console.log('afterPromotion',this.afterPromotion)
+        console.log('discountPrice',discountPrice)
         return discountPrice.toFixed(2)
       }
     },

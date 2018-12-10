@@ -82,10 +82,11 @@
               <span class="btn-purple" v-if="orderItem.status === 5" @click="goPayAgain(orderItem)">重新下单</span> <!-- 已关闭-->
             </div>
             <div class="odb-summary">
-              <p>商品总价：￥{{handlePrice(totalPrice)}}</p>
-              <p>运费： {{orderItem.freightPrice ? orderItem.freightPrice : '免运费'}}</p>
-              <p>优惠扣减： -￥{{cuponPrice}}</p>
-              <p class="price-text">实付：￥{{calcSum()}}</p>
+              <p>商品总价：<span class="price">￥{{calcSum()}}</span></p>
+              <p>运费： <span class="price">{{orderItem.freightPrice ? orderItem.freightPrice : '免运费'}}</span></p>
+                <p>优惠券：<span class="price"><i v-show="orderItem.couponAmount != 0">-</i>￥{{handlePrice(orderItem.couponAmount)}}</span></p>
+                <p>折扣码：<span class="price"><i v-show="orderItem.discountcodeAmount != 0">-</i>￥{{handlePrice(orderItem.discountcodeAmount)}}</span></p>
+                <p>实付：<span class="price">￥{{handlePrice(orderItem.amount)}}</span></p>
             </div>
           </div>
           
@@ -126,21 +127,21 @@
         <div class="ab-item">
           <Row>
             <Col span="3">备注:</Col>
-            <Col span="21">{{orderItem.merchantRemark}}</Col>
+            <Col span="21">{{orderItem.memberRemark}}</Col>
           </Row>
         </div>
-        <div class="ab-item">
-          <Row>
-            <Col span="3">员工编号:</Col>
-            <Col span="21">{{orderItem.merchantRemark}}</Col>
-          </Row>
-        </div>
+        <!--<div class="ab-item">-->
+          <!--<Row>-->
+            <!--<Col span="3">员工编号:</Col>-->
+            <!--<Col span="21">{{orderItem.merchantRemark}}</Col>-->
+          <!--</Row>-->
+        <!--</div>-->
       </div>
     </div>
     <v-footer></v-footer>
 
     <div>
-      <confirm v-model="confirm"title="已复制订单号" cancel-text=" "></confirm>
+      <confirm v-model="confirm"title="已复制订单号" cancel-text="返回"></confirm>
     </div>
     <Modal v-model="cashierFlag" footerHide :styles="{width: '1000px',top: '200px'}">
       <cashier :price="cashierPrice" :orderNum="orderNum"></cashier>
@@ -245,14 +246,19 @@ export default {
     handleDate (time) {
       return tool.handleDate(time)
     },
-    calcSum () {
+    calcSum () {  // 优惠后的商品总价
+        let sum = 0
+        for (let i of this.orderItem.orderProductItems) {
+            sum += i.sum
+        }
+        return tool.handlePrice(sum)
+    },
+    calcSum () { // 优惠后的商品总价
       if (this.orderItem) {
         let sum = 0
         for (let i of this.orderItem.orderProductItems) {
-          
           sum += i.sum
         }
-        
         return tool.handlePrice(sum)
       }
       
@@ -536,10 +542,15 @@ export default {
       right: 0;
       top: 0;
       text-align: right;
-
       p {
         margin-bottom: 4px;
       }
+     .price {
+         display: inline-block;
+         width: 80px;
+         text-align: right;
+         float: right;
+     }
     }
   }
   .order-info div{

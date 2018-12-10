@@ -47,8 +47,8 @@
         <group>
           <cell title="商品总价"><div class="price-text">￥{{calcSum()}}</div></cell>
           <cell title="运费">免运费</cell>
-          <cell title="优惠券"><div class="price-text">￥<i v-show="orderItem.couponAmount != 0">-</i>{{handlePrice(orderItem.couponAmount)}}</div></cell>
-          <cell title="折扣码优惠"><div class="price-text">￥<i v-show="orderItem.discountcodeAmount != 0">-</i>{{handlePrice(orderItem.discountcodeAmount)}}</div></cell>
+          <cell title="优惠券"><div class="price-text"><i v-show="orderItem.couponAmount != 0">-</i>￥{{handlePrice(orderItem.couponAmount)}}</div></cell>
+          <cell title="折扣码优惠"><div class="price-text"><i v-show="orderItem.discountcodeAmount != 0">-</i>￥{{handlePrice(orderItem.discountcodeAmount)}}</div></cell>
         </group>
 
         <group>
@@ -150,12 +150,14 @@ export default {
     handleDate (time) {
       return tool.handleDate(time)
     },
-    calcSum () {  // 商品总价
-      let sum = 0
-      for (let i of this.orderItem.orderProductItems) {
-        sum += i.sum
+    calcSum () {  // 优惠后的商品总价
+      if (this.orderItem) {
+        let sum = 0
+        for (let i of this.orderItem.orderProductItems) {
+          sum += i.sum
+        }
+        return tool.handlePrice(sum)
       }
-      return tool.handlePrice(sum)
     },
     disCalcSum () {  // 去付款优惠后价
       let amount = this.orderItem.amount

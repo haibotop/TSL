@@ -12,7 +12,7 @@
       <div class="myorders-content">
         <div class="myorders-left">
           <ul>
-            <li v-for="(item, index) in imgArr" :key="index" :class="{active: index===liIndex}" @click="init(index)">
+            <li v-for="(item, index) in imgArr" :key="index" :class="{active: index==liIndex}" @click="init(index)">
               <img :src="item.src" alt=""> <span>{{item.content}}</span>
             </li>
           </ul>
@@ -122,6 +122,7 @@
     },
     mounted: function () {
       this.getOrders()
+        this.liIndex = this.$route.params.status
     },
     methods: {
       // ----------跳转商品详情
@@ -232,10 +233,10 @@
       },
       handleAmount (order) {
         // console.log(order)
-        let amount = 0
-        for (let i of order.orderProductItems) {
-          amount += i.sum
-        }
+        let amount = order.amount
+        // for (let i of order.orderProductItems) {
+        //   amount += i.sum
+        // }
         return this.handlePrice(amount)
       },
       pulldown () {

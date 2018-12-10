@@ -106,7 +106,7 @@ export default {
                             title: '提示',
                             content: res.data.message
                         })
-                        this.readyTrade() // 已兑换折扣码
+                        this.readyTrade(1) // 已兑换折扣码
                     } else {
                         this.$Modal.confirm({
                             title: '提示',
@@ -134,8 +134,6 @@ export default {
     },
     beforeMount () {
         this.loading = true
-        // this.$vux.loading.show()
-        // this.showLoading = true
     },
 }
 </script>
@@ -203,6 +201,7 @@ export default {
         background: #352665;
         color: #fff;
         float: right;
+        cursor pointer
     }
 }
 

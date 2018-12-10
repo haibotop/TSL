@@ -1,5 +1,6 @@
 <style lang="scss" rel="stylesheet/scss">
     .page-fenye{
+        text-align: right;
         padding: 50px 0;
         .ivu-page-item:hover, .ivu-page-item-active, .ivu-page-next:hover,
         .ivu-page-prev:hover, .ivu-page-options-elevator input:hover, .ivu-page-options-elevator input:focus{
@@ -215,7 +216,7 @@
         <header2></header2>
         <div class="goods-content">
             <div class="common-title">
-                <div class="common-t">{{this.$route.query.type}} <span class="xiegang"></span> {{this.$route.query.typeName}}</div>
+                <div class="common-t">适用商品 <span class="xiegang"></span> {{fitGoods}}</div>
             </div>
             <div class="filter-nav">
                 <div class="filter-nav-t">
@@ -233,17 +234,16 @@
             <div class="goods-items">
                 <div class="no-datas" v-if="(datas || []).length === 0">暂无数据</div>
                 <ul>
-                    <li v-for="(item, index) in datas" :key="index" @click="goPd(item.defaultSkuId)">
-                        <div class="pic" @click="goPd(item.defaultSkuId)">
+                    <li v-for="(item, index) in datas" :key="index" @click="goPd(item.id)">
+                        <div class="pic" @click="goPd(item.id)">
                             <div class="pic-img">
-                                <img :src="item.defaultPicture" :alt="handleName(item.skuName)" >
+                                <img :src="item.picture" >
                             </div>
                         </div>
                         <div class="goods-items-footer">
                             <div class="vertical-middel">
-                                <p class="explain">{{handleName(item.spuName)}}</p>
+                                <p class="explain">{{handleName(item.name)}}</p>
                                 <p class="price" :style="`color: ${color};`">{{ '￥' + handlePrice(item.price) }}</p>
-                                <p class="price_">￥1.009</p>
                             </div>
                         </div>
                     </li>
@@ -262,7 +262,8 @@
 </template>
 <script type="text/ecmascript-6">
     import * as tool from '@/services/myTool.es6'
-    import * as api from '@/services/API/searchServices.es6'
+    import * as mkApi from '@/services/API/marketing.es6'
+    import * as apii from '@/services/API/searchServices.es6'
     import header1 from '@/pages/homePages/header1'
     import header2 from '@/pages/homePages/header2'
     import vFooter from '@/pages/homePages/footer'
@@ -277,7 +278,7 @@
         },
         data () {
             return {
-                sortArray:['综合','销量','时间','价格','价格'],
+                sortArray:['综合','销量','价格','时间'],
                 rotreParams:'',
                 currentSort: -1,
                 currentPage: 1,
@@ -313,6 +314,7 @@
                 sort: 1,
                 // 商品列表
                 datas: [],
+                fitGoods: '',
                 listLayout: 'row-layout',
                 pullupDefaultConfig: {
                     content: '上拉刷新',
@@ -378,17 +380,13 @@
                     this.currentSort = num;
                     this.currTabSort = 1
                 }else if(num == 2){
-                    this.filterTxt = '价格升序'
+                    this.filterTxt = '价格降序'
                     this.currentSort = num;
                     this.currTabSort = 2
                 }else if(num == 3){
-                    this.filterTxt = '价格降序'
-                    this.currentSort = num;
-                    this.currTabSort = 3
-                }else if(num == 4){
                     this.filterTxt = '时间'
                     this.currentSort = num;
-                    this.currTabSort = 4
+                    this.currTabSort = 3
                 }
                 clearTimeout(timeout)
                 timeout = setTimeout(() => {
@@ -403,56 +401,99 @@
                     this.catalogName = this.$route.query.catalogName
                     this.catalogType = this.$route.query.type
                 }
-                if (this.$route.params.discountcode) {
-                    console.log('11',this.$route.params)
-                    this.keyword = this.$route.params.keyword
-                    this.getPl ()
+                if (this.$route.query.discountcode) {
+                    this.fitGoods = '折扣码'
+                    // this.getPl ()
+                }
+                if (this.$route.query.couponId) {
+                    this.fitGoods = '优惠券'
+                    // this.getPl ()
                 }
             },
             getPl () {
-                let query = {}
-                query.currentPage = this.currentPage
-                query.pageSize = this.pageSize
+                let param = {}
+                param.currentPage = this.currentPage
+                param.pageSize = this.pageSize
                 // sort 1：价格升序、2：价格降序、3:销量降序、4：评论数降序、5：时间降序
-                console.log(this.currTabSort)
+                // sort 0:综合排序、1：销量降序、2：价格升序、3:时间降序
                 switch (this.currTabSort) {
-                    case 0: break
-                    case 1: query.sort = 3; break
-                    case 2: query.sort = 1; break
-                    case 3: query.sort = 2; break
-                    case 4: query.sort = 5; break
+                    case 0:
+                        param.zongStatus = 1
+                        param.svStatus = null
+                        param.priceStatus = null
+                        param.dateStatus = null
+                        break
+                    case 1:
+                        param.zongStatus = null
+                        param.svStatus = 1
+                        param.priceStatus = null
+                        param.dateStatus = null
+                        break
+                    case 2:
+                        param.zongStatus = null
+                        param.svStatus = null
+                        param.priceStatus = 1
+                        param.dateStatus = null
+                        break
+                    case 3:
+                        param.zongStatus = null
+                        param.svStatus = null
+                        param.priceStatus = null
+                        param.dateStatus = 1
+                        break
                 }
-                if (this.keyword) {
-                    this.keyword = this.keyword.replace(/s+/g, '')
-                    query.keyword = this.keyword
-                    console.log('搜索词',this.keyword)
-                    this.query(query)
-                } else if (this.catalogId) {
-                    console.log('keyword',this.keyword)
-                    query.catalogId = this.catalogId
-                    query.catalogName = this.catalogName
-                    query.type = this.catalogType
-                    this.catelogQuery(query)
-                }
+                // if (this.keyword) {
+                //     this.keyword = this.keyword.replace(/s+/g, '')
+                //     query.keyword = this.keyword
+                //     console.log('搜索词',this.keyword)
+                //     this.query(query)
+                // } else if (this.catalogId) {
+                //     console.log('keyword',this.keyword)
+                //     query.catalogId = this.catalogId
+                //     query.catalogName = this.catalogName
+                //     query.type = this.catalogType
+                //     this.catelogQuery(query)
+                // }
+                param.promotionId = this.$route.query.couponId || this.$route.query.promotionId || this.$route.query.discountcode
+                console.log('折扣码11111', param)
+                this.getProduct(param, this.pageSize, this.currentPage)
             },
-            // ----------商品搜索-关键词-接口
-            query (query) {
-                query.keyword = query.keyword.replace(/\s+/g, '')
-                console.log(query)
-                this.$http.post(...api.query(query)).then(res => {
+            //  ---------- 根据优惠券信息获取商品集合
+            getProduct (param, pageSize, pageNum) {
+                let api = ''
+                if (this.$route.query.couponId) {
+                    api = mkApi.getCouponSku
+                } else if (this.$route.query.promotionId) {
+                    api = mkApi.getPromSku
+                } else if (this.$route.query.discountcode) {
+                    api = mkApi.getDiscountProduct
+                }  else {
+                    return
+                }
+                this.$http.post(...api(param, pageSize, pageNum)).then(res => {
                     this.handleRes(true, res)
                 }).catch(() => {
                     this.handleRes(false)
                 })
             },
+            // // ----------商品搜索-关键词-接口
+            // query (query) {
+            //     query.keyword = query.keyword.replace(/\s+/g, '')
+            //     console.log(query)
+            //     this.$http.post(...api.query(query)).then(res => {
+            //         this.handleRes(true, res)
+            //     }).catch(() => {
+            //         this.handleRes(false)
+            //     })
+            // },
             // ----------商品搜索-类目id-接口
-            catelogQuery (query) {
-                this.$http.post(...api.catelogQuery(query)).then(res => {
-                    this.handleRes(true, res)
-                }).catch(() => {
-                    this.handleRes(false)
-                })
-            },
+            // catelogQuery (query) {
+            //     this.$http.post(...apii.catelogQuery(query)).then(res => {
+            //         this.handleRes(true, res)
+            //     }).catch(() => {
+            //         this.handleRes(false)
+            //     })
+            // },
             // ----------处理数据
             handleRes (flag, res) {
                 if (flag) {
@@ -460,11 +501,11 @@
                     if (res.data.code === 200) {
                         // 首刷 || 下拉
                         if (this.currentPage === 1) {
-                            this.datas = res.data.page.datas
+                            this.datas = res.data.productSkuVOInfo.list
                             // this.$refs.scroller.donePulldown()
                             // this.$refs.scroller.reset({top: 0})
                         } else {
-                            this.datas = res.data.page.datas
+                            this.datas = res.data.productSkuVOInfo.list
                             // 上拉
                             // this.datas = this.datas.concat(res.data.page.datas)
                             // this.$refs.scroller.donePullup()

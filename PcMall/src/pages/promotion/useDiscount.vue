@@ -7,6 +7,7 @@
   <div id="useDiscount" style="height: 600px;">
       <p  style="margin: 10px 0 20px 30px; font-size: 24px;color: #352665;text-align: left;">我的折扣码</p>
       <div class="discountBox">
+          <div v-if="this.readyTradeItem.length == 0" style="font-size: 16px;text-align: center;">暂无可使用的折扣码</div>
           <div v-if="readyTradeItem != null" v-for="(item,index) in readyTradeItem"
                class="cardList" ref="cardList" :class="{cardListActived : item.a == true , noClick : index > okUse ,
                    noClick_:(item.a!=true&&flag1)||(item.a!=true&&item.exclusived==1&&flag2)}"
@@ -37,6 +38,7 @@
         <div class="discountBottom" >
             <input type="text" v-model="cashingDiscount" placeholder="请输入折扣码" >
             <span class="exchange" @click="changeDiscount">兑换</span>
+            <loading v-if="loading"></loading>
         </div>
       <div class="Mfooter" >
           <Button @click.native="discountCancel" style="margin-right: 30px; width: 200px;height: 50px;font-size: 16px;">返回</Button>
@@ -47,11 +49,12 @@
 <!--<script type="text/ecmascript-es6">-->
 <script >
   import { XHeader, Scroller, Tab, TabItem, CheckIcon } from 'vux'
+  import loading from '@/pages/homePages/loading.vue'
   import * as disAPI from '../../services/API/discountServices.es6'
   import coupon from './coupon.vue'
   export default {
     name: 'useDiscount',
-    components: Object.assign({ XHeader, Scroller, Tab, TabItem, CheckIcon }, { coupon }),
+    components: Object.assign({ XHeader, Scroller, Tab, TabItem, CheckIcon, loading }, { coupon }),
     props: {
       value: Boolean,
       merchants: {
@@ -81,6 +84,7 @@
           okUse: 0, // 判断折扣码是否可用
           flag1: false,
           flag2: false,
+          loading: false,
           disParams: [] // 折扣码参数
 
       }
@@ -95,6 +99,9 @@
         this.bus.$on('readyTrade',()=> {
             this.readyTrade()
         })
+    },
+    beforeMount () {
+        this.loading = true
     },
     methods: {
         changeDiscount () { // 兑换折扣码
@@ -150,20 +157,20 @@
             this.$emit('chooseDisItem',arr,this.disPrice)
             this.$parent.$parent.hideCDiscount()
         },
-        discountCancel () {
-            for (var a of this.readyTradeItem) {
-                this.$set(a, 'a', false)
-            }
-            // this.showDiscount = false
-            this.chooseDiscountStatus = true
-            this.lookDetailIndex1 = -1
-            this.chooseDisItem = []
-            this.flag1 = false
-            this.flag2 = false
-            this.disPrice = { // 折扣码优惠
-                'jian': 0, // 满减or直减
-                'manjianzhe': 0 // 满减折
-            }
+        discountCancel () { // pc端返回只关闭弹窗
+        //     for (var a of this.readyTradeItem) { // 取消所有已选折扣码
+        //         this.$set(a, 'a', false)
+        //     }
+        //     // this.showDiscount = false
+        //     this.chooseDiscountStatus = true
+        //     this.lookDetailIndex1 = -1
+        //     this.chooseDisItem = []
+        //     this.flag1 = false
+        //     this.flag2 = false
+        //     this.disPrice = { // 折扣码优惠
+        //         'jian': 0, // 满减or直减
+        //         'manjianzhe': 0 // 满减折
+        //     }
             this.$parent.$parent.hideCDiscount()
         },
         chooseDiscount (item, index) {
@@ -218,8 +225,9 @@
             this.$http.post(...disAPI.getDiscountInfo(parms))
                 .then(res => {
                     if (res.data.code === 200) {
+                        this.loading = false
                         let a = res.data.couponUseProductInfos[0]
-                        if (a.couponProductUseInfo != null) {
+                        if (a.couponProductUseInfo != null && a.couponProductNoUseInfo == null) {
                             this.readyTradeItem = a.couponProductUseInfo
                         } else if (a.couponProductUseInfo != null && a.couponProductNoUseInfo != null) {
                             this.readyTradeItem = a.couponProductUseInfo.concat(a.couponProductNoUseInfo)

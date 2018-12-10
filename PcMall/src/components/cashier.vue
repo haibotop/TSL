@@ -87,6 +87,7 @@
             </div>
           <!--<radio v-model="payway" :options="options" class="pay-item"></radio>-->
             <div style="clear: both;"></div>
+            <loading v-if="loading"></loading>
           <x-button class="pay-btn" @click.native="pay">立即支付</x-button>
         </div>
       </div>
@@ -96,39 +97,39 @@
 <script type="text/ecmascript-6">
   import * as orderAPI from '@/services/API/orderServices.es6'
   import * as tool from '@/services/myTool.es6'
+  import loading from '@/pages/homePages/loading.vue'
   import { TransferDom, Popup, Group, CellBox, Radio, XButton } from 'vux'
   export default {
     name: 'cashier',
     directives: { TransferDom },
-    components: { Popup, Group, CellBox, Radio, XButton },
+    components: { Popup, Group, CellBox, Radio, XButton,loading },
     props: { value: Boolean, price: Number, orderNum: String },
     data () {
       return {
         payway: '',
+        loading: false
         // choosePayStatus: ''
       }
     },
     methods: {
       pay () {
-          // let params = [{'amount':0.1,'payType': 14,'orderNo': this.orderNum, 'terminalIp': '192.168.0.1', 'productDescription': '支付测试', 'currency': 'CNY'}]
-          // this.$http.post(...orderAPI.h5Test(params), {async: false}).then((response) => {
+          this.loading = true
+          // let params = [{'orderNo': this.orderNum, 'terminalIp': '192.168.0.1', 'productDescription': '支付测试', 'currency': 'CNY'}]
+          // this.$http.post(...orderAPI.codeAlipay(params), {async: false}).then((response) => {
           //     console.log(response)
           //     if (response.data.code === 200) {
           //         // document.write(response.data.resultHtml)
-          //         console.log('1', response.data.resultHtml)
           //         document.write(response.data.resultHtml)
           //     } else if (response.data.code === 5001) {
-          //         alert('2', response.data.message)
           //     } else if (response.data.code === 9990) {
-          //         alert('3', response.data.message)
           //     }
           //     // 所有支付 无此订单 5001 重复提交 9990
           // })
         if (this.orderNum) {
           if (this.payway === 'alipay') {
-            this.isWeiXin() ? this.$vux.toast.show({ type: 'text', text: '微信内无法支付宝支付', width: '200px' }) : this.h5Alipay()
+            this.codeAlipay()
           } else if (this.payway === 'wxpay') {
-            this.isWeiXin() ? this.wxsmPay() : this.h5Wxpay()
+              this.codeAlipay()
           } else if (this.payway === 'unionpay') {
             this.unionPay()
           } else {
@@ -136,13 +137,13 @@
           }
         }
       },
-      h5Alipay () {
+      codeAlipay () {
         let params = [{'orderNo': this.orderNum, 'terminalIp': '192.168.0.1', 'productDescription': '甄品商城', 'currency': 'CNY'}]
-        this.$http.post(...orderAPI.h5Alipay(params), {async: false}).then((response) => {
+        this.$http.post(...orderAPI.codeAlipay(params), {async: false}).then((response) => {
           console.log(response)
           if (response.data.code === 200) {
-            // document.write(response.data.resultHtml)
-            window.location.href = response.data.resultHtml
+            this.loading = false
+            document.write(response.data.resultHtml)
           } else if (response.data.code === 5001) {
             this.$vux.toast.show({ type: 'text', text: response.data.message, width: '200px' })
           } else if (response.data.code === 9990) {
@@ -151,34 +152,11 @@
           // 所有支付 无此订单 5001 重复提交 9990
         })
       },
-      h5Wxpay () {
-        let params = [{'orderNo': this.orderNum, 'terminalIp': '192.168.0.1', 'productDescription': '甄品商城', 'currency': 'CNY'}]
-        this.$http.post(...orderAPI.h5Wxpay(params), {async: false}).then((response) => {
-          if (response.data.code === 200) {
-            window.location.href = response.data.resultHtml
-          } else if (response.data.code === 5001) {
-            this.$vux.toast.show({ type: 'text', text: response.data.message, width: '200px' })
-          } else if (response.data.code === 9990) {
-            this.$vux.toast.show({ type: 'text', text: '重复提交，请20s后重试', width: '200px' })
-          }
-        })
-      },
-      wxsmPay () {
-        let params = [{'orderNo': this.orderNum, 'terminalIp': '192.168.0.1', 'productDescription': '甄品商城', 'currency': 'CNY'}]
-        this.$http.post(...orderAPI.wxsmpay(params), {async: false}).then((response) => {
-          if (response.data.code === 200) {
-            document.write(response.data.resultHtml)
-          } else if (response.data.code === 5001) {
-            this.$vux.toast.show({ type: 'text', text: response.data.message, width: '200px' })
-          } else if (response.data.code === 9990) {
-            this.$vux.toast.show({ type: 'text', text: '重复提交，请20s后重试', width: '200px' })
-          }
-        })
-      },
       unionPay () {
         let params = [{'orderNo': this.orderNum, 'terminalIp': '192.168.0.1', 'productDescription': '甄品商城', 'currency': 'CNY'}]
         this.$http.post(...orderAPI.unionpay(params), {async: false}).then((response) => {
           if (response.data.code === 200) {
+            this.loading = false
             document.write(response.data.resultHtml)
           } else if (response.data.code === 5001) {
             this.$vux.toast.show({ type: 'text', text: response.data.message, width: '200px' })

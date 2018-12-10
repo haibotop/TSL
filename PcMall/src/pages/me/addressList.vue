@@ -69,7 +69,7 @@
         </div>
         
       </div>
-      <div class="Mfooter" >
+      <div class="Mfooter">
           <Button @click.native="hideAddressList" style="margin-right: 30px; width: 200px;height: 50px;font-size: 16px;">取消</Button>
           <Button @click.native="saveAddressList1" style="width: 200px;height: 50px;font-size: 16px; background-color: #352665;color: #fff;">保存</Button>
       </div>
@@ -90,7 +90,7 @@
                   </div>
               </div>
           </div>
-          <div class="Mfooter" >
+          <div class="Mfooter">
               <Button @click.native="hideAddressList" style="margin-right: 30px; width: 200px;height: 50px;font-size: 16px;">取消</Button>
               <Button @click.native="saveAddressList2" style="width: 200px;height: 50px;font-size: 16px; background-color: #352665;color: #fff;">保存</Button>
           </div>
@@ -110,10 +110,6 @@
             <!--</div>-->
           <!--</div>-->
         <!--</group>-->
-      </div>
-      <div class="Mfooter" >
-          <Button @click.native="hideAddressList" style="margin-right: 30px; width: 200px;height: 50px;font-size: 16px;">取消</Button>
-          <Button @click.native="saveAddressList2" style="width: 200px;height: 50px;font-size: 16px; background-color: #352665;color: #fff;">保存</Button>
       </div>
     </div>
   </div>
@@ -191,7 +187,7 @@
       },
       //保存地址
       saveAddressList2(){
-          console.log("this.selfaddressChooseIndex",this.selfaddressChooseIndex)
+          console.log("this.selfaddressChooseIndex22222222222",this.selfaddressChooseIndex)
           if(this.selfaddressChooseIndex == '-1'){
               this.$Modal.warning({
                   title: "提示",
@@ -317,12 +313,12 @@
             console.log('param',param)
           this.$http.put(...myAPI.putshippingAddress(param))
           .then((response) => {
-            if (response.status === 200) {
-              this.$Modal.success({
-                title: '提示',
-                content: response.data.message
-              })
-            }
+            // if (response.status === 200) {
+            //   this.$Modal.success({
+            //     title: '提示',
+            //     content: response.data.message
+            //   })
+            // }
           })
           .catch((error) => {
             //   console.log('param22222',param)

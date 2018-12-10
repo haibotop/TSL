@@ -392,7 +392,7 @@
           .then(res => {
             if (res.data.code === 200) {
               let a = res.data.couponUseProductInfos[0]
-              if (a.couponProductUseInfo != null) {
+              if (a.couponProductUseInfo != null  && a.couponProductNoUseInfo == null) {
                 this.readyTradeItem = a.couponProductUseInfo
               } else if (a.couponProductUseInfo != null && a.couponProductNoUseInfo != null) {
                 this.readyTradeItem = a.couponProductUseInfo.concat(a.couponProductNoUseInfo)
