@@ -14,7 +14,7 @@
                     </ul>
                 </div>
                 <div class="myCoupons-right">
-                    <loading :scope="true" v-if="loading"></loading>
+                    <loading v-if="loading"></loading>
                     <div class="null-coupons" v-if="Couponlist.length < 1">
                         <img src="../../assets/images/nullCoupon.png" alt="">
                         <div style="color:#C8C8C8;">{{statusTitle}}</div>
@@ -76,6 +76,7 @@ let interval
         watch: {
             status (param) {
                 this.pageNum = 1
+                this.Couponlist = []
                 this.getMyCoupon(this.status, this.pageNum, this.pageSize)
             }
         },
@@ -87,7 +88,6 @@ let interval
         },
         methods: {
             init (index) {
-                this.Couponlist = []
                 this.liIndex = index
                 this.status = index
             },
@@ -107,7 +107,7 @@ let interval
                         }
                     }
                     if (typeof callback === 'function') {
-                    callback(res)
+                        callback(res)
                     }
                 })
             },

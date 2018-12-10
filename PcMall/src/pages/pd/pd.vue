@@ -10,9 +10,9 @@
           <template>
               <Breadcrumb separator=">">
                 <BreadcrumbItem to="/" class="color">首页</BreadcrumbItem>
-                <BreadcrumbItem to="/components/breadcrumb">{{titleTpye[0]}}</BreadcrumbItem>
-                <BreadcrumbItem to="/">{{titleTpye[1]}}</BreadcrumbItem>
-                <BreadcrumbItem to="/" class="last">{{specValueNameStr}}</BreadcrumbItem>
+                <BreadcrumbItem class="last" >{{titleTpye[0]}}</BreadcrumbItem><!--to="/components/breadcrumb"-->
+                <BreadcrumbItem :to="`/pl/${titleTpye[1]}?type=${titleTpye[0]}&typeName=${titleTpye[1]}`">{{titleTpye[1]}}</BreadcrumbItem>
+                <BreadcrumbItem class="last">{{specValueNameStr}}</BreadcrumbItem>
             </Breadcrumb>
           </template>
         </div>
@@ -43,15 +43,23 @@
               </div>
             </div>
             <div class="price">
-              <p v-if="skuInfo.hasDiscount">价格：<span class="sp_1">￥{{skuInfo.sku ? skuInfo.sku.discountPrice : 0}}</span>
-              <p v-else>价格：<span class="sp_1">￥{{skuInfo.sku ? handlePrice(skuInfo.sku.price) : 0}}</span>
+              <p v-if="skuInfo.hasDiscount">现价：<span class="sp_1">￥{{skuInfo.sku ? skuInfo.sku.discountPrice : 0}}</span>
+              <p v-else>现价：<span class="sp_1">￥{{skuInfo.sku ? handlePrice(skuInfo.sku.price) : 0}}</span>
                 <span class="sp_2" @click="collect">
                     <span v-show="!isCollected"><img src="../../assets/icons/heart.png"  style="width:20px;float: left;margin-right: 8px;margin-top: 10px;"/>添加收藏</span>
                     <span v-show="isCollected"><img src="../../assets/icons/heart-fill.png" style="width:20px;float: left;margin-right: 8px;margin-top: 10px;"/>已收藏</span>
                 </span>
               </p>
             </div>
-            <div class="originalPrice">原价：<span>￥{{skuInfo.sku ? handlePrice(skuInfo.sku.originalPrice) : 0}}</span></div>
+            <div class="originalPrice">专柜价：<span>￥{{skuInfo.sku ? handlePrice(skuInfo.sku.originalPrice) : 0}}</span></div>
+            <!-- 领券 组件-->
+            <div class="getCoupon" v-if="hasCoupon" v-show="specStr.length > 0">领券：<span style="color:#4a90e2;cursor: pointer;" @click="openGetCoupon" >点击领取优惠券</span>
+              <pdCoupons v-show="couponFlag" :couponList="couponList" @closeGetCoupon="closeGetCoupon"></pdCoupons>
+            </div>
+            <!-- 促销 -->
+            <pdPromotion ref="pdPromotion" v-if="getSkuCompeleted"></pdPromotion>
+            <div style="clear:both;height:0"></div>
+            <!-- 规格 -->
             <div class="spec" v-for="(item, index) in specArray" :key="index">
               <span style="float:left">{{handleName(item.specName)}}：</span>
               <!-- <span class="spec-sp2"
@@ -192,7 +200,7 @@
               <div slot="title" class="my-cell-title" style="display: inline-block;">领券</div>
             </Cell> -->
             <!-- 促销 -->
-            <pdPromotion ref="pdPromotion" v-if="getSkuCompeleted"></pdPromotion>
+            <!-- <pdPromotion ref="pdPromotion" v-if="getSkuCompeleted"></pdPromotion> -->
             <!-- 领券 组件-->
             <!-- <pdCoupons v-model="couponFlag" :couponList="couponList"></pdCoupons> -->
             <div class="cart">
@@ -213,7 +221,7 @@
                   <pdRichText ref="pdRichText" :spuId="spuId"></pdRichText>
                 </TabPane>
                 <TabPane label="规格参数" name="name2">
-                  <table>
+                  <table border>
                     <tbody>
                       <tr v-for="(item, index) in commonSpecArray" :key="index" v-if="item.specName!=='商品广告词'">
                         <td class="left-td">{{item.specName}}</td>
@@ -230,6 +238,9 @@
         </div>
       </div>
     </div>
+    <BackTop :height="120" :bottom="60">
+        <div class="goTo-top">返回顶部</div>
+    </BackTop>
     <v-footer></v-footer>
   </div>
 </template>
@@ -247,7 +258,7 @@
   import { XHeader, Scroller, Group, CellBox, Cell, TransferDom, Popup, Checker, CheckerItem, XNumber, InlineXNumber, debounce, Tab, TabItem, XTable, Badge } from 'vux'
 //   import pdSwiper from './pdSwiper3.vue'
   import pdRichText from './pdRichText.vue'
-//   import pdCoupons from '../promotion/pdCoupons.vue'
+  import pdCoupons from '../promotion/pdCoupons.vue'
   import pdPromotion from '@/pages/promotion/pdPromotion.vue'
   import {getSkuInfo} from '@/services/API/pdServices.es6'
   let interval
@@ -265,6 +276,7 @@
       inputNumber,
       vTitle,
       pdRichText,
+      pdCoupons,
       Checker,
       CheckerItem,
       pdPromotion
@@ -299,20 +311,20 @@
           backText: ''
         },
         // ----------上拉或下拉的状态
-        scrollerStatus: {
-          pulldownStatus: 'default',
-          pullupStatus: 'default'
-        },
-        pullupConfig: {
-          content: '', // Pull Up To Refresh
-          pullUpHeight: 60,
-          height: 50,
-          autoRefresh: false,
-          downContent: '', // Release To Refresh
-          upContent: '', // Pull Up To Refresh
-          loadingContent: '', // Loading...
-          clsPrefix: '' // xs-plugin-pullup-
-        },
+        // scrollerStatus: {
+        //   pulldownStatus: 'default',
+        //   pullupStatus: 'default'
+        // },
+        // pullupConfig: {
+        //   content: '', // Pull Up To Refresh
+        //   pullUpHeight: 60,
+        //   height: 50,
+        //   autoRefresh: false,
+        //   downContent: '', // Release To Refresh
+        //   upContent: '', // Pull Up To Refresh
+        //   loadingContent: '', // Loading...
+        //   clsPrefix: '' // xs-plugin-pullup-
+        // },
         scrollerHeight: 0,
         // ---------sku信息
         skuId: '',
@@ -788,6 +800,10 @@
       openGetCoupon () {
         this.couponFlag = true
       },
+      closeGetCoupon () {
+        this.couponFlag = false
+        console.log('couponList',this.couponList)
+      },
       // ---------- 直接购买 创建订单
       createOrder () {
         console.log('直接购买')
@@ -1029,301 +1045,6 @@
     }
   }
  </script>
- <style rel="stylesheet/scss" lang="scss" scoped>
-//  .discount-price{
-//    color:red;
-//  }
-//  .discount-price span{font-size:25px;}
-//  .discountPrice{
-//    color:#aaa;
-//  }
-// .bkcolor {
-//   background-color: #fff;
-// }
-// // ----------商品信息
-// .customer-service{
-//   width: 13.7%;
-//   background-color: #fff;
-//   color: #352665;
-//   line-height: 50px;
-//   text-align: center;
-//   border-right: 1px solid #ccc;
-// }
-// .p-name-wrapper {
-//   padding: 0px 0px 5px 0px;
-//   .p-name {
-//     text-align: center;
-//     display: inline-block;
-//     width: 100%;
-//     // min-height: 38px;
-//     font-size: 16px;
-//     color: #4d4d4d;
-//     text-overflow: ellipsis;
-//     overflow: hidden;
-//     display: -webkit-box;
-//     -webkit-box-orient: vertical;
-//     -webkit-line-clamp: 2;
-//   }
-// }
-// .p-adv-wrapper {
-//   .p-adv {
-//     text-align: center;
-//     display: inline-block;
-//     width: 100%;
-//     font-size: 14px;
-//     color: #7f7f7f;
-//     text-overflow: ellipsis;
-//     overflow: hidden;
-//     display: -webkit-box;
-//     -webkit-box-orient: vertical;
-//     -webkit-line-clamp: 2;
-//   }
-// }
-// .p-price-wrapper {
-//   .p-price {
-//     .discountPrice {
-//       font-size: 14px;
-//     }
-//     .discount-price {
-//       font-size:20px;
-//     }
-//     text-align: center;
-//     font-weight: 400;
-//     font-size: 20px;
-//     color: $tsl-color;
-//   }
-// }
-// .my-cell-title {
-//   font-size: 12px;
-//   color: #7f7f7f;
-// }
-// .pullup-step1 {
-//   position: absolute;
-//   width: 100%;
-//   height: 500px;
-//   line-height: 50px;
-//   bottom: -500px;
-//   text-align: center;
-//   background:#fff;
-//   color: #7f7f7f
-// }
-// // ----------底部按钮
-// .sub-tab {
-//   border-top: 1px solid #dbdbdb;
-//   position: fixed;
-//   bottom: 0px;
-//   left: 0px;
-//   width: 100%;
-//   height: 50px;
-//   div {
-//     height: 100%;
-//     float: left;
-//   }
-//   .cart-badge {
-//     position: absolute;
-//     top: 10px;
-//     right: 10px;
-//   }
-//   .collection:after, .shopping-cart:after {
-//     content: '';
-//     display: block;
-//     position: absolute;
-//     top: 0px;
-//     right: 0px;
-//     height: 100%;
-//     width: 1px;
-//     background-color: #dbdbdb;
-//   }
-//   .collection, .shopping-cart {
-//     img {
-//       display: block;
-//       margin: 5px auto 3px;
-//       width: 22px;
-//       height: 22px;
-//     }
-//     background-color: #fff;
-//     color: #7f7f7f;
-//     text-align: center;
-//     position: relative;
-//     width: 17%;
-//     font-size: 10px;
-//   }
-//   .add-to-cart, .buy, .add-to-cart-disabled, .buy-disabled {
-//     width: 24.5%;
-//     text-align: center;
-//     line-height: 50px;
-//   }
-//   .add-to-cart {background-color: #fff;color: $tsl-color;}
-//   .buy {background-color: $tsl-color;color: #fff;}
-//   .add-to-cart-disabled {background-color: #fff;color: #7f7f7f;}
-//   .buy-disabled {background-color: #7f7f7f;color: #fff;}
-//   .call-service {
-//     width: 66%;
-//     text-align: center;
-//     line-height: 50px;
-//     background-color: $tsl-color;
-//     color: #fff;
-//   }
-// }
-// // ----------商品规格弹窗
-// .spec-popup {
-//   width: 100%;
-//   height: 100%;
-//   border-radius: 6px 6px 0px 0px;
-// }
-// .skuInfo {
-//   height: 80px;
-//   padding: 10px 0px 10px 0px;
-//   border-bottom: 1px solid #d9d9d9;
-// }
-// .default-picture-wrapper {
-//   position: absolute;
-//   top: -20px;
-//   left: 10px;
-//   width: 98px;
-//   height: 98px;
-//   border-radius: 10px;
-//   border: 1px solid #eee;
-//   background-color: #fff;
-// }
-// .default-picture-inner {
-//   margin: 5px;
-//   width: 88px;
-//   height: 88px;
-//   border-radius: 10px;
-//   overflow: hidden;
-//   background-color: #eee;
-//   img {
-//     display: block;
-//     width: 100%;
-//     height: 100%;
-//   }
-// }
-// .sku-info {
-//   margin: 0px 0px 0px 115px;
-//   .sku-info-price {
-//     font-size: 14px;
-//     color: $tsl-color;
-//     letter-spacing: 1.15px;
-//   }
-//   .discount-price{
-//     font-size:20px;
-//   }
-//   .sku-info-stock {
-//     font-size: 12px;
-//     color: #4d4d4d;
-//     letter-spacing: .5px;
-//   }
-// }
-// .spec-wrapper {
-//   padding: 10px 10px 0px 10px;
-//   height: calc(100% - 30px);
-//   overflow-y: scroll;
-//   .spec-inner {
-//     margin: 0px 0px 10px 0px;
-//   }
-// }
-// .spec-name {
-//   font-size: 14px;
-//   color: #535353;
-//   letter-spacing: .6px;
-// }
-// .default-item-class, .selected-item-class, .disabled-item-class {
-//   margin: 12px 15px 0 0;
-//   height: 30px;
-//   line-height: 30px;
-//   border: 1px solid #eee;
-//   padding: 0 15px;
-//   border-radius: 6px;
-//   font-size: 14px;
-//   color: #7f7f7f;
-//   letter-spacing: .6px;
-// }
-// .selected-item-class {
-//   border: 1px solid $tsl-color;
-//   color: $tsl-color;
-// }
-// .disabled-item-class {
-//   border: 1px solid #eee;
-//   color: #eee;
-// }
-// .spec-sub-tab {
-//   border-top: 1px solid #dbdbdb;
-//   position: fixed;
-//   bottom: 0px;
-//   left: 0px;
-//   width: 100%;
-//   height: 50px;
-//   div {
-//     width: 50%;
-//     height: 100%;
-//     text-align: center;
-//     line-height: 50px;
-//     float: left;
-//   }
-//   .add-to-cart {color: $tsl-color;background-color: #fff;}
-//   .buy {color: #fff;background-color: $tsl-color;}
-//   .add-to-cart-disabled {background-color: #fff;color: #7f7f7f;}
-//   .buy-disabled {background-color: #7f7f7f;color: #fff;}
-//   .call-service {
-//     width: 100%;
-//     text-align: center;
-//     line-height: 50px;
-//     background-color: $tsl-color;
-//     color: #fff;
-//   }
-//   .just-buy {
-//     width: 100%;
-//     text-align: center;
-//     line-height: 50px;
-//     background-color: $tsl-color;
-//     color: #fff;
-//   }
-// }
-// // ----------规格参数
-// .left-td {
-//   min-width: 100px;
-//   padding: 5px 10px;
-//   text-align: left;
-//   line-height: 30px;
-// }
-// .right-td {
-//   min-width: 200px;
-//   padding: 5px 15px 5px 10px;
-//   text-align: left;
-//   text-align: left;
-//   font-size: 14px;
-//   line-height: 28px;
-// }
-// // ----------图文详情
-// .more-popup {
-//   background-color: #fff;
-//   .introduction {
-//     text-indent: 2em;
-//     padding: 5px 10px;
-//     font-size: 14px;
-//   }
-// }
-// // ----------右上菜单
-// .menu1 {
-//   line-height: 45px;
-//   text-indent: 20px;
-// }
-// .divider {
-//   border-bottom: 2px solid #e6e6e6;
-// }
-// </style>
-// <style rel="stylesheet/scss" lang="scss">
-// #pd {
-//   position: relative;
-//   .xs-container {
-//     height: 100%;
-//   }
-//   .xs-plugin-pullup-container {
-//     position: relative !important;
-//   }
-// }
-</style>
 
 <style>
   #detail .breadcrumb .ivu-breadcrumb-item-link{
@@ -1437,6 +1158,8 @@
           .originalPrice
             span
               $ml(15px)
+          .getCoupon 
+            position relative
           .spec
             overflow hidden
             .default-item-class
@@ -1618,11 +1341,30 @@
               font-size 16px
       .detail-content-bottom
         $mt(120px)
-        height 1400px
+        min-height 500px
         .ioioi 
           text-align center
           .ivu-tabs-nav-wrap
             margin-left 42%
+          // ----------规格参数
+          table
+            width 80%
+            border-collapse collapse
+            display inline-table
+            .left-td 
+              min-width 100px
+              padding 5px 10px
+              text-align left
+              line-height 30px
+            
+            .right-td 
+              min-width 200px
+              padding 5px 15px 5px 10px
+              text-align left
+              text-align left
+              font-size 14px
+              line-height 28px
+            
             
 
 
@@ -1634,7 +1376,13 @@
       
 // .ivu-radio-group-button .ivu-radio-wrapper:after
 //   opacity  1          
-
+  .goTo-top
+    padding 10px
+    background #352665
+    color #fff
+    text-align center
+    border-radius 2px
+  
       
                 
 

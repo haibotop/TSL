@@ -16,12 +16,17 @@
         </div>
         <div v-else>
           <div class="shoppingCart-content-top">
-            <span class="sp_1">已选择<i>{{checkNum}}</i>件商品</span>
+            <span class="sp_1" style="text-align:left;width:10%">已选择<i>{{checkNum}}</i>件商品</span>
+            <span class="sp_1" style="width:44%">商品信息</span>
+            <span class="sp_1" style="width:12%">单价（元）</span>
+            <span class="sp_1" style="width:12%">数量</span>
+            <span class="sp_1" style="width:12%">小计（元）</span>
+            <span class="sp_1" style="width:8.5%">操作</span>
             <!-- <span class="sp_2"><Checkbox>只显示有货商品</Checkbox></span> -->
           </div>
           <div class="shoppingCart-content-center" > <!--v-show="shoppingCarts-->
             <div v-for="item in shoppingCarts" :key="item.merchantInfo.id">
-              <div class="shoppingCart-promotions" v-for="(promotion,index) in item.promotions" :key="promotion.promotionInfo.id">
+              <div class="shoppingCart-promotions" v-for="(promotion,index) in item.promotions" :key="promotion.promotionInfo.id" :class="{borderNone:index===item.promotions.length-1}" >
                 <!-- 有促销的时候 -->
                 <div class="promotion-info" v-show="promotion.promotionInfo.id">
                   <div>
@@ -30,10 +35,10 @@
                     <span v-if="promotion.promotionInfo.type === 3">打{{promotion.promotionInfo.discount / 10}}折</span>
                     <span v-if="promotion.promotionInfo.type === 4">直降{{promotion.promotionInfo.directAmount / 100}}元</span>
                   </div>
-                  <a class="a2" href="javascript:void(0)" v-if="promotion.promotionInfo.type === 1 || promotion.promotionInfo.type === 2" @click="$router.push({path: '/pl/*'})">去凑单&nbsp&nbsp></a>
+                  <a class="a2" href="javascript:void(0)" v-if="promotion.promotionInfo.type === 1 || promotion.promotionInfo.type === 2" @click="$router.push({path: '/pl/*'})">去凑单&nbsp<Icon type="ios-arrow-forward" style="margin-top:-3px" /></a>
                 </div>
                 <!-- 产品 -->
-                <div class="shoppingCart-product" v-for="(product,proIndex) in promotion.productItems" :key="product.id">
+                <div class="shoppingCart-product" v-for="(product,proIndex) in promotion.productItems" :key="product.id" :class="{checkBackground:checkedObj[product.id]}">
                   <div class="checkbox"><Checkbox v-model="checkedObj[product.id]"></Checkbox></div><!--选中按钮-->
                   <div class="img">
                     <div>
@@ -46,22 +51,35 @@
                       </div>
                     </div>
                   </div>
-                  <div class="detial">
-                    <p class="title">{{toolFun('name', product.name)}}</p><!-- @on-open-change="onOpenChange(product,$event)"-->
-                    <p class="price">￥{{toolFun('price', product.price)}}</p><!--@on-change="onChange(index)"  v-model="product.specs[specIndex].specValueName"  allSpecArrayOn[index][specIndex].specValueName-->
-                    <div v-for="(specs,specIndex) in product.specs" :key="specIndex" style="float:left">
-                      <Select :placeholder="specs.specValueName" @on-open-change="onOpenChange(product,$event)" @on-change="onChange(specIndex,specs.specValueName,$event)"  :label-in-value="true" size="small" style="width:120px;margin-right:10px" >
-                        <Option v-for="(specs2, indexSpec) in sortSpecArray[specIndex]"  
-                          :key="indexSpec" 
-                          :value="JSON.stringify(specs2)"
-                          :disabled="!specs2.specValueFlags"
-                          >{{ specs2.specValueName }}
-                        </Option>
-                      </Select>
-                    </div>
+                  <div class="detial" >
+                    <!-- <div style="height:90px"> -->
+                      <p class="title">{{toolFun('name', product.name)}}</p><!-- @on-open-change="onOpenChange(product,$event)"-->
+                      <div v-for="(specs,specIndex) in product.specs" :key="specIndex" style="float:left">
+                        <span class="spec-name">{{toolFun('name', specs.specName)}}</span>
+                        <Select :placeholder="specs.specValueName" @on-open-change="onOpenChange(product,$event)" @on-change="onChange(specIndex,specs.specValueName,$event)"  :label-in-value="true" size="small" style="width:80px;margin-right:10px" >
+                          <Option v-for="(specs2, indexSpec) in sortSpecArray[specIndex]"
+                            :key="indexSpec" 
+                            :value="JSON.stringify(specs2)"
+                            :disabled="!specs2.specValueFlags"
+                            >{{ specs2.specValueName }}
+                          </Option>
+                        </Select>
+                      </div>
+                    <!-- </div> -->
                   </div>
+                  <div class="price">
+                    <p>￥{{toolFun('price', product.price)}}</p><!--@on-change="onChange(index)"  v-model="product.specs[specIndex].specValueName"  allSpecArrayOn[index][specIndex].specValueName-->
+                  </div>
+                  <!-- 数量 -->
                   <div class="numPromotion" >
-                    <div class="promotion-box" :class="{activeColor:proIndex==promotionActive1&&index==promotionActive2}" @mouseover="promotionActive1=proIndex;promotionActive2=index;promotionPopupSkuId = product.id" @mouseleave="promotionActive1=-1;promotionActive2=-1;promotionPopupSkuId = ''">
+                    <div class="tb-stock">
+                      <!-- <span v-if="!editFlag && product.amount > product.stock" class="no-stock">暂无库存</span> -->
+                      <input-number v-model="product.amount" @on-change="putNum(product)" :min="1" :max="product ? product.stock : 0"></input-number>
+                      <div v-if="!editFlag && product.amount > product.stock" class="no-stock">抱歉，该商品最大购买数量为{{product.stock}}件</div>
+                      <!-- <span v-show="!editFlag && product.amount > product.stock">抱歉，该商品最大购买数量为{{product.stock}}件</span> -->
+                      
+                    </div>
+                    <div class="promotion-box" :class="{activeColor:proIndex==promotionActive1&&index==promotionActive2}" @mouseover="promotionActive1=proIndex;promotionActive2=index;promotionPopupSkuId = product.id" v-show="(product.promotionList || []).length" @mouseleave="promotionActive1=-1;promotionActive2=-1;promotionPopupSkuId = ''">
                       <!-- 促销 -->
                       <span>促销&nbsp&nbsp<Icon :type="proIndex==promotionActive1&&index==promotionActive2?'ios-arrow-down':'ios-arrow-up'" size="16"/></span>
                       <transition mode="out-in" v-show="proIndex==promotionActive1&&index==promotionActive2" >
@@ -75,19 +93,21 @@
                         </div>
                       </transition>
                     </div>
-                    <span class="tb-stock">
-                      <span v-if="!editFlag && product.amount > product.stock" class="no-stock">暂无库存</span>
-                      <input-number v-else v-model="product.amount" @on-change="putNum(product)" :min="1" :max="product ? product.stock : 0"></input-number>
-                      <!-- <span v-show="!editFlag && product.amount > product.stock">抱歉，该商品最大购买数量为{{product.stock}}件</span> -->
-                      
-                    </span>
-                    
                   </div>
                   <!-- <div class="no-num" style="display:block">
                     <p class="p1">暂无库存</p>
                     <p class="p2">添加到收藏</p>
                   </div> -->
+
+                  <!-- 小计 -->
+                    <div class="count">
+                      <p>￥{{toolFun('price', product.price * product.amount)}}</p>
+                    </div>
+                    <div class="delete" @click="oneClick(product.id)">
+                      <p>删除</p>
+                    </div>
                 </div>
+                <div style="clear:both"></div>
               </div>
             </div>
           </div>
@@ -179,6 +199,10 @@
     //   // this.xxxxx = this.specArray[0].specValueArray
     // },
     methods: {
+      oneClick(productId){
+        this.checkedObj[productId] = true
+        this.deleteConfirm(productId)
+      },
       onChange(specIndex,specValueName,$event){
         let product = JSON.parse($event.value)
         if(product.specValueName!=specValueName){
@@ -408,7 +432,7 @@
           this.getCartDataLocal()
         }
       }, 200),
-      deleteConfirm () {
+      deleteConfirm (productId) {
         let checked = []
         for (let i in this.checkedObj) {
           if (this.checkedObj[i]) {
@@ -437,6 +461,11 @@
             onOk:()=>{
               this.deleteProduct(checked)
             },
+            onCancel:()=>{
+              if(productId){
+                this.checkedObj[productId] = false
+              }
+            }
           })
 
         }
@@ -863,12 +892,15 @@
   #shoppingCart .ivu-select-single .ivu-select-selection .ivu-select-placeholder{
     color:#515a6e
   }
+  .detial .ivu-select-selection{
+    width: 80px!important
+  }
 </style>
 <style lang="stylus" scoped>
 @import "~styles/common/common.styl";
   #shoppingCart 
     background #fafafa
-    padding 0 100px 100px 100px 
+    // padding 0 100px 100px 100px 
     .shoppingCart-content
       height 500px
       background #fff
@@ -896,6 +928,7 @@
           line-height 44px
         .sp_1
           float left
+          text-align center
           i
             font-style normal
             margin 0 3px
@@ -904,37 +937,40 @@
       .shoppingCart-content-center
         height 440px
         overflow auto
-        .promotion-info
-          min-height 45px
-          margin-bottom -10px
-          background #fafafa
-          // padding-bottom 5px
-          // overflow hidden
-          span
-            font-size: 14px
-            display block
-            float left
-            border 1px solid $blue
-            background $blue
-            color #fff
-            border-radius 6px
-            padding 5px 5px
-            margin 0 0 0 45px
-            transform translateY(10px)
-          a
-            font-size 14px
-            line-height 40px
-            color #4a90e2
-            float right
-            margin 5px 68px 0 0
+        .borderNone
+          border none!important
+        .shoppingCart-promotions
+          // margin 20px 0
+          border-bottom:20px solid #ccc
+          .promotion-info
+            min-height 45px
+            background #fafafa
+            // padding-bottom 5px
+            // overflow hidden
+            span
+              font-size: 14px
+              display block
+              float left
+              border 1px solid $blue
+              background $blue
+              color #fff
+              border-radius 6px
+              padding 5px 5px
+              margin 0 0 0 45px
+              transform translateY(10px)
+            a
+              font-size 14px
+              line-height 45px
+              color #4a90e2
+              $ml(20px)
+        .checkBackground
+          background #eee8f9
         .shoppingCart-product
-          height 110px
-          padding 0 50px 50px 50px
+          height 130px
+          padding 20px 50px 50px 50px
           border-bottom 1px solid #dfdfdf
-          $mt(20px)
           .checkbox
             float left
-            height inherit
             width 40px
             input
               $mt(30px)
@@ -967,25 +1003,43 @@
           .detial
             float left
             color #000
+            // width 80%
             .title
-              line-height 30px
-            .price
-              $mb(10px)
-              color $blue
+              line-height 22px
+              height 50px
+              width 425px
+            .spec-name
+              $mr(4px)
+          .price,.count,.delete
+            float left
+            $mb(10px)
+            color $blue
+            width 130px
+            text-align center
+            line-height 90px
+          .delete
+            width 96px
+            cursor pointer
+            color #4a90e2
           .numPromotion
-            float right
-            $mt(19px)
+            float left
             position relative
+            top 50%
+            width 132px
+            text-align center          
             .promotion-box
               text-align center
               line-height 40px
               color #4a90e2
+              float left
+              padding 0 40px
+              $mt(8px)
               span
                 cursor pointer
               div
                 position absolute
                 width 210px
-                left -107px
+                left -79px
                 z-index 20
                 background #fff
                 $border(1,1px)
@@ -1015,17 +1069,12 @@
             .tb-stock 
               position relative
               float left  
-              $mt(6px)
-              $ml(3px)
-              span
+              $ml(16px)
+              .no-stock
                 position absolute
                 top 28px
-                left -42px
                 font-size 12px
-                color red
-              .no-stock
-                top 8px
-                left -75px
+                color red   
           .no-num
             float right
             $mt(20px)

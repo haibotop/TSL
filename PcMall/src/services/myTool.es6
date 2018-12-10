@@ -36,7 +36,7 @@ export function handleDate (param) {
   if (/^[0-9]+$/.test(param)) { date = parseInt(param) }
   return dateFormat(new Date(date), 'YYYY-MM-DD HH:mm:ss')
 }
-// import * as cartAPI from '@/services/API/shoppingCartServices.es6'
+import * as cartAPI from '@/services/API/shoppingCartServices.es6'
 // // 合并预购物车到购物车(若存在)
 export function preCartToCart (this_, callback) {
   if (localStorage.getItem('cartProductItems')) {

@@ -31,9 +31,9 @@
   display: block;
   width: 100% !important;
 }
-.rich-wrapper {
-  overflow-x: visible;
-  overflow-y: scroll;
-}
+// .rich-wrapper {
+//   overflow-x: visible;
+//   overflow-y: scroll;
+// }
 </style>
 

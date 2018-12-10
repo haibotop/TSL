@@ -1,5 +1,17 @@
-<template>
-  <div id="pdPromotion">
+<template>  
+  <div id="pdPromotion" v-show="promotionInfos.length > 0">
+    <span class="name">促销：</span>
+    <div class="detial">
+      <div class="detial-content" v-for="(item,index) in promotionInfos" :key="item.id" v-show="index<2||isShow">
+        <span class="type">{{typeText[item.type]}}</span>
+        <span class="pdsArray"> {{pdsArrayText(item)}}</span>
+        <router-link :to="`/couponPl?promotionId=${item.id}`" class="goDetial">详情&nbsp;<Icon type="ios-arrow-forward" /></router-link>
+      </div>      
+      <span class="more" v-if="promotionInfos.length > 2" @click="handelClick">{{flag?'收起':'展开'}}&nbsp;<Icon :type="flag?'ios-arrow-up':'ios-arrow-down'" /></span>
+    </div>
+  </div>
+
+  <!-- <div id="pdPromotion">
     <cell is-link border-intent @click.native="flag=true" v-show="promotionInfos.length > 0">
       <div slot="title" class="my-cell-title">
         <span>促销</span><span style="float:right;">{{pdsArrayText(selected)}}</span>
@@ -22,7 +34,7 @@
         </popup>
       </div>
     </cell>
-  </div>
+  </div> -->
 </template>
 <script type="text/ecmascript-6">
   import { TransferDom, Scroller, Group, Cell, Popup, PopupHeader } from 'vux'
@@ -40,10 +52,15 @@
           'background-color': '#fff',
           'overflow': 'visible'
         },
-        selected: ''
+        selected: '',
+        isShow: false
       }
     },
     methods: {
+      handelClick(){
+        this.flag = !this.flag
+        this.isShow = !this.isShow
+      },
       getPromotions (skuId, callback) {
         this.$http.get(API.getProductPromotions(skuId)).then(res => {
           if (res.data.code === 200) {
@@ -116,29 +133,81 @@
       })
     },
     computed: {
-      scrollerHeight () {
-        return document.body.clientHeight * 0.5 - 44 + 'px'
-      }
+      // scrollerHeight () {
+      //   return document.body.clientHeight * 0.5 - 44 + 'px'
+      // }
+      
     }
   }
 </script>
+<style lang="stylus" scoped>
+@import "~styles/common/common.styl";
+  #pdPromotion
+    &::after
+      content "."       
+      display block       
+      height 0        
+      clear both     
+      visibility hidden       
+    .name 
+      float left
+    .detial
+      float left
+      line-height 28px
+      $mt(3px)
+      background-color #fafafa
+      width 88%
+      position relative
+      .detial-content
+        $mb(6px)
+        .type 
+          display inline-block
+          border 1px solid  $blue
+          color $blue
+          font-size 12px
+          width 60px
+          text-align center
+          $mr(10px)
+          vertical-align middle
+        .pdsArray,.goDetial
+          font-size 14px
+          $mr(10px)
+          // color #FF9900
+          vertical-align middle
+        .goDetial
+          color #4a90e2
+          cursor pointer
+      .more
+        position absolute
+        color $blue
+        right 10px
+        bottom 0
+        cursor pointer
+        
+            
+      
+        
+      
+</style>
+
+
 <style lang="scss" rel="stylesheet/scss" scoped>
 .my-cell-title {
   font-size: 12px;
   color: #7f7f7f;
 }
-.type {
-  display: inline-block;
-  border: 1px solid  #E4393C;
-  border-radius: 5px;
-  color: #E4393C;
-  font-size: 12px;
-  width: 60px;
-  text-align: center
-}
-.pdsArray {
-  font-size: 14px;
-  color: #FF9900;
-}
+// .type {
+//   display: inline-block;
+//   border: 1px solid  #E4393C;
+//   border-radius: 5px;
+//   color: #E4393C;
+//   font-size: 12px;
+//   width: 60px;
+//   text-align: center
+// }
+// .pdsArray {
+//   font-size: 14px;
+//   color: #FF9900;
+// }
 </style>
 

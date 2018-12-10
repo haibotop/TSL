@@ -81,7 +81,6 @@ import * as mkApi from '@/services/API/marketing.es6'
                 this.$http.get(mkApi.receiveCoupon(id, code)).then(res => {
                     if (res.data.code === 200) {
                         this.$set(this.status, index, 1)
-                        // this.$vux.toast.show({text: '领取成功', type: 'text', width: '200px'})
                         this.$Message.success({content:'领取成功',duration:3});
                     }
                 })

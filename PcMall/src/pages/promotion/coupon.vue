@@ -1,5 +1,5 @@
 <template>
-    <div class="coupons">
+    <div class="coupons nouse">
         <div class="coupons-title">
             <h2>￥{{coupon.subtract / 100}}</h2>
             <p v-show="coupon.rules === 2">直减</p>
@@ -9,7 +9,7 @@
             <!-- <p>适用范围：全场通用</p> -->
             <p style="font-size:16px">{{coupon.name}}</p>
             <p class="p2">有效期：{{(coupon.startDate || '').split(' ')[0]}}至{{(coupon.endDate || '').split(' ')[0]}}</p>
-            <!-- <p>来源：新用户专享</p> -->
+            <!-- <p>查看使用说明<Icon type="ios-arrow-down" size="18"/></p> -->
         </div>
         <div class="coupons-footer">
             <span v-show="status === 0 && !check" @click="receiveCoupon(coupon)">立即领取</span>
@@ -18,7 +18,7 @@
             <p v-show="status === 3">已失效</p>
             <p v-show="status === 4">不可用</p>
         </div>
-        <div v-show="status === 3 || status === 4" class="mask"></div>
+        <div v-show="status === 2 || status === 3 || status === 4" class="mask"></div>
     </div>
 </template>
 

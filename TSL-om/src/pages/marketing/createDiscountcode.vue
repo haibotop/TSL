@@ -67,8 +67,8 @@
     </Breadcrumb>
 
     <Tabs type="card" :animated="false" @on-click="tabStatusChanged" v-model="tabStatus">
-      <TabPane label="单品"></TabPane>
-      <TabPane label="类目"></TabPane>
+      <TabPane label="单品" :disabled="pointerevents"></TabPane>
+      <TabPane label="类目" :disabled="pointerevents"></TabPane>
     </Tabs>
 
     <Form inline class="margin-10" :label-width="170" :model="local" :rules="local_rule" ref="localForm">
@@ -1274,10 +1274,14 @@
         this['modal' + i] = false
       },
       initcp () {
+        this.$route.params.id = undefined
+        this.pointerevents = false
         this.modal3 = false
-        this.$refs.localForm.resetFields()
         this.data1 = []
         this.data4 = []
+        this.local.discountList = [{num1:'',num2:''}]
+        this.$refs.localForm.resetFields()
+        this.$set(this.local,'rules',null)
         this.getData3List()
       },
       gotolist () {
