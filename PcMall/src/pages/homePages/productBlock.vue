@@ -9,25 +9,42 @@
                         <img :src="item.img" alt="">
                         </router-link>
                     </div> -->
-                    <div class="carousel-content">
-                        <ul>
-                            <li v-for="(item, index) in pList" :key="index" >
-                                <div class="pic" @click="goPd(item.defaultSkuId)">
-                                  <div class="pic-img">
-                                    <img :src="item.defaultPicture" :alt="handleName(item.skuName)" >
-                                  </div>                                  
-                                </div>
-                                <div class="product-info">
-                                    <p class="explain">{{handleName(item.skuName)}}</p>
-                                    <p class="price" :style="`color: ${color};`">{{ '￥' + handlePrice(item.price) }}</p>
-                                    <p class="price_">￥1.009</p>
-                                </div>
-                            </li>                           
-                        </ul>
-                    </div>
+            <div class="goods-items">
+                <ul>
+                    <li v-for="(item, index) in pList" :key="index" @click="goPd(item.defaultSkuId)">
+                        <div class="pic" @click="goPd(item.defaultSkuId)">
+                            <div class="pic-img">
+                                <img :src="item.defaultPicture" :alt="handleName(item.skuName)" >
+                            </div>
+                        </div>
+                        <div class="goods-items-footer">
+                            <div class="vertical-middel">
+                                <p class="explain">{{handleName(item.skuName)}}</p>
+                                <p class="price" :style="`color: ${color};`">{{ '￥' + handlePrice(item.price) }}</p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+                    <!--<div class="carousel-content">-->
+                        <!--<ul>-->
+                            <!--<li v-for="(item, index) in pList" :key="index" >-->
+                                <!--<div class="pic" @click="goPd(item.defaultSkuId)">-->
+                                  <!--<div class="pic-img">-->
+                                    <!--<img :src="item.defaultPicture" :alt="handleName(item.skuName)" >-->
+                                  <!--</div>                                  -->
+                                <!--</div>-->
+                                <!--<div class="product-info">-->
+                                    <!--<p class="explain">{{handleName(item.skuName)}}</p>-->
+                                    <!--<p class="price" :style="`color: ${color};`">{{ '￥' + handlePrice(item.price) }}</p>-->
+                                <!--</div>-->
+                            <!--</li>                           -->
+                        <!--</ul>-->
+                    <!--</div>-->
                 <!-- </CarouselItem>
             </Carousel> -->
         </div>
+         <div style="clear: both;"></div>
     </div>
 </template>
 
@@ -123,7 +140,7 @@
     #productBlock
         background #fafafa
         width 100%
-        height 440px
+        padding-bottom 50px
         h3
             position relative
             color $blue
@@ -137,7 +154,7 @@
                 height 2px
                 background-color $blue
                 left  48.7%
-                top 88%  
+                top 88%
         .carousel
             width 1200px
             text-align: center
@@ -160,7 +177,7 @@
                               width 70%
                               display inline-block
                               text-align center
-                              img 
+                              img
                                   width 100%
                     .product-info
                         width 40%
@@ -171,16 +188,72 @@
                     padding-right 60px
                     line-height 16px
                     font-size 14px
-                    text-align left 
+                    text-align left
                     $mb(4px)
                     color #000
                     $mt(15px)
                 .price
                     color $blue
-                    margin-top 20px             
+                    margin-top 20px
                 .price_
                     color #ccc
 
+            .goods-items{
+                ul{
+                    display: inline-block;
+                    margin-top: 10px;
+                    li{
+                        float: left;
+                        width: 240px;
+                        margin: 20px 10px 0;
+                        border:2px solid transparent;
+                        .pic{
+                            height: 240px;
+                            background-color: #fff;
+                            cursor: pointer;
+                            .pic-img{
+                                width: 100%;
+                                height: 100%;
+                                display: inline-block;
+                                text-align: center;
+                                img{
+                                    width: 100%;
+                                    height: 100%;
+                                }
+
+                            }
+                        }
+                    }
+                    li:hover{
+                        border: 2px solid #352665;
+                    }
+                    .goods-items-footer{
+                        position: relative;
+                        height: 110px;
+                        .vertical-middel{
+                            position: absolute;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            width: 100%;
+                        }
+                        .explain{
+                            padding: 0 36px;
+                            line-height: 16px;
+                            font-size: 14px;
+                            text-align: center;
+                            color: #000;
+                        }
+                        .price{
+                            text-align: center;
+                            color: blue;
+                        }
+                        .price_{
+                            text-align: center;
+                            color: #ccc;
+                        }
+                    }
+                }
+            }
 
 
 

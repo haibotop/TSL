@@ -9,7 +9,7 @@ const ReplacePlugin = require('replace-bundle-webpack-plugin');
 const fs = require('fs');
 const config = require('./webpack.config.js');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 // fs.open('./src/config/env.js', 'w', function (err, fd) {
 //   const buf = 'export default "production";';
@@ -38,6 +38,9 @@ module.exports = merge(webpackBaseConfig, {
     ]
   },
   plugins: [
+    new UglifyJsPlugin({
+        sourceMap: true
+    }),
     new webpack.DefinePlugin({
       'process.env': {
         NODE_ENV: '"production"'
@@ -68,14 +71,14 @@ module.exports = merge(webpackBaseConfig, {
       name: 'vendors',
       filename: `${config.assetsPath}/js/vendors.[hash:7].js`
     }),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        // 移除console.*
-        drop_console: true
-      },
-      sourceMap: true
-    }),
+    // new webpack.optimize.UglifyJsPlugin({
+    //   compress: {
+    //     warnings: false,
+    //     // 移除console.*
+    //     drop_console: true
+    //   },
+    //   sourceMap: true
+    // }),
     // Compress extracted CSS. We are using this plugin so that possible
     // duplicated CSS from different components can be deduped.
     new OptimizeCSSPlugin({

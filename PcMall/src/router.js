@@ -30,6 +30,7 @@ import createOrder from '@/pages/order/createOrder.vue'
 import asOrders from '@/pages/order/asOrders.vue'
 import asOrderDetail from '@/pages/order/asOrderDetail.vue'
 import myOrders from '@/pages/order/myOrders.vue'
+import orderOk from '@/pages/order/orderOk.vue'
 import myOrderDetail from '@/pages/order/myOrderDetail.vue'
 
 //我的----------
@@ -168,6 +169,19 @@ let order = [
             intercept: true
         },
         component: myOrders
+    },
+    {
+        path: '/orderOk',
+        name: 'orderOk',
+        component: orderOk,
+        children: [
+            {
+                path: ':orderNum',
+                meta: {
+                    intercept: true
+                }
+            }
+        ]
     },
     {
         path: '/myOrderDetail',

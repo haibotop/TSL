@@ -193,6 +193,13 @@
             background-color: #2E0F6E;
             transform: rotate(30deg);
         }
+        .telephone{
+            padding: 4px 7px;
+            font-size: 14px;
+            border: 1px solid #dcdee2;
+            border-radius: 4px;
+            color: #515a6e;
+        }
     }
 </style>
 <template>
@@ -224,7 +231,7 @@
                 </flow>
                 <div class="phoneNum">
                     <span>手机号</span>
-                    <Input v-model="phone" ref="numInput" placeholder="请输入您的手机号码" :maxlength=11 />
+                    <input v-model="phone11" class="telephone" ref="numInput" placeholder="请输入您的手机号码" :maxlength=11 />
                 </div>
                 <div class="agreementBar">
                     <check-icon :value.sync="agree"></check-icon>
@@ -282,6 +289,14 @@
         computed: {
             loginSrc(){
                 return this.loginStatus == false ? require('../../assets/icons/login_qrcode_s.png') : require('../../assets/icons/login_pc.png')
+            },
+            phone11: {
+                set: function (value) {
+                    this.phone = value
+                },
+                get: function () {
+                    return this.phone.replace(/[^0-9]+/g, '')
+                },
             }
         },
         methods: {

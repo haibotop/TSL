@@ -8,7 +8,7 @@
         <div class="myBlock" >
           <div :class="headPortrait ? 'myBlock-bg blur' : 'myBlock-bg'" :style="blurStyle"></div>
           <div class="mine-actioin"><span class="pull-left" @click="pwdModal = true">设置</span><span class="pull-right" @click="logout">退出登录</span></div>
-          <div class="head-portrait"><img :src="headPortrait" alt=""></div>
+          <div class="head-portrait"><img :src="headPortrait" alt="" @click="uploadImg"></div>
           <div class="base-info">
             <div v-if="isSessionStorage">
               <div>
@@ -85,7 +85,7 @@
         <Row>
           <Col span="6">
             <div class="head-cell-box" @click="uploadImg">
-              <div class="head-portrait"><img :src="headPortrait" alt=""></div>
+              <div class="head-portrait"><img :src="headPortrait" alt="" ></div>
               <div class="avatar-btn">上传头像</div>
             </div>  
           </Col>
@@ -776,7 +776,7 @@ export default {
   border-radius: 50%;
   overflow: hidden;
   border: 1px solid #ddd;
-
+  cursor: pointer;
   img {
     display: block;
     width: 100%;

@@ -320,7 +320,7 @@
                   this.list[i].status = 4
                 }
               }
-              this.$router.push({path: `/orderOk/${item.number}`})
+              this.$router.push({path: `/orderDetail/${item.number}`})
             } else {
               this.$Message.error("确认失败");
             }
@@ -328,7 +328,7 @@
         }
         this.$Modal.confirm({
           title: '是否确认收货',
-          content: '是否取消订单',
+          content: '是否确认收货',
           okText: '确认',
           cancelText: '取消',
           onOk: () => {
