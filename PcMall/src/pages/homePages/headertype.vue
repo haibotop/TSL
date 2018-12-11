@@ -15,7 +15,7 @@
         <div v-else class="contentlist">
             <ul>
                 <li v-for="(item,index) in type" :key="index" :class="{active:active === index}" >
-                    <router-link tag="a" :to="{ path: `/pl/${item.name}`,query: {type: '珠宝类型',typeName:item.name} }">
+                    <router-link tag="a" :to="{ path: `/pl/${item.name}`,query: {type: item.type, typeName:item.name} }">
                         <div>
                             <img :src="item.img">
                         </div>
@@ -42,41 +42,50 @@
                     [
                         {
                             name: "戒指",
-                            img: require('../../assets/images/jiezhi.png')
+                            img: require('../../assets/images/jiezhi.png'),
+                            type: '珠宝类型'
                         },
                         {
                             name: "项链",
-                            img: require('../../assets/images/xianglian.png')
+                            img: require('../../assets/images/xianglian.png'),
+                            type: '珠宝类型'
                         },
                         {
                             name: "耳环",
-                            img: require('../../assets/images/erhuan.png')
+                            img: require('../../assets/images/erhuan.png'),
+                            type: '珠宝类型'
                         },
                         {
                             name: "吊坠",
-                            img: require('../../assets/images/diaozhui.png')
+                            img: require('../../assets/images/diaozhui.png'),
+                            type: '珠宝类型'
                         }
                     ],
                     [
                         {
                             name: "The 12 treasures",
-                            img: require('../../assets/images/12treasures.png')
+                            img: require('../../assets/images/12treasures.png'),
+                            type: '珠宝系列'
                         },
                         {
                             name: "Altelier",
-                            img: require('../../assets/images/Atelier.png')
+                            img: require('../../assets/images/Atelier.png'),
+                            type: '珠宝系列'
                         },
                         {
                             name: "Nova",
-                            img: require('../../assets/images/momentoflove.png')
+                            img: require('../../assets/images/momentoflove.png'),
+                            type: '珠宝系列'
                         },
                         {
                             name: "Raindrop & Eernity",
-                            img: require('../../assets/images/diaozhui.png')
+                            img: require('../../assets/images/diaozhui.png'),
+                            type: '珠宝系列'
                         },
                         {
                             name: "motion",
-                            img: require('../../assets/images/saxx.png')
+                            img: require('../../assets/images/saxx.png'),
+                            type: '珠宝系列'
                         }
                     ]
                 ]

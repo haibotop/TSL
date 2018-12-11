@@ -70,6 +70,7 @@
         let path
         if (this.keyword) {
           console.log('keyword', this.keyword.replace(/\s+/g, ''))
+          this.keyword = this.keyword.replace(/\/+/g, '')
           path = `../pl/${this.keyword}`
         } else {
           path = 'pl'

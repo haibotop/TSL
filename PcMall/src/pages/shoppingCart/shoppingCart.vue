@@ -261,18 +261,18 @@
         } else {
           this.handleRes([])
         }
-        this.showLoading =  false
+        this.showLoading = false
       },
       // 接口-获取购物车数据
       getCartData () {
         this.showLoading = true
         this.$http.get(scAPI.getshoppingCart1()).then(res => {
           if (res.data.code === 200) {
+            this.showLoading = false
             if (res.data.list) {
               this.list = res.data.list
               this.handleRes(res.data.list)
               // console.log('=====',this.list)
-              this.showLoading = false
             }
           }
         })

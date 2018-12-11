@@ -153,10 +153,10 @@
                         width: 240px;
                         margin: 20px 10px 0;
                         border:2px solid transparent;
+                        cursor: pointer;
                         .pic{
                             height: 240px;
                             background-color: #fff;
-                            cursor: pointer;
                             .pic-img{
                                 width: 100%;
                                 height: 100%;
@@ -235,7 +235,7 @@
             <div class="no-datas" v-if="(datas || []).length === 0">暂无数据</div>
             <ul>
                 <li v-for="(item, index) in datas" :key="index" @click="goPd(item.defaultSkuId)">
-                    <div class="pic" @click="goPd(item.defaultSkuId)">
+                    <div class="pic">
                         <div class="pic-img">
                             <img :src="item.defaultPicture" :alt="handleName(item.skuName)" >
                         </div>
@@ -527,6 +527,10 @@
       },
       // ----------跳转商品详情
       goPd (skuId) {
+        let params = this.$route.query
+        console.log(params)
+        localStorage.setItem('jewelryType',JSON.stringify(params))
+        console.log('localStorage.getItem(',JSON.parse(localStorage.getItem('jewelryType')) )
         this.$router.push({path: `../pd/${skuId}`})
       },
       handlePrice (price) {

@@ -4,11 +4,11 @@
     <header2></header2>
     <div id="detail">
       <!-- <div class="detail-title"><div class="detail-t">珠宝类型 <span class="xiegang"></span> 戒指</div></div> -->
-      <v-title :titleTpye="titleTpye"></v-title>
+      <v-title :titleTpye="titleTpye" v-if="titleTpye.length"></v-title>
       <div class="detail-content">
-        <div class="breadcrumb">
+        <div class="breadcrumb" >
           <template>
-              <Breadcrumb separator=">">
+              <Breadcrumb separator=">" v-if="titleTpye.length">
                 <BreadcrumbItem to="/" class="color">首页</BreadcrumbItem>
                 <BreadcrumbItem class="last" >{{titleTpye[0]}}</BreadcrumbItem><!--to="/components/breadcrumb"-->
                 <BreadcrumbItem :to="`/pl/${titleTpye[1]}?type=${titleTpye[0]}&typeName=${titleTpye[1]}`">{{titleTpye[1]}}</BreadcrumbItem>
@@ -57,7 +57,7 @@
               <pdCoupons v-show="couponFlag" :couponList="couponList" @closeGetCoupon="closeGetCoupon"></pdCoupons>
             </div>
             <!-- 促销 -->
-            <pdPromotion ref="pdPromotion" v-if="getSkuCompeleted"></pdPromotion>
+            <pdPromotion ref="pdPromotion" v-if="getSkuCompeleted" :routeParams="routeParams"></pdPromotion>
             <div style="clear:both;height:0"></div>
             <!-- 规格 -->
             <div class="spec" v-for="(item, index) in specArray" :key="index">
@@ -124,6 +124,9 @@
                 </a>
                 <DropdownMenu  slot="list" class="cost-detail" >
                   <div class="cost-detail-content" style="width:730px">
+                    <div class="left-left">
+                      sfasfsafs
+                    </div>
                     <div class="left">
                       <div v-if="backGoodsArrayIndex==0">
                         <h2>前言</h2>
@@ -175,7 +178,13 @@
                       </div>
                       <div v-if="backGoodsArrayIndex==5">
                         <h2>退换货政策</h2>
-                        <p>............</p>
+                        <div class="right" style="float:left">
+                          <ul>@mouseenter
+                            <li v-for="(item,index) in backGoodsArray2">
+                              <Icon type="ios-arrow-back" /><span >{{item}}</span>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                     <div class="right">
@@ -183,12 +192,6 @@
                         <li v-for="(item,index) in backGoodsArray">
                           <Icon type="ios-arrow-back" /><span @mouseenter="backGoodsArrayFuc(index)">{{item}}</span>
                         </li>
-                        <!-- <li><Icon type="ios-arrow-back" /><span>前言</span></li>
-                        <li><Icon type="ios-arrow-back" /><span>发货时间</span></li>
-                        <li><Icon type="ios-arrow-back" /><span>快递配送服务</span></li>
-                        <li><Icon type="ios-arrow-back" /><span>门店自提服务（仅限中国大陆地区）</span></li>
-                        <li><Icon type="ios-arrow-back" /><span>商品包装</span></li>
-                        <li><Icon type="ios-arrow-back" /><span>退换货政策</span></li> -->
                       </ul>
                     </div>
                   </div>
@@ -284,8 +287,9 @@
     // components: Object.assign({ XHeader, Scroller, Group, CellBox, Cell, Popup, Checker, CheckerItem, InlineXNumber, XNumber, debounce, Tab, TabItem, XTable, Badge }),
     data () {
       return {
-        titleTpye: ['珠宝类型','戒指'],//珠宝类型的头部
+        titleTpye: [],//珠宝类型的头部
         backGoodsArray:['前言','发货时间','快递配送服务','门店自提服务（仅限中国大陆地区）','商品包装','退换货政策'],
+        backGoodsArray2:['1. 前言','2. 定义','3. 退货','4. 更换','5. 购物优惠','6. 特别说明','7. 温馨提示'],
         backGoodsArrayIndex : 0,
         xoxo:0,
         isShowCheckSpec: 0,//三角形样式
@@ -359,7 +363,8 @@
         pullupStep1: false,
         // 菜单
         menuFlag: false,
-        getSkuCompeleted: false
+        getSkuCompeleted: false,
+        routeParams: ''//记录路由id
       }
     },
     updated:function(){
@@ -367,8 +372,18 @@
           this.ImgUrl = this.swiperData[0].src
 
         }
+        if(this.$route.params){
+          this.routeParams = this.$route.params.skuId
+          // this.getSkuCoupon(this.routeParams)
+        }
     },
     mounted: function () {
+      if(localStorage.getItem('jewelryType')){
+        let jewelryType = JSON.parse(localStorage.getItem('jewelryType'))
+        for(let i in jewelryType){
+          this.titleTpye.push(jewelryType[i])
+        }
+      }
       // this.scrollerHeight = document.body.clientHeight - 96
       this.skuId = this.$route.params.skuId
       this.getSkuInfo(this.skuId,function(){})
@@ -1282,7 +1297,7 @@
                   color #fff 
               .cost-detail 
                 padding-left 10px     
-                width 730px
+                width 1125px
                 height 350px
                 $border(b,1px)
                 $border(border-left,8px)
@@ -1290,10 +1305,14 @@
                 margin-top -2px  
                 .cost-detail-content
                   height inherit
+                  div
+                    float left
+                  .left-left
+                    width 395px
                   .left
                     width 395px
                     height 90%
-                    float left
+                    // float left
                     margin 20px 
                     $border(border-right,1px) 
                     overflow auto
@@ -1308,7 +1327,7 @@
                       $mt(20px)
                       line-height 22px  
                   .right       
-                    float right
+                    // float right
                     margin 20px 20px 20px 0px
                     li
                       margin 10px 0
@@ -1316,8 +1335,9 @@
                         margin-right 10px
                         color $blue
                       span
-                        width: 240px;
-                        height inherit
+                        width 240px
+                        height 42px
+                        line-height 42px
                         display inline-block
                         border 1px solid #fff
                         text-indent 10px

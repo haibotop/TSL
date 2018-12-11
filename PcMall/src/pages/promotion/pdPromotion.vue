@@ -43,6 +43,7 @@
     name: 'pdPromotion',
     directives: { TransferDom },
     components: { Scroller, Group, Cell, Popup, PopupHeader },
+    props: ['routeParams'],
     data () {
       return {
         promotionInfos: [],
@@ -53,7 +54,7 @@
           'overflow': 'visible'
         },
         selected: '',
-        isShow: false
+        isShow: false,
       }
     },
     methods: {
@@ -137,6 +138,17 @@
       //   return document.body.clientHeight * 0.5 - 44 + 'px'
       // }
       
+    },
+    watch: {
+      routeParams(){  
+        //刷新详情页领券与促销
+        if (sessionStorage.getItem('userInfo')) {
+          this.getPromotions(this.routeParams, () => {
+            this.bestPromotion()
+          })
+          this.$parent.getSkuCoupon(this.routeParams)
+        }
+      }
     }
   }
 </script>
