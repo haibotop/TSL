@@ -112,10 +112,12 @@ let interval
                 })
             },
             receiveCoupon (coupon) {
+                console.log('coupon',coupon)
                 if (this.status === 0) { // 未领取状态事件为去领取该优惠券
                     this.$http.get(mkApi.receiveCoupon(coupon.id, coupon.code))
                     .then(res => {
-                        this.init()
+                        // this.init()
+                        this.$Message.success({content:'领取成功',duration: 3})
                         this.getMyCoupon(this.status, this.pageNum, this.pageSize)
                     })
                 } else if (this.status === 1) {  //已领取的优惠券去使用事件
