@@ -45,7 +45,7 @@
               </template>
           </div>
           <div class="account">
-              <span class="discount">备注：</span>
+              <span class="discount">详细地址：</span>
               <Input v-model="personalInfo.street" :maxlength="50" ref="addressXx" placeholder="请填写详细地址，不少于五个字"/>
           </div>
           <div class="defaultPlace">

@@ -7,7 +7,7 @@
   <div id="useDiscount" style="height: 600px;">
       <p  style="margin: 10px 0 20px 30px; font-size: 24px;color: #352665;text-align: left;">我的折扣码</p>
       <div class="discountBox">
-          <div v-if="this.readyTradeItem.length == 0" style="font-size: 16px;text-align: center;">暂无可使用的折扣码</div>
+          <div v-if="this.readyTradeItem == null" style="font-size: 16px;text-align: center;">暂无可使用的折扣码</div>
           <div v-if="readyTradeItem != null" v-for="(item,index) in readyTradeItem"
                class="cardList" ref="cardList" :class="{cardListActived : item.a == true , noClick : index > okUse ,
                    noClick_:(item.a!=true&&flag1)||(item.a!=true&&item.exclusived==1&&flag2)}"

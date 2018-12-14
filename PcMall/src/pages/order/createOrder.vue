@@ -601,11 +601,11 @@
                 afterPromotion1 = tool.handlePrice(afterPromotion1)
               } else if (j.type === 3) { // 单品折扣
 //                afterPromotion1 = afterPromotion1 * j.discount * 0.01
-                afterPromotion1 = parseInt(afterPromotion1 * j.discount * 0.01) + afterPromotion1 % 100
+                afterPromotion1 = (afterPromotion1 * j.discount * 0.01).toFixed(2) + afterPromotion1 % 100
                 if (j.typeAlone === 1) { // 元级取整
                   console.log('typeAlone=2')
                   afterPromotion1 = tool.handlePrice(afterPromotion1)
-                  afterPromotion1 = parseInt(afterPromotion1)
+                  afterPromotion1 = Number(afterPromotion1).toFixed(2)
                 } else if (j.typeAlone === 2) {
                   console.log('typeAlone=2')
                   afterPromotion1 = tool.handlePrice(afterPromotion1)
