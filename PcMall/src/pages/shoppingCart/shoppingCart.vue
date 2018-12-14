@@ -214,7 +214,6 @@
       },
       onOpenChange(product,$event){
         if($event){
-          console.log('specArrayspecArrayspecArray',this.specArray)
           this.openSpecsPopup(product)
         }
       },
@@ -279,7 +278,6 @@
       },
       handleRes (list = []) {
         let datas = []
-        console.log('listlist',list)
         list.forEach(e => {
           let data = {
             merchantInfo: e.merchantInfo,
@@ -299,7 +297,6 @@
                 noPromotionData.productItems.push(i)
               }
             } else if (!obj[i.defaultPromotionId]) {
-              console.log('!obj[i.defaultPromotionId]',i.defaultPromotionId)
               // 参加促销的商品
               let promotion = {}
               for (let j of i.promotionList) {
@@ -322,10 +319,10 @@
           if (noPromotionData) { data.promotions.push(noPromotionData) }
           datas.push(data)
         })
-         console.log('datadatadatadatadatadatadata',datas)
+        //  console.log('datadatadatadatadatadatadata',datas)
         this.setChecked(datas)
         this.shoppingCarts = datas
-        console.log('this.shoppingCarts',this.shoppingCarts)
+        // console.log('this.shoppingCarts',this.shoppingCarts)
         this.checkedObj = JSON.parse(JSON.stringify(this.checkedObj))
       },
       // 设置check-icon的绑定对象
@@ -357,7 +354,7 @@
       // 计算总价
       getSum () {
         let sum = 0
-        console.log('计算总价',this.shoppingCarts)
+        // console.log('计算总价',this.shoppingCarts)
         for (let i of this.shoppingCarts) {
           for (let j of i.promotions) {
             let iSum = 0
@@ -379,7 +376,7 @@
                 }
               }
               iSum = tool.handlePrice(iSum)
-              console.log('type1', iSum)
+              // console.log('type1', iSum)
             } else if (j.promotionInfo.type === 2) { // 满折
               for (let index = 0; index < j.promotionInfo.pdsArray.length; index++) {
                 if (iSum >= j.promotionInfo.pdsArray[index].fullLimit) {
@@ -388,24 +385,24 @@
                 }
               }
               iSum = tool.handlePrice(iSum)
-              console.log('type2', iSum)
+              // console.log('type2', iSum)
             } else if (j.promotionInfo.type === 3) { // 单品折扣
                 iSum = parseInt(iSum * j.promotionInfo.discount * 0.01) + iSum % 100
               if (j.promotionInfo.typeAlone === 1) { // 元级取整
                 iSum = tool.handlePrice(iSum)
                 iSum = parseInt(iSum)
-                console.log('typeAlone1', iSum)
+                // console.log('typeAlone1', iSum)
                 // iSum = iSum.toString().replace(/[.][0-9]*/, '')
               } else if (j.promotionInfo.typeAlone === 2) { // 角级取整
                 // iSum = iSum.toString().replace(/[.][0-9]*/, iSum.toString().match(/[.][0-9]{1}/))
                 iSum = tool.handlePrice(iSum)
                 iSum = parseFloat(iSum).toFixed(1)
-                console.log('typeAlone2', iSum)
+                // console.log('typeAlone2', iSum)
               }
             } else if (j.promotionInfo.type === 4) { // 直减
               iSum = iSum - j.promotionInfo.directAmount
               iSum = tool.handlePrice(iSum)
-              console.log('type4', iSum)
+              // console.log('type4', iSum)
             }
             sum = sum + parseFloat(iSum)
           }
@@ -599,11 +596,11 @@
         this.usedSpecValueArray = []
         this.skuSpecArray = []
 
-        console.log('openSpecsPopupopenSpecsPopup',product)
+        // console.log('openSpecsPopupopenSpecsPopup',product)
         
         this.specsPopupFlag = true //是否弹窗
         this.specsPopupData_bs = JSON.parse(JSON.stringify(product))
-        console.log('specsPopupData_bs',product)
+        // console.log('specsPopupData_bs',product)
         this.specsPopupData = JSON.parse(JSON.stringify(product))
         if (this.specsPopupData) {
           // if (this.specsPopupData.specs.length === 0) {
@@ -615,7 +612,7 @@
           // } else {
             this.getSpuInfo(this.specsPopupData.spuId, (res) => {
               this.specArrayOn = this.specsPopupData.specs
-              console.log('这是原来specArrayOn',this.specsPopupData.specs)
+              // console.log('这是原来specArrayOn',this.specsPopupData.specs)
               // alert(this.specArrayOn)
               this.skuSpecArray = res.data.spuInfo.skuSpecArray
               this.getSpecArray(res.data.spuInfo.specArray)
@@ -623,7 +620,7 @@
             })
           }
         // }
-        console.log('openSpecsPopup点击之后的specArray',this.specArray)
+        // console.log('openSpecsPopup点击之后的specArray',this.specArray)
       },
       // 获取商品所有规格 spu接口
       getSpuInfo (spuId, callback) {
@@ -713,7 +710,7 @@
       },
       // 获取new skuid
       postSpuInfo: debounce(function (callback) {
-        console.log('这是点击specArrayOn',this.specArrayOn)
+        // console.log('这是点击specArrayOn',this.specArrayOn)
         this.$http.post(...pdAPI.specGetSku(this.specArrayOn).concat({
           cancelToken: new this.$http.CancelToken(function (cancel) {
             if (typeof getSkuCancel === 'function') {
@@ -726,7 +723,7 @@
           if (response.data.code === 200) {
             let skuInfo = response.data.skuInfo
             this.specsPopupData = Object.assign(skuInfo.sku, {specs: skuInfo.spec})
-            console.log('Object.assign(skuInfo.sku, {specs: skuInfo.spec})',Object.assign(skuInfo.sku, {specs: skuInfo.spec}))
+            // console.log('Object.assign(skuInfo.sku, {specs: skuInfo.spec})',Object.assign(skuInfo.sku, {specs: skuInfo.spec}))
             setTimeout(()=>{
               this.putSku(Object.assign(skuInfo.sku, {specs: skuInfo.spec}))
             })
@@ -751,16 +748,16 @@
       },
       // 修改商品规格接口
       putSku (obj) {
-        console.log('obj',obj)
+        // console.log('obj',obj)
         if (sessionStorage.getItem('userInfo')) {
-          console.log('545454545454545',this.specsPopupData_bs)
+          // console.log('545454545454545',this.specsPopupData_bs)
           let params = {
             oldSkuId: this.specsPopupData_bs.id,
             // quantity: this.specsPopupData.amount,
             quantity: 1,
             skuId: this.specsPopupData.id
           }
-          console.log('params',params)
+          // console.log('params',params)
           this.$http.put(...scAPI.putCartItems([params])).then((response) => {//修改规格与数量
             if (response.data.code === 200) {
               this.specsPopupFlag = false
@@ -786,9 +783,6 @@
       finishEdit () {
         this.editFlag = false
       }
-    },
-    updated () {
-      console.log('dsfsdf',this.shoppingCarts)
     },
     mounted: function () {  
       let userInfo = sessionStorage.getItem('userInfo')

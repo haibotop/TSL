@@ -51,7 +51,7 @@
                   <span v-show="isCollected"><img src="../../assets/icons/heart-fill.png" style="width:20px;float: left;margin-right: 8px;margin-top: 10px;"/>已收藏</span>
               </span>
             </div>
-            <div class="originalPrice">专柜价：<span>￥{{skuInfo.sku ? handlePrice(skuInfo.sku.originalPrice) : 0}}</span></div>
+            <div class="originalPrice" v-if="skuInfo.sku&&skuInfo.sku.originalPrice>0">专柜价：<span>￥{{skuInfo.sku ? handlePrice(skuInfo.sku.originalPrice) : 0}}</span></div>
             <!-- 领券 组件-->
             <div class="getCoupon" v-if="hasCoupon" v-show="specStr.length > 0">领券：<span style="color:#4a90e2;cursor: pointer;" @click="openGetCoupon" >点击领取优惠券</span>
               <pdCoupons v-show="couponFlag" :couponList="couponList" @closeGetCoupon="closeGetCoupon"></pdCoupons>
@@ -164,7 +164,7 @@
                             <li>
                               1、北京：北京东直门银座<br>
                               地址：北京市东城区东直门外大街48号银座mall一层<br>
-                              电话：13810530018
+                              电话：010-64171811
                             </li>
                             <li>
                               2、上海：上海五角场万达<br>
@@ -355,9 +355,6 @@
         </div>
       </div>
     </div>
-    <BackTop :height="120" :bottom="60">
-        <div class="goTo-top">返回顶部</div>
-    </BackTop>
     <v-footer></v-footer>
   </div>
 </template>
@@ -1542,12 +1539,7 @@
       
 // .ivu-radio-group-button .ivu-radio-wrapper:after
 //   opacity  1          
-  .goTo-top
-    padding 10px
-    background #352665
-    color #fff
-    text-align center
-    border-radius 2px
+  
   
       
                 

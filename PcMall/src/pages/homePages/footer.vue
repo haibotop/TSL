@@ -4,29 +4,29 @@
         <div class="footer-up">
             <ul>
                 <li class="first">品牌介绍</li>
-                <li><a href="#">品牌故事</a></li>
-                <li><a href="#">其他谢瑞麟网站</a></li>
+                <li><router-link to="/page/活动页面/tsl_story/130277485839458304">品牌故事</router-link></li>
+                <li><a href="http://www.tslj.com/zh-cn/home.aspx">其他谢瑞麟网站</a></li>
             </ul>
             <ul>
                 <li class="first">法律条款</li>
-                <li><a href="#">隐私条款</a></li>
-                <li><a href="#">用户条款</a></li>
+                <li><router-link tag="a" to="/screatment">隐私协议</router-link></li>
+                <li><router-link tag="a" to="/agreement">用户条款</router-link></li>
             </ul>
             <ul>
                 <li class="first">客户服务</li>
-                <li><a href="#">分店网路</a></li>
-                <li><a href="#">客服中心</a></li>
+                <li><a href="http://goldprice.tslj.cn/shopList/html/shopList.php?reg=CN">分店网路</a></li>
+                <li><a href="javascript:void()" onclick="qimoChatClick()">客服中心</a></li>
             </ul>
             <ul>
                 <li class="first">珠宝</li>
-                <li><a href="#">珠宝类型</a></li>
-                <li><a href="#">珠宝系列</a></li>
+                <li><router-link href="#" to="/pl/戒指?type=珠宝类型&typeName=戒指">珠宝类型</router-link></li>
+                <li><router-link href="#" to="/pl/The%2012%20treasures?type=珠宝系列&typeName=The%2012%20treasures">珠宝系列</router-link></li>
             </ul>
             <ul>
                 <li class="first">关注我们</li>
                 <li>
                     <!-- <a href="#"><i class="iconfont">&#xe604;</i></a> -->
-                    <a href="#"><i class="iconfont" >&#xe600;</i></a>
+                    <a href="https://weibo.com/tslj"><i class="iconfont" >&#xe600;</i></a>
                     <!-- <a href="#"><i class="iconfont">&#xe6d0;</i></a> -->
                     <a href="#" class="weixin" @mouseenter="isShow = true" @mouseleave="isShow = false">
                         <i class="iconfont">&#xe62b;</i>
@@ -40,6 +40,9 @@
             <span>版权所有&copy;2013，谢瑞麟珠宝（国际）有限公司保留一切权利</span>
             <span>京ICP备15035773号-1</span>
         </div>
+        <BackTop :height="120" :bottom="60">
+            <div class="goTo-top">返回顶部</div>
+        </BackTop>
     </div>
 </template>
 
@@ -105,6 +108,12 @@
             ul:last-child
                 i   
                     margin-right 30px
+        .goTo-top
+            padding 10px
+            background #352665
+            color #fff
+            text-align center
+            border-radius 2px
                 
 
 </style>
