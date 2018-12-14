@@ -276,7 +276,7 @@
               <div class="amount" v-for="(merchant, index) in merchants" :key="index">
                 <span>共{{calcQuantity2(merchant)}}件商品，</span>
                 <span>待付款:<span class="price">￥{{calcAmount}}</span></span>
-                <p style="color: #352665">优惠已抵扣：￥{{-Number(calcDiscountedPrice) - Number(handlePrice(couponsValue) * -1 - Number(disPrice.jian) - Number(disPrice.manjianzhe)).toFixed(2) * -1}}</p>
+                <p style="color: #352665">优惠已抵扣：￥{{-Number(calcDiscountedPrice).toFixed(2) - Number(handlePrice(couponsValue) * -1 - Number(disPrice.jian) - Number(disPrice.manjianzhe)).toFixed(2) * -1}}</p>
               </div>
               <!--<div class="amount">合计:<span class="price">￥{{calcAmount}}</span></div>-->
               <loading v-if="loading"></loading>
