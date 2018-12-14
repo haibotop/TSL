@@ -138,7 +138,7 @@
         }
       },
       codeAlipay () {
-        let params = [{'orderNo': this.orderNum, 'terminalIp': '192.168.0.1', 'productDescription': '甄品商城', 'currency': 'CNY'}]
+        let params = [{'payType': 14, 'orderNo': this.orderNum, 'terminalIp': '192.168.0.1', 'productDescription': '甄品商城', 'currency': 'CNY'}]
         this.$http.post(...orderAPI.codeAlipay(params), {async: false}).then((response) => {
           console.log(response)
           if (response.data.code === 200) {
