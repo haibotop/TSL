@@ -1,29 +1,31 @@
 <template>
-    <div class="header">
-        <div class="header-logo">
-            <router-link to="/">
-                <img src="../../assets/images/tsl_logo.png">
-            </router-link>
-        </div>
-        <div class="header-left">
-            <a href="javascript:void(0)" @mouseenter="handleClick(1)" @mouseleave="handleClick(1)">
-                品牌介绍
-                <Icon :type="arrow === 1 ? 'ios-arrow-up' : 'ios-arrow-down'" size="16"></Icon>
-            </a>                                            
-            <a href="javascript:void(0)" @mouseenter="handleClick(2)" @mouseleave="handleClick(2)" >
-                珠宝类型
-                <Icon :type="arrow === 2 ? 'ios-arrow-up' : 'ios-arrow-down'" size="16"></Icon>
-            </a>              
-            <a href="javascript:void(0)" @mouseenter="handleClick(3)" @mouseleave="handleClick(3)">
-                珠宝系列
-                <Icon :type="arrow === 3 ? 'ios-arrow-up' : 'ios-arrow-down'" size="16"></Icon>
-            </a>              
-        </div>
-        <div class="header-right">
-            <search></search>
-        </div>
-        <div class="headertype" @mouseenter="handleClick(headertype)" @mouseleave="handleClick(headertype)">
-            <headertype v-if="isShow" :headertype="headertype"></headertype>
+    <div class="header_">
+        <div class="header">
+            <div class="header-logo">
+                <router-link to="/">
+                    <img src="../../assets/images/tsl_logo.png">
+                </router-link>
+            </div>
+            <div class="header-left">
+                <a href="javascript:void(0)" @mouseenter="handleClick(1)" @mouseleave="handleClick(1)">
+                    品牌介绍
+                    <Icon :type="arrow === 1 ? 'ios-arrow-up' : 'ios-arrow-down'" size="16"></Icon>
+                </a>                                            
+                <a href="javascript:void(0)" @mouseenter="handleClick(2)" @mouseleave="handleClick(2)" >
+                    珠宝类型
+                    <Icon :type="arrow === 2 ? 'ios-arrow-up' : 'ios-arrow-down'" size="16"></Icon>
+                </a>              
+                <a href="javascript:void(0)" @mouseenter="handleClick(3)" @mouseleave="handleClick(3)">
+                    珠宝系列
+                    <Icon :type="arrow === 3 ? 'ios-arrow-up' : 'ios-arrow-down'" size="16"></Icon>
+                </a>              
+            </div>
+            <div class="header-right">
+                <search></search>
+            </div>
+            <div class="headertype" @mouseenter="handleClick(headertype)" @mouseleave="handleClick(headertype)">
+                <headertype v-if="isShow" :headertype="headertype"></headertype>
+            </div>
         </div>
     </div>
 </template>
@@ -61,7 +63,11 @@
 
 <style lang="stylus" scoped>
 @import "~styles/common/common.styl";
-    
+.header_
+    // position fixed
+    // top 40px
+    // width 1200px
+    // $mb(160px)
     .header
         position relative
         height 120px

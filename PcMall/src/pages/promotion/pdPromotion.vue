@@ -43,7 +43,7 @@
     name: 'pdPromotion',
     directives: { TransferDom },
     components: { Scroller, Group, Cell, Popup, PopupHeader },
-    props: ['routeParams'],
+    props: ['routeParams','num'],//路由id，产品数量
     data () {
       return {
         promotionInfos: [],
@@ -91,7 +91,7 @@
       },
       bestPromotion () {
         // let price = this.$parent.$parent.$parent.skuInfo.sku.price
-        let price = this.$parent.skuInfo.sku.price
+        let price = this.$parent.skuInfo.sku.price * this.num
         if (!price) { return }
         if (!price) { return }
         let selected = ''
@@ -148,6 +148,9 @@
           })
           this.$parent.getSkuCoupon(this.routeParams)
         }
+      },
+      num(){
+        this.bestPromotion()
       }
     }
   }

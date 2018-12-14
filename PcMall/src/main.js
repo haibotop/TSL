@@ -35,10 +35,13 @@ const RouterConfig = {
   // mode: 'history',
   routes: Routers,
   scrollBehavior (to, from, savedPosition) {
+    console.log('totototo',to)
     if (savedPosition) {
       return savedPosition
     } else {
-      return { x: 0, y: 0 }
+      if (!(to.path.indexOf('/pd/')!=-1 && from.path.indexOf('/pd/')!=-1)) {
+        return { x: 0, y: 0 }
+      }
     }
   },
 }

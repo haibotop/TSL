@@ -296,6 +296,9 @@
 <style lang="stylus" scoped>
 @import "~styles/common/common.styl";  
     .header
+        // position fixed
+        // z-index 5
+        // width 1200px
         height 40px
         line-height 40px
         background-color #fff

@@ -3,6 +3,7 @@
     <header1></header1>
     <header2></header2>
     <div id="detail">
+      <loading v-if="loading"></loading>
       <!-- <div class="detail-title"><div class="detail-t">珠宝类型 <span class="xiegang"></span> 戒指</div></div> -->
       <v-title :titleTpye="titleTpye" v-if="titleTpye.length"></v-title>
       <div class="detail-content">
@@ -56,7 +57,7 @@
               <pdCoupons v-show="couponFlag" :couponList="couponList" @closeGetCoupon="closeGetCoupon"></pdCoupons>
             </div>
             <!-- 促销 -->
-            <pdPromotion ref="pdPromotion" v-if="getSkuCompeleted" :routeParams="routeParams"></pdPromotion>
+            <pdPromotion ref="pdPromotion" v-if="getSkuCompeleted" :routeParams="routeParams" :num="num"></pdPromotion>
             <div style="clear:both;height:0"></div>
             <!-- 规格 -->
             <div class="spec" v-for="(item, index) in specArray" :key="index">
@@ -368,6 +369,7 @@
   import vFooter from '@/pages/homePages/footer.vue'
   import vTitle from '@/pages/homePages/title.vue'
   import inputNumber from '@/pages/shoppingCart/inputNumber.vue'
+  import loading from '@/pages/homePages/loading.vue'
   import * as tool from '@/services/myTool.es6'
   import * as pdAPI from '@/services/API/pdServices.es6'
   import * as mkApi from '@/services/API/marketing.es6'
@@ -391,6 +393,7 @@
       vFooter,
       inputNumber,
       vTitle,
+      loading,
       pdRichText,
       pdCoupons,
       Checker,
@@ -405,6 +408,7 @@
         backGoodsArray2:['1. 前言','2. 定义','3. 退货','4. 更换','5. 购物优惠','6. 特别说明','7. 温馨提示'],
         backGoodsArrayIndex: 0,
         backGoodsArrayIndex2: 0,
+        loading: true,
         xoxo:0,
         isShowCheckSpec: 0,//三角形样式
         type:"ios-arrow-down",
@@ -674,6 +678,7 @@
       },
       // ----------处理spec属性数组，属性值对象加上specId和specName
       getSpecArray (data) {
+        this.loading = false
         let specArray = []
         for (let i of data) {
           let spec1 = {
@@ -754,6 +759,7 @@
       },
       // ----------spec组合变动，获取spec组合信息
       getSkuBySpec: debounce(function () {
+        this.loading = true
         this.num = 1
         this.$http.post(...pdAPI.specGetSku(this.specArrayOn).concat({
         cancelToken: new this.$http.CancelToken(function (cancel) {
@@ -763,6 +769,7 @@
           getSkuCancel = cancel
         })
       })).then((res) => {
+        this.loading = false
         if (res.data.code === 200) {
           this.skuId = res.data.skuInfo.sku.id
           this.skuInfo = res.data.skuInfo
@@ -857,14 +864,12 @@
             this.specFlag = true
             this.num = 1
             if (response.data.code === 200) {
-              // this.$vux.toast.show({text: '加入购物袋成功', type: 'text', width: '200px'})
               this.$Message.success({content:'加入购物袋成功',duration:3})
               this.getCartItem()
             } else {
               if (response.data.code === 1008) {
                 this.skuInfo.sku.status = 2
               }
-              // this.$vux.toast.show({text: response.data.message, type: 'text', width: '200px'})
               this.$Message.info(response.data.message)
             }
           })
@@ -891,7 +896,6 @@
               stock: this.skuInfo.sku.stock
             }]
             localStorage.setItem('cartProductItems', JSON.stringify(arr))
-            // this.$vux.toast.show({text: '加入购物袋成功', type: 'text', width: '200px'})
             this.$Message.success({content:'加入购物袋成功',duration:3});
             this.num = 1
             this.specFlag = true
@@ -925,7 +929,6 @@
               })
             }
             localStorage.setItem('cartProductItems', JSON.stringify(arr))
-            // this.$vux.toast.show({text: '加入购物袋成功3', type: 'text', width: '200px'})
             this.$Message.success({content:'加入购物袋成功',duration:3});
             this.getCartItem()
           }
@@ -953,12 +956,12 @@
           }
           this.$http.post(...pdAPI.postCartItem(cartItemData), {certified: true}).then((response) => {
             if (response.data.code === 200) {
+              console.log('ddddddddddddddddddddd',this.$refs.pdPromotion)
               sessionStorage.setItem('settlementProductItems',`[{"promotionId":"${this.$refs.pdPromotion.selected ? this.$refs.pdPromotion.selected.id : ''}","productItem":[{"productId":"${this.skuId}","quantity":${this.num}}]}]`)
               this.$router.push({path: `/createOrder`})
                this.specFlag = true
                this.num = 1
             } else {
-              // this.$vux.toast.show({text: response.data.message, type: 'text', width: '200px'})
               this.$Message.info(response.data.message)
             }
           })
