@@ -1,9 +1,7 @@
 <template>
   <div>
-    <div class="fixed">
-      <header1></header1>
-      <header2></header2>
-    </div>
+    <header1></header1>
+    <header2></header2>
     <pageTemp :template="template"></pageTemp> 
     <v-footer></v-footer>
     <send-coupons></send-coupons>
@@ -92,9 +90,6 @@
 </script>
 
 <style lang="stylus" scoped>
-  .fixed
-    position fixed
-    width 1200px
-    // margin-bottom 
+
   
 </style>
