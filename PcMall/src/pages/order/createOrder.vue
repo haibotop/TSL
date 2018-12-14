@@ -523,6 +523,7 @@
           for (let j of i.SettlementProductItem) {
             afterPromotionBack += j.sum - j.proDiscount
           }
+          console.log('afterPromotionBack', afterPromotionBack)
           let merchantInfo = {
             amount: i.amount,
             address: i.address,
@@ -586,7 +587,9 @@
                     indexLs = index
                   }
                 }
-                afterPromotion1 = afterPromotion1 - j.pdsArray[indexLs].subtract
+                if(i.sum >= j.pdsArray[indexLs].fullLimit){  // 商品价格大于优惠价格才减，符合条件才减
+                    afterPromotion1 = afterPromotion1 - j.pdsArray[indexLs].subtract
+                }
                 afterPromotion1 = tool.handlePrice(afterPromotion1)
               } else if (j.type === 2) { // 满折
                 let largest = 0
@@ -597,7 +600,9 @@
                     indexLs = index
                   }
                 }
-                afterPromotion1 = afterPromotion1 * j.pdsArray[indexLs].discount * 0.01
+                if(i.sum >= j.pdsArray[indexLs].fullLimit){
+                    afterPromotion1 = afterPromotion1 * j.pdsArray[indexLs].discount * 0.01
+                }
                 afterPromotion1 = tool.handlePrice(afterPromotion1)
               } else if (j.type === 3) { // 单品折扣
 //                afterPromotion1 = afterPromotion1 * j.discount * 0.01

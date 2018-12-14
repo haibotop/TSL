@@ -154,12 +154,12 @@
           <div class="login-t">普通用户 <span class="xiegang"></span> 登录</div>
       </div>
       <div class="login-content">
-          <div class="changeTab" >
+          <div class="changeTab" style="display:none;">
               <img :src="loginSrc" @click="loginStatus = !loginStatus">
               <span class="saoma_txt" v-show="!loginStatus">TSL会员微信扫码登录</span>
               <span class="saoma_txt" v-show="loginStatus">点此切换到账号登录</span>
           </div>
-          <div class="login-cont" v-show="loginStatus">
+          <div class="login-cont" v-show="loginStatus"  style="display:none;">
               <p>若已有TSL会员账号，打开微信扫描二维码即可完成登录：</p>
               <img src="../../assets/images/login_qrcode_b.png" alt="">
               <Button class="backHomePage"  @click.native="backHomePage" >返回首页</Button>

@@ -11,12 +11,12 @@
             <p class="p2">有效期：{{(coupon.startDate || '').split(' ')[0]}}至{{(coupon.endDate || '').split(' ')[0]}}</p>
             <!-- <p>查看使用说明<Icon type="ios-arrow-down" size="18"/></p> -->
         </div>
-        <div class="coupons-footer" v-bind:hidden="hiddenbukeyong == 4">
+        <div class="coupons-footer" >
             <span v-show="status === 0 && !check" @click="receiveCoupon(coupon)">立即领取</span>
             <span v-show="status === 1 && !check" @click="receiveCoupon(coupon)">去使用</span>
             <p v-show="status === 2">已使用</p>
             <p v-show="status === 3">已失效</p>
-            <p v-show="status === 4">不可用</p>
+            <p v-show="status === 4" :style="hiddenbukeyong == 4 ? 'display:none;':''">不可用{{hiddenbukeyong}}</p>
         </div>
         <div v-show="status === 2 || status === 3 || status === 4" class="mask"></div>
     </div>

@@ -211,12 +211,12 @@
             <div class="login-t">普通用户 <span class="xiegang"></span> 注册</div>
         </div>
         <div class="login-content">
-            <div class="changeTab" >
-                <img :src="loginSrc" @click="loginStatus = !loginStatus">
+            <div class="changeTab" style="display:none;">
+                <img :src="loginSrc" @click="loginStatus = !loginStatus" >
                 <span class="saoma_txt" v-show="!loginStatus">TSL会员微信扫码注册</span>
                 <span class="saoma_txt" v-show="loginStatus">点此切换到账号注册</span>
             </div>
-            <div class="login-cont" v-show="loginStatus">
+            <div class="login-cont" v-show="loginStatus"  style="display:none;">
                 <p>打开微信扫描二维码，可以在手机上完成注册：</p>
                 <img src="../../assets/images/login_qrcode_b.png" alt="">
                 <Button class="backHomePage"  @click.native="backHomePage" >返回首页</Button>

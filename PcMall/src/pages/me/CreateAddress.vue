@@ -32,10 +32,10 @@
               <template>
                   <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" style="display: inline-block;">
                       <!--<FormItem prop="province" label="省份">-->
-                          <Select ref="select11" v-model="formValidate.province" placeholder="请选择城市" @on-change="change($event)" :clearable=true>
+                          <Select ref="select11" v-model="formValidate.province" placeholder="请选择省份" @on-change="change($event)" :clearable=true>
                               <Option v-for="item,index in provinceArr" :key="index" :value="item.name">{{ item.name}}</Option>
                           </Select>
-                          <Select ref="select" v-model="formValidate.city" placeholder="请选择省份"  @on-change="change2($event)" :clearable=true>
+                          <Select ref="select" v-model="formValidate.city" placeholder="请选择城市"  @on-change="change2($event)" :clearable=true>
                               <Option v-for="item,index2 in cities" :key="item.name" :value="item.name" >{{ item.name}}</Option>
                           </Select>
                           <Select ref="select_" v-model="formValidate.areaList" placeholder="请选择地区" @on-change="change3($event)" :clearable=true>
