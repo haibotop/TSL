@@ -94,8 +94,8 @@
                 <input id="orderNumInput2" type="text" :value="orderItem.orderNo" readonly style="position:absolute;top:-30px;">
                 <button class="copy-btn" data-clipboard-target="#orderNumInput2">复制单号</button>
               </div>
-              <div>
-                退货订单编号:{{orderItem.afterSaleNo}} 
+              <div style="margin-top: 10px;">
+                退货订单编号：{{orderItem.afterSaleNo}}
                 <input id="orderNumInput" type="text" :value="orderItem.afterSaleNo" readonly style="position:absolute;top:-30px;">
                 <button class="copy-btn" data-clipboard-target="#orderNumInput">复制单号</button>
               </div>
@@ -119,7 +119,7 @@
     </div> 
     <v-footer></v-footer>
     <div>
-      <confirm v-model="clipConfirm" title="已复制订单号"  cancel-text=" "></confirm>
+      <confirm v-model="clipConfirm" title="已复制订单号"  cancel-text="取消"></confirm>
     </div>
   </div>
 </template>

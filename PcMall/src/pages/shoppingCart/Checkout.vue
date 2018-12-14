@@ -11,63 +11,42 @@
     <!--</x-header>-->
     <!-- 付款等待 -->
   <div class="login-content">
+  <div class="login-cont">
     <div v-show="waited">
-      <div class="payState">
-        <Group>
-          <div class="paymsg">
-            <p class="payconfirm">
-              请稍后 ...
-            </p>
-          </div>
-        </Group>
-      </div>
-      <div class="failContent">
-        <div class="telbtn">
-          <x-button class="checkOrder" @click.native="gotoMyOrders">查看订单</x-button>
-          <x-button class="toHome" @click.native="gotoHome">返回首页</x-button>
+        <div class="login-success">
+            <p style="margin-top: 20px;text-align: center;">请稍后 ...</p>
         </div>
-      </div>
+        <div class="login-footer">
+            <Button class="goto-home" @click.native="gotoMyOrders" >查看订单</Button>
+            <Button class="look-more" @click.native="gotoHome" >返回首页</Button>
+        </div>
     </div>
     <!-- 付款成功 -->
     <div v-show="success && !waited">
-      <div class="payState">
-        <Group>
-          <div class="paymsg">
-            <p class="payconfirm">
-              <x-icon type="ios-checkmark-outline" size="30" class="payIcon"></x-icon>
-              付款成功
-            </p>
-            <p class="payconfirmmsg">您的包裹正整装待发</p>
-          </div>
-        </Group>
-      </div>
-      <div class="failContent">
-        <div class="telbtn">
-          <x-button class="checkOrder" @click.native="gotoMyOrders">查看订单</x-button>
-          <x-button class="toHome" @click.native="gotoHome">返回首页</x-button>
+        <div class="login-success">
+            <p class="success-tb"></p>
+            <p class="success-txt">付款成功</p>
+            <p style="margin-top: 20px;text-align: center;">您的包裹正整装待发</p>
         </div>
-      </div>
+        <div class="login-footer">
+            <Button class="goto-home" @click.native="gotoMyOrders" >查看订单</Button>
+            <Button class="look-more" @click.native="gotoHome" >返回首页</Button>
+        </div>
     </div>
     <!-- 付款失败 -->
-    <div v-if="!success && !waited">
+    <div  v-if="!success && !waited">
       <!-- 付款失败显示内容 -->
-      <div class="failContent" v-if="!success && !waited">
-        <div class="payState">
-          <group>
-            <div class="paymsg">
-              <p class="payconfirm">
-                付款失败！
-              </p>
-              <p class="payconfirmmsg">服务时间：{{ workHours }}</p>
-            </div>
-          </group>
+        <div class="login-success">
+            <img src="../../assets/icons/icon_fail.png" style="width: 70px;height: 70px;">
+            <p class="fail-txt" style="margin-top: 20px;">付款失败！</p>
+            <p style="margin-top: 20px;text-align: center;">如已扣款，我们将在24小时内退回</p>
         </div>
-        <div class="telbtn">
-          <x-button class="onlineTel">在线客服</x-button>
-          <x-button class="clientTel">电话客服</x-button>
+        <div class="login-footer">
+            <Button class="goto-home" onclick="qimoChatClick()">联系客服</Button>
+            <Button class="look-more" @click.native="gotoHome" >完成</Button>
         </div>
-      </div>
     </div>
+  </div>
   </div>
   </div>
 <v-footer></v-footer>
@@ -222,132 +201,71 @@
           padding: 80px 0;
           width: 80%;
           background: #fff;
+          .login-cont{
+              width: 650px;
+              margin: 0 auto;
+              text-align: center;
+              .success-tb{
+                  position: relative;
+                  margin: 0 auto;
+                  width: 70px;
+                  height: 70px;
+                  border-radius: 50%;
+                  background: #352665;
+              }
+              .success-tb::before{
+                  position: absolute;
+                  top: 50%;
+                  margin-top: 4px;
+                  left: 50%;
+                  margin-left: -17px;
+                  content: '';
+                  display: inline-block;
+                  width: 17px;
+                  height: 3px;
+                  background-color: #fff;
+                  transform: rotate(38deg);
+
+              }
+              .success-tb::after{
+                  position: absolute;
+                  top: 50%;
+                  margin-top: -2px;
+                  left: 50%;
+                  margin-left: -7px;
+                  content: '';
+                  display: inline-block;
+                  width: 30px;
+                  height: 3px;
+                  background-color: #fff;
+                  transform: rotate(-45deg);
+
+              }
+              .success-txt{
+                  margin-top: 40px;
+                  font-size: 16px;
+                  color: #111111;
+              }
+              .login-footer{
+                  margin-top: 80px;
+                  .goto-home{
+                      margin-right: 30px;
+                      width: 200px;
+                      height: 50px;
+                      font-size: 16px;
+                      color:#352665;
+                      background-color: #EBEAF0;
+                  }
+                  .look-more{
+                      padding-bottom: 8px;
+                      width: 200px;
+                      height: 50px;
+                      font-size: 16px;
+                      color: #fff;
+                      background-color: #352665;
+                  }
+              }
+          }
       }
-    .fontColor {
-      color: #000;
-    }
-    .sumFontColor {
-      color: red;
-    }
-    .payState{
-      .weui-cells{
-        background: #eee;
-        margin: 0 !important;
-      }
-    }
-    .paymsg {
-      margin-top: 60px;
-      color: #352665;
-      .payconfirm {
-        height: 30px;
-        margin-left: 70px;
-        line-height: 30px;
-        padding-top: 30px;
-        font-size: 20px;
-        .payIcon{
-          position: absolute;
-          left: 36px;
-          fill: #ffffff;
-        }
-      }
-      .payconfirmmsg{
-        margin-left: 70px;
-        font-size: 14px;
-        padding-bottom: 24px;
-      }
-    }
-    .workingHours {
-      margin: 20px;
-    }
-    .finishBtn {
-      position: absolute;
-      width: 100%;
-    }
-    .checkOrder,.toHome {
-      width: 140px;
-      height: 44px;
-      color: #ffffff;
-      display: inline-block;
-    }
-    .checkOrder{
-      background-color: #352665;
-    }
-    .toHome{
-      background-color: #352665;
-    }
-    .onlineTel,.clientTel {
-      width: 140px;
-      height: 44px;
-      color: #ffffff;
-      display: inline-block;
-    }
-    .onlineTel{
-      background-color: #352665;
-    }
-    .clientTel{
-      background-color: #352665;
-    }
-    .addressGroup{
-      .weui-cells{
-        margin: 0 !important;
-      }
-    }
-    .address {
-      .addrssIcon{
-        img{
-          width: 15px;
-        }
-      }
-      .addressee {
-        width: 94%;
-        margin-left: 5px;
-        display: block;
-        font-size: 14px;
-        .tel {
-          float: right;
-        }
-        .icon-default {
-          width: 50px;
-        }
-      }
-      .addressInfo {
-        width: 96%;
-        display: inline-block;
-        vertical-align: top;
-        margin-left: 5px;
-        .addressDetail{
-          font-size: 12px;
-          color:#7F7F7F;
-        }
-      }
-    }
-    .failContent{
-      .telbtn{
-        margin-top:30px;
-        text-align: center;
-        letter-spacing: 20px;
-      }
-      .weui-cells{
-        margin: 0 !important;
-      }
-      .weui-cells::before{
-        border-bottom: 1px solid transparent;
-      }
-      .weui-cells::after{
-        border-bottom: 1px solid transparent;
-      }
-    }
-    .settlement-cell {
-      padding: 0;
-    }
-    .settlement {
-      color: #fff;
-      width: 100px;
-      height: 50px;
-      line-height: 50px;
-      text-align: center;
-      display: inline-block;
-      background-color: #666666;
-    }
   }
 </style>

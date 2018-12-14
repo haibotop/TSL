@@ -23,6 +23,7 @@
             <!--<check-icon class="coupon-check" :value.sync="checkObj[couponInfo.code]" type="plain"></check-icon>-->
             <div v-if="couponInfo.zhihui === 4" class="coupon-check check-mask"></div>
             <coupon
+              :hiddenbukeyong="couponInfo.zhihui"
               :status="couponInfo.zhihui"
               class="coupon-margin"
               :coupon="couponInfo"

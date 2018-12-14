@@ -390,9 +390,10 @@
       },
       // 删除地址
       deleteAddress () {
-        this.$Modal.warning({
+        this.$Modal.confirm({
           title: '提示',
           content: '是否确定删除该地址',
+          cancelText: '取消',
           onOk: () => {
               // sessionStorage.setItem('addressInfo',null)
             this.$http.delete(myAPI.deleteshippingAddress(this.id))

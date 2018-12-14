@@ -213,7 +213,7 @@
         <div class="login-content">
             <div class="changeTab" >
                 <img :src="loginSrc" @click="loginStatus = !loginStatus">
-                <span class="saoma_txt" v-show="!loginStatus">也可用手机扫码注册</span>
+                <span class="saoma_txt" v-show="!loginStatus">TSL会员微信扫码注册</span>
                 <span class="saoma_txt" v-show="loginStatus">点此切换到账号注册</span>
             </div>
             <div class="login-cont" v-show="loginStatus">
