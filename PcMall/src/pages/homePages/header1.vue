@@ -7,7 +7,8 @@
                     <Icon :type="type" size="16"></Icon>
                 </a>  
                 <DropdownMenu  slot="list" class="dayprice" >
-                        <h3>香港金价（每两）</h3>
+                    <iframe src="http://goldprice.tslj.cn/goldPrice/html/sc/gold_price_hk.php" width="100%" height="100%"></iframe>
+                        <!-- <h3>香港金价（每两）</h3>
                         <table>
                             <tr>
                                 <th>  </th>
@@ -51,7 +52,7 @@
                         </table>
                         <p>*以上进价仅供参考，请以具体门店报价为准<br>
                             最后更新：2018/09/25 09:40:00
-                        </p>
+                        </p> -->
                 </DropdownMenu>
             </Dropdown>
         </div>     
@@ -316,9 +317,8 @@
                 .dayprice
                     padding-left 10px     
                     width 350px
-                    height 450px
+                    height 550px
                     $border(b,1px)
-                    $border(border-left,8px)
                     padding 0
                     text-align center
                     h3

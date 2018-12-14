@@ -1,5 +1,5 @@
 <template>
-    <div class="header_">
+    <!-- <div class="header_"> -->
         <div class="header">
             <div class="header-logo">
                 <router-link to="/">
@@ -27,7 +27,7 @@
                 <headertype v-if="isShow" :headertype="headertype"></headertype>
             </div>
         </div>
-    </div>
+    <!-- </div> -->
 </template>
 
 <script>
@@ -63,7 +63,7 @@
 
 <style lang="stylus" scoped>
 @import "~styles/common/common.styl";
-.header_
+// .header_
     // position fixed
     // top 40px
     // width 1200px
