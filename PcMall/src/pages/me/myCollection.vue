@@ -657,12 +657,5 @@ import { debounce } from 'vux'
                                 .price_
                                     text-align center
                                     color #ccc
-        .goTo-top{
-            padding: 10px;
-            background: #352665;
-            color: #fff;
-            text-align: center;
-            border-radius: 2px;
-        }
     
 </style>

@@ -21,11 +21,11 @@
       <div class="login-cont">
           <div class="addressee">
               <span>收件人</span>
-              <Input v-model="personalInfo.name" ref="name" placeholder="请填写收件人"  />
+              <input v-model="personalInfoName" class="personalInfoName" ref="name" placeholder="请填写收件人"  />
           </div>
           <div class="phoneNum">
               <span>手机号</span>
-              <Input v-model="personalInfo.tel" ref="telephone" type="text" :maxlength=11 placeholder="请填写收件人手机号码" />
+              <input v-model="personalInfoTel" class="telephone" ref="telephone" type="text" :maxlength=11 placeholder="请填写收件人手机号码" />
           </div>
           <div class="addressPlace">
               <span>收货地址</span>
@@ -115,6 +115,24 @@
         areaList:[],
         provinceItem:[]
       }
+    },
+    computed: {
+        personalInfoTel: {// 只能输入数字
+            set: function (value) {
+                this.personalInfo.tel = value
+            },
+            get: function () {
+                return this.personalInfo.tel.replace(/[^0-9]+/g, '')
+            }
+        },
+        personalInfoName: { // 只能输入中文英文
+            set: function(value) {
+                this.personalInfo.name= value
+            },
+            get: function() {
+                return this.personalInfo.name.replace(/[^\u0391-\uFFE5A-Za-z]+$/g,'')
+            },
+        }
     },
     methods: {
         //取消保存
@@ -375,6 +393,13 @@
         }
         .phoneNum,.addressPlace,.discount{
             margin-top: 30px;
+        }
+        .personalInfoName,.telephone{
+            padding: 4px 7px;
+            font-size: 14px;
+            border: 1px solid #dcdee2;
+            border-radius: 4px;
+            color: #515a6e;
         }
         .login-footer{
             margin-top: 75px;

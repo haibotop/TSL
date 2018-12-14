@@ -201,13 +201,6 @@
                 }
             }
         }
-        .goTo-top{
-            padding: 10px;
-            background: #352665;
-            color: #fff;
-            text-align: center;
-            border-radius: 2px;
-        }
     }
 </style>
 <template>
@@ -251,11 +244,7 @@
         </div>
         <Page :total="this.totalCount" :page-size="pageSize" :show-total="true" :show-elevator="true"
               @on-change="getDataList" @on-page-size-change="getPageList" class="page-fenye" />
-        <BackTop :height="100" :bottom="100">
-            <div class="goTo-top">返回顶部</div>
-        </BackTop>
-
-
+        <loading v-if="loading"></loading>
     </div>
     <v-footer></v-footer>
   </div>
@@ -266,6 +255,7 @@
   import header1 from '@/pages/homePages/header1'
   import header2 from '@/pages/homePages/header2'
   import vFooter from '@/pages/homePages/footer'
+  import loading from '@/pages/homePages/loading.vue'
   let timeout = ''
   let interval
   export default {
@@ -273,7 +263,8 @@
     components: {
       header1,
       header2,
-      vFooter
+      vFooter,
+      loading
     },
     data () {
       return {
@@ -334,6 +325,9 @@
           clsPrefix: 'xs-plugin-pulldown-'
         }
       }
+    },
+    beforeMount () {
+        this.loading = true
     },
     mounted: function () {
       this.getParamsFromUrl()
@@ -457,6 +451,7 @@
         if (flag) {
           // http 200
           if (res.data.code === 200) {
+              this.loading = false
             // 首刷 || 下拉
             if (this.currentPage === 1) {
               this.datas = res.data.page.datas

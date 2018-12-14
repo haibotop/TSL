@@ -23,7 +23,7 @@ import pd from '@/pages/pd/pd'
 
 //购物车
 import shoppingCart from '@/pages/shoppingCart/shoppingCart'
-// import checkout from '@/pages/TSLshoppingCart/Checkout.vue'
+import checkout from '@/pages/shoppingCart/Checkout.vue'
 
 //订单
 import createOrder from '@/pages/order/createOrder.vue'
@@ -66,10 +66,11 @@ let shopModal = [
         },
         component: shoppingCart
     },
-    // {
-    //   path: '/checkout',
-    //   component: checkout
-    // }
+    {
+        path: '/checkout',
+        name: 'checkout',
+        component: checkout
+    }
 ]
 
 // 搜索
