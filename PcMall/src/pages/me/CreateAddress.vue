@@ -21,11 +21,11 @@
       <div class="login-cont">
           <div class="addressee">
               <span>收件人</span>
-              <input v-model="personalInfoName" class="personalInfoName" ref="name" placeholder="请填写收件人"  />
+              <input v-model="personalInfo.name" onkeyup="value=value.replace(/[^\a-zA-Z\u4E00-\u9FA5]/g,'')" class="personalInfoName" ref="name" placeholder="请填写收件人"  />
           </div>
           <div class="phoneNum">
               <span>手机号</span>
-              <input v-model="personalInfoTel" class="telephone" ref="telephone" type="text" :maxlength=11 placeholder="请填写收件人手机号码" />
+              <input v-model="personalInfoTel" onkeyup="value=value.replace(/[^0-9]+/g, '')" class="telephone" ref="telephone" type="text" :maxlength=11 placeholder="请填写收件人手机号码" />
           </div>
           <div class="addressPlace">
               <span>收货地址</span>
@@ -115,24 +115,6 @@
         areaList:[],
         provinceItem:[]
       }
-    },
-    computed: {
-        personalInfoTel: {// 只能输入数字
-            set: function (value) {
-                this.personalInfo.tel = value
-            },
-            get: function () {
-                return this.personalInfo.tel.replace(/[^0-9]+/g, '')
-            }
-        },
-        personalInfoName: { // 只能输入中文英文
-            set: function(value) {
-                this.personalInfo.name= value
-            },
-            get: function() {
-                return this.personalInfo.name.replace(/[^\a-zA-Z\u4E00-\u9FA5]/g,'')
-            },
-        }
     },
     methods: {
         //取消保存

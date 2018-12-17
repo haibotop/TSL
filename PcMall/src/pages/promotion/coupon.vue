@@ -173,6 +173,7 @@
             top 0
             background-color #ccc
             opacity 0.5
+            z-index 999999
 
 
 </style>
