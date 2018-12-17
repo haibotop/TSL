@@ -166,6 +166,7 @@
     components: { header1,header2,vFooter,vTitle,loading,inputNumber,XHeader, Scroller, XButton, CheckIcon, Popup, debounce, Checker, CheckerItem, Group, InlineXNumber },
     data () {
       return {
+        cloneCart: '',//备份购物车产品
         offsetTop:0, //底部离顶部的距离
         fixedBottom: true,//滚动样式
         promotionActive2: -1,//促销样式
@@ -213,7 +214,7 @@
         // console.log('scrollTop:',scrollTop);console.log('clientHeight:',clientHeight);console.log('offsetTop:',offsetTop)
         // console.log('scrollTop + clientHeight < offsetTop',scrollTop + clientHeight < offsetTop)
         // console.log('scrollTop + clientHeight',scrollTop + clientHeight)
-        if ( scrollTop + clientHeight < 2236 ) {
+        if ( scrollTop + clientHeight < offsetTop ) {
           this.fixedBottom = true
         }else {
           this.fixedBottom = false
@@ -290,31 +291,121 @@
           if (res.data.code === 200) {
             this.showLoading = false
             if (res.data.list) {
+              console.log('过来 ',res.data.list)
               this.list = res.data.list
-              this.handleRes(res.data.list)
+              this.handleRes(...[res.data.list])
               // console.log('=====',this.list)
             }
           }
         })
       },
       handleRes (list = []) {
-        console.log('list',list)
-        if(localStorage.oldList!=undefined){
-          let oldList = JSON.parse(localStorage.getItem('oldList')) //老的
-          console.log('oldList',oldList)
+        console.log('原来的list',list)
+        if(this.cloneCart!=''){
+          // let oldList = JSON.parse(localStorage.getItem('oldList')) //老的
+          console.log('oldList',this.cloneCart)
           // let spuId = JSON.parse(localStorage.getItem('spuId')) 
           // let shoppingspuId = localStorage.shoppingspuId
           // let pop = list.productItem.pop()
-          let length = oldList[0].productItem.length - 1
-          for (let i=0;i<oldList[0].productItem.length;i++){
-            if(oldList[0].productItem[i].id != list[0].productItem[i].id){
-              [list[0].productItem[i], list[0].productItem[length]]=[list[0].productItem[length], list[0].productItem[i]]
+
+          // let obj = list[0].productItem
+          let length = list[0].productItem.length - 1
+          
+          console.log('list',list)
+          for (let i=0;i<list[0].productItem.length;i++){
+            if(list[0].productItem[i].id != this.cloneCart[0].productItem[i].id){
+              let pop = list[0].productItem.pop()
+              console.log('objobjobjobj',list[0].productItem)
+              // console.log('水电费水电费', i)
+              // [list[0].productItem[i], list[0].productItem[length]] = [list[0].productItem[length], list[0].productItem[i]]
+              list[0].productItem.splice(i,0,pop)
+
+              console.log('调换位置的list',list)
               break
             }
+            
           }
+
+          // for (let i=0;i<this.cloneCart[0].productItem.length;i++){
+          //   for(let k=0;k<list[0].productItem.length;k++){
+          //     if(this.cloneCart[0].productItem[i].id != list[0].productItem[k].id){
+          //       // alert()
+          //       // this.cloneCart[0].productItem.splice(i,0,list[0].productItem[k])
+          //       // list = this.cloneCart
+          //       // break
+          //     }
+          //   }
+          // }
+
+          // let a=this.cloneCart[0].productItem, b=list[0].productItem,
+          // c = [...a, ...b],
+          // d = new Set(c),
+          // e = Array.from(d),
+          // f = [...e.filter(_=>!a.includes(_)),...e.filter(_=>!b.includes(_))]
+          // console.log('ffffff',f)
+
+          console.log('list[0].productItem',list[0].productItem)
+          console.log('this.cloneCart[0].productItem',this.cloneCart[0].productItem)
+          var result = []
+          for(var i = 0; i < list[0].productItem.length; i++){
+            var obj = list[0].productItem[i]
+            var num = obj.id
+            var flag = false
+            for(var j = 0; j < this.cloneCart[0].productItem.length; j++){
+              var aj = this.cloneCart[0].productItem[j]
+              var n = aj.id
+              if(n == num){
+                flag = true
+                break
+              }
+            }
+            if(!flag){
+              result.push(obj)
+            }
+          }
+
+          for(var i = 0; i < this.cloneCart[0].productItem.length; i++){
+            var obj = this.cloneCart[0].productItem[i]
+            var num = obj.id
+            var flag = false
+            for(var j = 0; j < list[0].productItem.length; j++){
+              var aj = list[0].productItem[j]
+              var n = aj.id
+              if(n == num){
+                flag = true
+                break
+              }
+            }
+            if(!flag){
+              result.push(obj)
+            }
+          }
+          console.log('sfasfasf220asdf',result)//1，新，2，旧
+
+          if(result.length==2){
+            for (let i=0;i<this.cloneCart[0].productItem.length;i++){
+              if(this.cloneCart[0].productItem[i].id == result[1].id){
+                this.cloneCart[0].productItem.splice(i,1,result[0])
+                list = this.cloneCart
+                break
+              }
+            }
+          }else{
+            for (let i=0;i<this.cloneCart[0].productItem.length;i++){
+              if(this.cloneCart[0].productItem[i].id == result[0].id){
+                this.cloneCart[0].productItem.splice(i,1)
+                list = this.cloneCart
+                break
+              }
+            }
+          }
+          
+
         }
 
-        localStorage.setItem('oldList',JSON.stringify(list))
+        // localStorage.setItem('oldList',JSON.stringify(list))
+        this.cloneCart = [...list]
+        console.log('this.cloneCart',this.cloneCart)
 
         let datas = []
         list.forEach(e => {
@@ -378,6 +469,7 @@
       },
       // 改变商品使用促销
       changePromotion (promotionId) {
+        this.cloneCart = ''
         let list = JSON.parse(JSON.stringify(this.list))
         for (let i in list) {
           for (let j in list[i].productItem) {
@@ -833,7 +925,7 @@
     },
     mounted: function () {  
       
-      // window.addEventListener('scroll', this.cartScroll)
+      window.addEventListener('scroll', this.cartScroll)
       let userInfo = sessionStorage.getItem('userInfo')
       if (userInfo) {
         this.memberId = JSON.parse(userInfo).memberId
