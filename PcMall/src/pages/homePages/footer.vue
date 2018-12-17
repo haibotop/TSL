@@ -40,7 +40,7 @@
             <span>版权所有&copy;2013，谢瑞麟珠宝（国际）有限公司保留一切权利</span>
             <span>京ICP备15035773号-1</span>
         </div>
-        <BackTop :height="120" :bottom="60">
+        <BackTop :height="120" :bottom="60" v-if="goTopIsShow">
             <div class="goTo-top">返回顶部</div>
         </BackTop>
     </div>
@@ -52,6 +52,12 @@
         data () {
             return {
                 isShow: false
+            }
+        },
+        props: {
+            goTopIsShow: {
+                type: Boolean,
+                default: true
             }
         }
     }

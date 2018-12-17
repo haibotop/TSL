@@ -111,26 +111,30 @@
               </div>
             </div>
           </div>
+          <div style="clear:both"></div>
           <!-- 底下 -->
-          <div class="shoppingCart-content-bottom">
-            <div class="shoppingCart-content-bottom-content">
-              <div class="left">
-                <div @click="checkAll"></div>
-                <Checkbox v-model="checkedAll"></Checkbox>全选
-                <span class="delete" @click="deleteConfirm">删除</span>
-                <!-- <span>添加到收藏 </span> -->
-              </div>
-              <div class="right">
-                <p>总计：<span>￥{{sum}}</span></p>
-                <Button class="btn" @click.native="checkout">结算<Icon type="ios-arrow-forward" /></Button>
+          <div class="shoppingCart-content-bottom" :class="{bottomBorder:!fixedBottom}">
+            <div ref="bottom" class="shoppingCart-content-bottom-content" :class="{fixedBottom:fixedBottom}">
+              <div class="shoppingCart-content-bottom-content_" :class="{widthPdding:fixedBottom}">
+                <div class="left">
+                  <div @click="checkAll"></div>
+                  <Checkbox v-model="checkedAll"></Checkbox>全选
+                  <span class="delete" @click="deleteConfirm">删除</span>
+                  <!-- <span>添加到收藏 </span> -->
+                </div>
+                <div class="right">
+                  <p>总计：<span>￥{{sum}}</span></p>
+                  <Button class="btn" @click.native="checkout">结算<Icon type="ios-arrow-forward" /></Button>
+                </div>
               </div>
             </div>
           </div>
+          <div style="clear:both"></div>
         </div>
       </div>
     </div>
 
-    <v-footer></v-footer>
+    <v-footer :goTopIsShow = false></v-footer>
   </div>
 </template>
 <script type="text/ecmascript-es6">
@@ -144,7 +148,6 @@
   import * as scAPI from '@/services/API/shoppingCartServices.es6'
   import * as pdAPI from '@/services/API/pdServices.es6'
   import { XHeader, Scroller, XButton, CheckIcon, TransferDomDirective as TransferDom, Popup, debounce, Checker, CheckerItem, Group, InlineXNumber } from 'vux'
-  import MyInlineXNumber from './my-inline-x-number.vue'
   
   import * as tool from '@/services/myTool.es6'
   let getSkuCancel
@@ -160,14 +163,16 @@
     //   CheckerItem,
     //   pdPromotion
     // },
-    components: { header1,header2,vFooter,vTitle,loading,inputNumber,XHeader, Scroller, XButton, CheckIcon, Popup, debounce, Checker, CheckerItem, Group, InlineXNumber, MyInlineXNumber },
+    components: { header1,header2,vFooter,vTitle,loading,inputNumber,XHeader, Scroller, XButton, CheckIcon, Popup, debounce, Checker, CheckerItem, Group, InlineXNumber },
     data () {
       return {
+        offsetTop:0, //底部离顶部的距离
+        fixedBottom: true,//滚动样式
         promotionActive2: -1,//促销样式
         promotionActive1: -1,//促销样式
         showLoading: false,//loading
         checkNum:0,
-        titleTpye: ['珠宝类型','戒指'],//珠宝类型的头部
+        titleTpye: ['首页','购物袋'],//珠宝类型的头部
         list: [], // 原数据
         shoppingCarts: [], // 处理后展示用的数据
         sum: 0, // 总计价格
@@ -193,12 +198,28 @@
       }
     },
     //  updated(){
-    //   console.log('shoppingCarts！！！',this.shoppingCarts)
-    //   console.log('更新之后',this.specArray)
-    //   console.log('sortSpecArray',this.sortSpecArray)
-    //   // this.xxxxx = this.specArray[0].specValueArray
+    //   let offsetTop = document.getElementsByClassName('shoppingCart-content-bottom-content')[0].offsetTop
+    //   console.log('offsetTop',offsetTop)
     // },
     methods: {
+      //页面滚动底下变化的方法
+      cartScroll(){
+        let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+        let clientHeight = document.documentElement.clientHeight
+        let offsetTop = document.getElementsByClassName('footer')[0].offsetTop - 80
+        // let offsetTop = document.getElementsByClassName('footer')[0].offsetTop-80
+        // this.offsetTop = this.$refs.bottom.offsetTop
+        console.log('this.offsetTop222222222',document.getElementsByClassName('footer')[0].offsetTop-80)
+        // console.log('scrollTop:',scrollTop);console.log('clientHeight:',clientHeight);console.log('offsetTop:',offsetTop)
+        // console.log('scrollTop + clientHeight < offsetTop',scrollTop + clientHeight < offsetTop)
+        // console.log('scrollTop + clientHeight',scrollTop + clientHeight)
+        if ( scrollTop + clientHeight < 2236 ) {
+          this.fixedBottom = true
+        }else {
+          this.fixedBottom = false
+        }
+      },
+      //单个删除
       oneClick(productId){
         this.checkedObj[productId] = true
         this.deleteConfirm(productId)
@@ -278,6 +299,7 @@
       },
       handleRes (list = []) {
         let datas = []
+        console.log('list',list)
         list.forEach(e => {
           let data = {
             merchantInfo: e.merchantInfo,
@@ -321,8 +343,41 @@
         })
         //  console.log('datadatadatadatadatadatadata',datas)
         this.setChecked(datas)
+
+        if(localStorage.xxxxx!=undefined){
+          let xxxxx = JSON.parse(localStorage.getItem('xxxxx')) //老的
+          console.log('sfasf',xxxxx)
+          let spuId = JSON.parse(localStorage.getItem('spuId')) 
+          let shoppingspuId = localStorage.shoppingspuId
+          // datas //新的
+          for(let i=0;i<xxxxx.length;i++){
+            for(let k=0;k<xxxxx[i].promotions.length;k++){
+              for(let p=0;p<xxxxx[i].promotions[k].productItems.length;p++){
+                
+                // for(let z=0;z<datas.length;z++){
+                //   for(let c=0;k<datas[z].promotions.length;c++){
+                //     for(let v=0;v<datas[z].promotions[c].productItems.length;v++){
+                      
+                //       if(xxxxx[i].promotions[k].productItems[p].spuId===datas[z].promotions[c].productItems[v].spuId){
+                //         console.log('到了',xxxxx[i].promotions[k].productItems[p].spuId)
+                //         this.$set(xxxxx[i].promotions[k].productItems[p],xxxxx[i].promotions[k].productItems[p].spuId,)
+                //         return
+                //       }
+                      
+                //     }
+                //   }
+                // }
+                
+              }
+            }
+          }
+        }
+        // else{
+          
+        // }
+        console.log('xxxxxxxx',datas)
         this.shoppingCarts = datas
-        // console.log('this.shoppingCarts',this.shoppingCarts)
+        localStorage.setItem('xxxxx',JSON.stringify(datas))
         this.checkedObj = JSON.parse(JSON.stringify(this.checkedObj))
       },
       // 设置check-icon的绑定对象
@@ -410,6 +465,7 @@
         this.sum = sum
       },
       putNum: debounce(function (product) {
+        this.getSum ()
         if (sessionStorage.getItem('userInfo')) {
           let params = { oldSkuId: product.id, quantity: product.amount, skuId: '' }
           this.$http.put(...scAPI.putCartItems([params])).then((response) => {
@@ -720,6 +776,7 @@
             
           })
         })).then((response) => {
+          console.log('safasasdasdada',response)
           if (response.data.code === 200) {
             let skuInfo = response.data.skuInfo
             this.specsPopupData = Object.assign(skuInfo.sku, {specs: skuInfo.spec})
@@ -748,7 +805,7 @@
       },
       // 修改商品规格接口
       putSku (obj) {
-        // console.log('obj',obj)
+        console.log('obj',obj)
         if (sessionStorage.getItem('userInfo')) {
           // console.log('545454545454545',this.specsPopupData_bs)
           let params = {
@@ -757,10 +814,14 @@
             quantity: 1,
             skuId: this.specsPopupData.id
           }
-          // console.log('params',params)
-          this.$http.put(...scAPI.putCartItems([params])).then((response) => {//修改规格与数量
+          console.log('obj.spuId',obj.spuId)
+          this.$http.put(...scAPI.putCartItems([params])).then((response) => {//修改规格与数量promotionList
             if (response.data.code === 200) {
               this.specsPopupFlag = false
+              // if(){
+
+              // }
+              localStorage.setItem('shoppingspuId', obj.spuId)
               this.getCartData()
             }
           })
@@ -785,6 +846,8 @@
       }
     },
     mounted: function () {  
+      
+      // window.addEventListener('scroll', this.cartScroll)
       let userInfo = sessionStorage.getItem('userInfo')
       if (userInfo) {
         this.memberId = JSON.parse(userInfo).memberId
@@ -930,7 +993,8 @@
           float right  
       .shoppingCart-content-center
         height 440px
-        overflow auto
+        width 100%
+        // overflow auto
         .borderNone
           border none!important
         .shoppingCart-promotions
@@ -1081,49 +1145,64 @@
               color #66a2e7
               cursor pointer
 
-      .shoppingCart-content-bottom 
+      .shoppingCart-content-bottom
         $mt(20px)
-        $border(border-top,1px)
+        padding 20px 0 50px 50px
         .shoppingCart-content-bottom-content
-          padding 20px 0 50px 50px
-          div,p
-            float left
-          .left
-            div
-              width 52px
-              height 20px
-              position absolute
-              z-index 200
-              cursor pointer
-            color #000
-            span
-              color #66a2e7
-              margin 0 10px
-              cursor pointer
-            .delete
-              $ml(40px)
-          .right
-            float right
-            p
-              $mr(80px)
-              color $blue
-              span
-                font-size 18px
-                font-weight bold
-            button
-              height 60px
-              width 130px
+          // width 1200px
+          background-color #fff
+          .shoppingCart-content-bottom-content_
+            margin 0 auto
+            // height inherit
+            div,p
+              float left
+            .left
+              div
+                width 52px
+                height 20px
+                position absolute
+                z-index 200
+                cursor pointer
               color #000
-              $mr(20px)
-              position relative
-              top -14px
-              i
-                  font-size 16px
-                  vertical-align text-bottom
-                  $ml(6px)
-            .btn
-              background-color $blue
-              color #fff
-
+              span
+                color #66a2e7
+                margin 0 10px
+                cursor pointer
+              .delete
+                $ml(40px)
+            .right
+              float right
+              p
+                $mr(80px)
+                color $blue
+                span
+                  font-size 18px
+                  font-weight bold
+              button
+                height 60px
+                width 130px
+                color #000
+                $mr(20px)
+                position relative
+                top -14px
+                i
+                    font-size 16px
+                    vertical-align text-bottom
+                    $ml(6px)
+              .btn
+                background-color $blue
+                color #fff
+          .widthPdding
+            width 1200px
+            padding 20px 0 50px 50px
+        .fixedBottom
+          width 100%
+          position fixed
+          z-index 2
+          bottom 0
+          left 0
+          box-shadow 0 -1px 8px rgba(0,1,1,.08)
+      .bottomBorder
+        $border(border-top,1px)
 </style>
 
