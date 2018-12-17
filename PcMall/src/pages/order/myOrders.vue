@@ -320,7 +320,7 @@
                   this.list[i].status = 4
                 }
               }
-              this.$router.push({path: `/orderDetail/${item.number}`})
+                this.$router.push({path: `/orderOk/${item.number}`})
             } else {
               this.$Message.error("确认失败");
             }
