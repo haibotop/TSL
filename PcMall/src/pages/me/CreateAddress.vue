@@ -25,7 +25,7 @@
           </div>
           <div class="phoneNum">
               <span>手机号</span>
-              <input v-model="personalInfoTel" onkeyup="value=value.replace(/[^0-9]+/g, '')" class="telephone" ref="telephone" type="text" :maxlength=11 placeholder="请填写收件人手机号码" />
+              <input v-model="personalInfo.tel" onkeyup="value=value.replace(/[^0-9]+/g, '')" class="telephone" ref="telephone" type="text" :maxlength=11 placeholder="请填写收件人手机号码" />
           </div>
           <div class="addressPlace">
               <span>收货地址</span>

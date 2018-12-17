@@ -27,7 +27,7 @@
           </div>
           <div class="phoneNum">
               <span>手机号</span>
-              <input v-model="personalInfoTel" onkeyup="value=value.replace(/[^0-9]/g,'')" class="telephone" ref="telephone" type="text" :maxlength=11 placeholder="请填写收件人手机号码" />
+              <input v-model="personalInfo.tel" onkeyup="value=value.replace(/[^0-9]/g,'')" class="telephone" ref="telephone" type="text" :maxlength=11 placeholder="请填写收件人手机号码" />
           </div>
           <div class="addressPlace">
               <span>收货地址</span>
@@ -60,21 +60,6 @@
               <Button class="login" @click.native="saveAddress" >保存</Button>
           </div>
       </div>
-    <!--<group>-->
-      <!--<div class="editPersonalInfo">-->
-        <!--<x-input placeholder="姓名" v-model="personalInfo.name"></x-input>-->
-        <!--<x-input placeholder="手机号码" v-model="personalInfo.tel" type="text" ref="telephone" @on-change="handlePhone"></x-input>-->
-        <!--&lt;!&ndash; <x-input placeholder="省，市，区" v-model="personalInfo.province"></x-input> &ndash;&gt;-->
-        <!--<x-address title="省,市,区" :list="addressData" :raw-value="true" @on-shadow-change="onShadowChange"-->
-          <!--v-model="personalInfo.province.ids"></x-address>-->
-        <!--<x-textarea placeholder="请填写详细地址，不少于五个字" type="text" v-model="personalInfo.street"></x-textarea>-->
-      <!--</div>-->
-    <!--</group>-->
-    <!--<div class="defaultPlace">-->
-      <!--<div class="defaultPosition">-->
-        <!--<check-icon  :value.sync="checkIcon" type="plain">设为默认地址</check-icon>-->
-      <!--</div>-->
-    <!--</div>-->
       <Button class="deleteBtn" @click.native="deleteAddress" >删除地址</Button>
 
   </div>
@@ -169,14 +154,19 @@
         },
         //选择地区
         change3(val){
-            this.provinceItem = this.personalInfo.province.str
-            // console.log('this.provinceItem',this.provinceItem)
+            if(this.provinceItem[0] == undefined){
+                this.provinceItem[0] = this.readProvince[0]
+            }
+            if(this.provinceItem[1] == undefined){
+                this.provinceItem[1] = this.readProvince[1]
+            }
             this.provinceItem[2] = val;
             let i = this.provinceItem
             let a = ''
             a = `${i[0]}${i[1]}${i[2]}`
             this.datailAddress = a
             this.personalInfo.province.str = `${i[0]}${i[1]}${i[2]}`
+            console.log('this.personalInfo.province.str',this.personalInfo.province.str)
             // this.datailAddress = this.personalInfo.province.str
         },
       warnningTips () {
@@ -261,6 +251,7 @@
         return true
       },
       saveAddress () {
+            console.log('000',this.provinceItem)
         if (this.warnningTips()) {
           // console.log(this.personalInfo)
           // 默认修改
@@ -324,9 +315,9 @@
       },
       detailAddress () {
         let a = this.sessionAddress.receiverAddress
-        // console.log(a)
+        console.log('a',a)
         let b = this.addressData
-       // console.log('bbbbbb',b)
+       console.log('bbbbbb',b)
         let arr = []
         let str
         for (let i = 0; i < b.length; i++) {
@@ -344,7 +335,7 @@
           arr.push('--')
           str = `${arr[0]}${arr[1]}`
         }
-        // console.log('arrrrrrrrr',arr)
+        console.log('arrrrrrrrr',arr)
         this.readProvince = arr
         this.personalInfo.province.str = arr
         //初始化省市区数据
@@ -359,13 +350,13 @@
                 this.areaList = this.cities[i].areaList;
             }
         }
-        // console.log('this.readProvince', this.provinceItem)
+        console.log('this.readProvince', this.readProvince)
         // console.log('test', arr)
         // console.log(a)
         // 判断存在?
         // console.log(a.indexOf(str))
         let detailaddress = a.slice(str.length)
-        // console.log(detailaddress)
+        console.log('detailaddress',detailaddress)
         this.personalInfo.province.ids = arr
 //        this.personalInfo.province.names = arr
         this.personalInfo.street = detailaddress

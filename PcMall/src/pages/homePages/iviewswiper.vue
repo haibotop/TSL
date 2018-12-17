@@ -1,6 +1,6 @@
 <template>
   <div id="iviewSwiper">
-    <Carousel autoplay loop :height="500">
+    <Carousel autoplay loop :height="562">
       <CarouselItem v-for="(item, index) in list" :key='index'>
         <div class="swiper-img">
             <router-link tag="a" :to="item.url">
@@ -9,7 +9,7 @@
         </div>
       </CarouselItem>
     </Carousel>
-    <img ref="img1" @load="setHeight" style="width:100%" v-show="false" :src="list[0] ? list[0].img : ''" alt="">
+    <img ref="img1" @load="setHeight" style="width:100%;height: 307px;" v-show="false" :src="list[0] ? list[0].img : ''" alt="">
   </div>
 </template>
 <script script="text/ecmascript-6">
@@ -49,8 +49,10 @@ export default {
   // 轮播
   .swiper-img {
     width: 100%;
+    height: 100%;
     img{
       width:100%;
+      height:100%;
     }
   }
 </style>
