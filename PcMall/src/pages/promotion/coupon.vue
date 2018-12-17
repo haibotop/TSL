@@ -16,7 +16,7 @@
             <span v-show="status === 1 && !check" @click="receiveCoupon(coupon)">去使用</span>
             <p v-show="status === 2">已使用</p>
             <p v-show="status === 3">已失效</p>
-            <p v-show="status === 4" :style="hiddenbukeyong == 4 ? 'display:none;':''">不可用{{hiddenbukeyong}}</p>
+            <p v-show="status === 4 && hiddenbukeyong !== 4">不可用</p>
         </div>
         <div v-show="status === 2 || status === 3 || status === 4" class="mask"></div>
     </div>

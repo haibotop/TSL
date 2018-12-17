@@ -138,7 +138,7 @@
                   this.personalInfo.name= value
               },
               get: function() {
-                  return this.personalInfo.name.replace(/[^\u0391-\uFFE5A-Za-z]+$/g,'')
+                  return this.personalInfo.name.replace(/[^\a-zA-Z\u4E00-\u9FA5]/g,'')
               },
           }
       },

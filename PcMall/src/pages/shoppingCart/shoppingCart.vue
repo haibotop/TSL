@@ -298,8 +298,25 @@
         })
       },
       handleRes (list = []) {
-        let datas = []
         console.log('list',list)
+        if(localStorage.oldList!=undefined){
+          let oldList = JSON.parse(localStorage.getItem('oldList')) //老的
+          console.log('oldList',oldList)
+          // let spuId = JSON.parse(localStorage.getItem('spuId')) 
+          // let shoppingspuId = localStorage.shoppingspuId
+          // let pop = list.productItem.pop()
+          let length = oldList[0].productItem.length - 1
+          for (let i=0;i<oldList[0].productItem.length;i++){
+            if(oldList[0].productItem[i].id != list[0].productItem[i].id){
+              [list[0].productItem[i], list[0].productItem[length]]=[list[0].productItem[length], list[0].productItem[i]]
+              break
+            }
+          }
+        }
+
+        localStorage.setItem('oldList',JSON.stringify(list))
+
+        let datas = []
         list.forEach(e => {
           let data = {
             merchantInfo: e.merchantInfo,
@@ -344,40 +361,9 @@
         //  console.log('datadatadatadatadatadatadata',datas)
         this.setChecked(datas)
 
-        if(localStorage.xxxxx!=undefined){
-          let xxxxx = JSON.parse(localStorage.getItem('xxxxx')) //老的
-          console.log('sfasf',xxxxx)
-          let spuId = JSON.parse(localStorage.getItem('spuId')) 
-          let shoppingspuId = localStorage.shoppingspuId
-          // datas //新的
-          for(let i=0;i<xxxxx.length;i++){
-            for(let k=0;k<xxxxx[i].promotions.length;k++){
-              for(let p=0;p<xxxxx[i].promotions[k].productItems.length;p++){
-                
-                // for(let z=0;z<datas.length;z++){
-                //   for(let c=0;k<datas[z].promotions.length;c++){
-                //     for(let v=0;v<datas[z].promotions[c].productItems.length;v++){
-                      
-                //       if(xxxxx[i].promotions[k].productItems[p].spuId===datas[z].promotions[c].productItems[v].spuId){
-                //         console.log('到了',xxxxx[i].promotions[k].productItems[p].spuId)
-                //         this.$set(xxxxx[i].promotions[k].productItems[p],xxxxx[i].promotions[k].productItems[p].spuId,)
-                //         return
-                //       }
-                      
-                //     }
-                //   }
-                // }
-                
-              }
-            }
-          }
-        }
-        // else{
-          
-        // }
+        
         console.log('xxxxxxxx',datas)
         this.shoppingCarts = datas
-        localStorage.setItem('xxxxx',JSON.stringify(datas))
         this.checkedObj = JSON.parse(JSON.stringify(this.checkedObj))
       },
       // 设置check-icon的绑定对象
