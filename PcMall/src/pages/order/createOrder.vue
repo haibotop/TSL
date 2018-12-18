@@ -587,7 +587,7 @@
                     indexLs = index
                   }
                 }
-                if(i.amount >= j.pdsArray[indexLs].fullLimit){  // 商品价格大于优惠价格才减，符合条件才减
+                if(j.productItems[0].sum >= j.pdsArray[indexLs].fullLimit){  // 商品价格大于优惠价格才减，符合条件才减
                     afterPromotion1 = afterPromotion1 - j.pdsArray[indexLs].subtract
                 }
                 afterPromotion1 = tool.handlePrice(afterPromotion1)
@@ -600,7 +600,7 @@
                     indexLs = index
                   }
                 }
-                if(i.amount >= j.pdsArray[indexLs].fullLimit){
+                if(j.productItems[0].sum >= j.pdsArray[indexLs].fullLimit){
                     afterPromotion1 = afterPromotion1 * j.pdsArray[indexLs].discount * 0.01
                 }
                 afterPromotion1 = tool.handlePrice(afterPromotion1)
