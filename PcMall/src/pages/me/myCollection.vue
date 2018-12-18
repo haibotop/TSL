@@ -30,8 +30,8 @@
                     <ul>
                         <li v-for="(item, index) in datas" :key="index" :class="{borderActive:!status&&isShow==index,borderSelect:status&&item.select == 0,cursorActive:status}" @click="status && selectPro(item,index)">
                             <div class="pic" @mouseover="isShow=index" @mouseleave="isShow=0.1">
-                                <div class="pic-img">
-                                    <img @click="!status && goPd(item)" :src="item.defaultPicture" alt="" >
+                                <div class="pic-img" @click="!status && goPd(item)">
+                                    <img :src="item.defaultPicture" alt="" >
                                     <div class="img-mask" :class="{imgCursor:status}" v-show="item.status === 2 || item.stock === 0">
                                         <div class="circle">
                                             <span class="middle" v-show="item.status === 2">售罄</span>
@@ -265,7 +265,7 @@ import { debounce } from 'vux'
             // ----------pd
             goPd (item) {
                 if (item.status === 1) {
-                this.$router.push({path: `/pd/${item.productId}`})
+                    this.$router.push({path: `/pd/${item.productId}`})
                 }
             },
             handleName (name) {

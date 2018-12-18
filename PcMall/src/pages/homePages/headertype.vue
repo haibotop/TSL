@@ -9,7 +9,7 @@
                 <p>TSL谢瑞麟是亚洲区著名珠宝集团 ，主要从事珠宝首饰设计、零售、出口及制造业务。</p>
                 <p>TSL谢瑞麟于1971年成立，并在1987年于香港联合交易所有限公司上市。</p>
                 <p>目前集团分别在亚洲区多个大城市经营逾360多间分店及销售点，包括北京、上海、广州、重庆、深圳、香港、澳门及吉隆坡等地。另外，集团的出口业务在欧洲及美国均拥有多元化的客户网络。</p>
-                <Button  class="button">阅读更多 →</Button>
+                <router-link tag="Button" to="/page/活动页面/tsl_story/130277485839458304" class="button">阅读更多 →</router-link>
             </div>
         </div>
         <div v-else class="contentlist">

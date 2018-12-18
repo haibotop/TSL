@@ -315,6 +315,8 @@
                 i 
                     color #fff
                 .dayprice
+                    position relative
+                    z-index 999
                     padding-left 10px     
                     width 350px
                     height 550px

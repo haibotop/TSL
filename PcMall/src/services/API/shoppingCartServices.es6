@@ -1,10 +1,13 @@
+let time = new Date().getTime()
+let params = `?sn=${time}`
+
 // 查询购物车
 export function getshoppingCart () {
-  return `/member/shoppingCart/`
+  return `/member/shoppingCart/${params}`
 }
 // 查询购物车-含促销
 export function getshoppingCart1 () {
-  return `/member/shoppingCart1/`
+  return `/member/shoppingCart1/${params}`
 }
 // 删除购物车商品项
 export function deleteCartItems (ids) {

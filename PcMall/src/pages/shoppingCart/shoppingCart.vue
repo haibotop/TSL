@@ -134,6 +134,7 @@
       </div>
     </div>
 
+    <!-- <div style="clear:both"></div> -->
     <v-footer :goTopIsShow = false></v-footer>
   </div>
 </template>
@@ -198,22 +199,13 @@
         },
       }
     },
-    //  updated(){
-    //   let offsetTop = document.getElementsByClassName('shoppingCart-content-bottom-content')[0].offsetTop
-    //   console.log('offsetTop',offsetTop)
-    // },
     methods: {
       //页面滚动底下变化的方法
       cartScroll(){
         let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
         let clientHeight = document.documentElement.clientHeight
         let offsetTop = document.getElementsByClassName('footer')[0].offsetTop - 80
-        // let offsetTop = document.getElementsByClassName('footer')[0].offsetTop-80
-        // this.offsetTop = this.$refs.bottom.offsetTop
         console.log('this.offsetTop222222222',document.getElementsByClassName('footer')[0].offsetTop-80)
-        // console.log('scrollTop:',scrollTop);console.log('clientHeight:',clientHeight);console.log('offsetTop:',offsetTop)
-        // console.log('scrollTop + clientHeight < offsetTop',scrollTop + clientHeight < offsetTop)
-        // console.log('scrollTop + clientHeight',scrollTop + clientHeight)
         if ( scrollTop + clientHeight < offsetTop ) {
           this.fixedBottom = true
         }else {
@@ -451,9 +443,6 @@
         })
         //  console.log('datadatadatadatadatadatadata',datas)
         this.setChecked(datas)
-
-        
-        console.log('xxxxxxxx',datas)
         this.shoppingCarts = datas
         this.checkedObj = JSON.parse(JSON.stringify(this.checkedObj))
       },
@@ -924,7 +913,8 @@
       }
     },
     mounted: function () {  
-      
+      this.offsetTop = document.getElementsByClassName('footer')[0].offsetTop - 80
+      console.log('this.offsetTop',this.offsetTop)
       window.addEventListener('scroll', this.cartScroll)
       let userInfo = sessionStorage.getItem('userInfo')
       if (userInfo) {
@@ -1037,7 +1027,7 @@
     background #fafafa
     // padding 0 100px 100px 100px 
     .shoppingCart-content
-      height 500px
+      min-height 500px
       background #fff
       position relative
       .no-data-mask
@@ -1070,7 +1060,7 @@
         .sp_2
           float right  
       .shoppingCart-content-center
-        height 440px
+        // height 440px
         width 100%
         // overflow auto
         .borderNone

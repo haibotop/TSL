@@ -102,7 +102,7 @@
             background-color #fff
             top 55.5%
             width 100%
-            z-index 99
+            z-index 999
             float left
 
 </style>
