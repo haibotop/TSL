@@ -643,7 +643,6 @@
     }
     .column-layout {
         position: relative;
-        overflow: hidden;
         width: calc(100% - 10px);
         padding: 10px 10px 0px 0px;
         .block {

@@ -1,33 +1,36 @@
 <template>
-    <!-- <div class="header_"> -->
-        <div class="header">
-            <div class="header-logo">
-                <router-link to="/">
-                    <img src="../../assets/images/tsl_logo.png">
-                </router-link>
-            </div>
-            <div class="header-left">
-                <a href="javascript:void(0)" @mouseenter="handleClick(1)" @mouseleave="handleClick(1)">
-                    品牌介绍
-                    <Icon :type="arrow === 1 ? 'ios-arrow-up' : 'ios-arrow-down'" size="16"></Icon>
-                </a>                                            
-                <a href="javascript:void(0)" @mouseenter="handleClick(2)" @mouseleave="handleClick(2)" >
-                    珠宝类型
-                    <Icon :type="arrow === 2 ? 'ios-arrow-up' : 'ios-arrow-down'" size="16"></Icon>
-                </a>              
-                <a href="javascript:void(0)" @mouseenter="handleClick(3)" @mouseleave="handleClick(3)">
-                    珠宝系列
-                    <Icon :type="arrow === 3 ? 'ios-arrow-up' : 'ios-arrow-down'" size="16"></Icon>
-                </a>              
-            </div>
-            <div class="header-right">
-                <search></search>
-            </div>
-            <div class="headertype" @mouseenter="handleClick(headertype)" @mouseleave="handleClick(headertype)">
-                <headertype v-if="isShow" :headertype="headertype"></headertype>
+    <div>
+        <div class="keng"></div>
+        <div class="header_">
+            <div class="header">
+                <div class="header-logo">
+                    <router-link to="/">
+                        <img src="../../assets/images/tsl_logo.png">
+                    </router-link>
+                </div>
+                <div class="header-left">
+                    <a href="javascript:void(0)" @mouseenter="handleClick(1)" @mouseleave="handleClick(1)">
+                        品牌介绍
+                        <Icon :type="arrow === 1 ? 'ios-arrow-up' : 'ios-arrow-down'" size="16"></Icon>
+                    </a>                                            
+                    <a href="javascript:void(0)" @mouseenter="handleClick(2)" @mouseleave="handleClick(2)" >
+                        珠宝类型
+                        <Icon :type="arrow === 2 ? 'ios-arrow-up' : 'ios-arrow-down'" size="16"></Icon>
+                    </a>              
+                    <a href="javascript:void(0)" @mouseenter="handleClick(3)" @mouseleave="handleClick(3)">
+                        珠宝系列
+                        <Icon :type="arrow === 3 ? 'ios-arrow-up' : 'ios-arrow-down'" size="16"></Icon>
+                    </a>              
+                </div>
+                <div class="header-right">
+                    <search></search>
+                </div>
+                <div class="headertype" @mouseenter="handleClick(headertype)" @mouseleave="handleClick(headertype)">
+                    <headertype v-if="isShow" :headertype="headertype"></headertype>
+                </div>
             </div>
         </div>
-    <!-- </div> -->
+    </div>
 </template>
 
 <script>
@@ -63,46 +66,48 @@
 
 <style lang="stylus" scoped>
 @import "~styles/common/common.styl";
-// .header_
-    // position fixed
-    // top 40px
-    // width 1200px
-    // $mb(160px)
-    .header
-        position relative
+    .keng
         height 120px
-        line-height 120px
-        background-color #fff
-        .header-logo
-            float left
-            width 35%
-            height 120px    
-            img 
-                height 44px
-                vertical-align middle
-                $ml(58px)
-                cursor pointer
-                position relative
-                z-index 200
-        .header-left            
-            float left
-            a
-                color #000
-                $mr(60px)
-                // $mr(15px)
-                // padding 0px 15px
-                display inline-block
-                i 
-                    color $blue
-        .header-right
-            float right 
-            $mr(30px)
-        .headertype
-            position absolute
+    .header_
+        position fixed
+        z-index 99
+        top 40px
+        width 1200px
+        .header
+            position relative
+            height 120px
+            line-height 120px
             background-color #fff
-            top 55.5%
-            width 100%
-            z-index 999
-            float left
+            .header-logo
+                float left
+                width 35%
+                height 120px    
+                img 
+                    height 44px
+                    vertical-align middle
+                    $ml(58px)
+                    cursor pointer
+                    position relative
+                    z-index 200
+            .header-left            
+                float left
+                a
+                    color #000
+                    $mr(60px)
+                    // $mr(15px)
+                    // padding 0px 15px
+                    display inline-block
+                    i 
+                        color $blue
+            .header-right
+                float right 
+                $mr(30px)
+            .headertype
+                position absolute
+                background-color #fff
+                top 55.5%
+                width 100%
+                z-index 999
+                float left
 
 </style>

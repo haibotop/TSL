@@ -68,7 +68,11 @@ import * as mkApi from '@/services/API/marketing.es6'
                             return
                         }
                         else {
-                            this.$router.push({path: '/couponPl', query: {'couponId': coupon.id}})
+                            this.show = false
+                            setTimeout(()=>{
+                                this.$router.push({path: '/couponPl', query: {'couponId': coupon.id}})
+                            },0)
+                            
                             return
                         }
                     }

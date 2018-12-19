@@ -485,6 +485,7 @@
     }
     .MAcontent{
         position: relative;
+        z-index: 99;
       .part-title {
         width: calc(100% - 20px);
         height: 40px;

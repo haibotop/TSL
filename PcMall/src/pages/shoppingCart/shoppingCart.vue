@@ -26,7 +26,7 @@
           </div>
           <div class="shoppingCart-content-center" > <!--v-show="shoppingCarts-->
             <div v-for="item in shoppingCarts" :key="item.merchantInfo.id">
-              <div class="shoppingCart-promotions" v-for="(promotion,index) in item.promotions" :key="promotion.promotionInfo.id" :class="{borderNone:index===item.promotions.length-1}" >
+              <div class="shoppingCart-promotions"  v-for="(promotion,index) in item.promotions" :key="promotion.promotionInfo.id" :class="{borderBottom:index===item.promotions.length-2}" >
                 <!-- 有促销的时候 -->
                 <div class="promotion-info" v-show="promotion.promotionInfo.id">
                   <div>
@@ -85,8 +85,8 @@
                       <transition mode="out-in" v-show="proIndex==promotionActive1&&index==promotionActive2" >
                         <div v-show="proIndex==promotionActive1&&index==promotionActive2">
                           <p v-for="item in product.promotionList" :key="item.id" @click="changePromotion(item.id)">
-                            <a v-if="item.type === 1" v-for="(item2, index) in item.pdsArray" :key="index">满{{item2.fullLimit / 100}}减{{item2.subtract / 100}}<span>></span></a>
-                            <a v-if="item.type === 2" v-for="(item2, index) in item.pdsArray" :key="index">满{{item2.fullLimit / 100}}折{{item2.discount / 10}}<span>></span></a>
+                            <a v-if="item.type === 1" v-for="(item2, index) in item.pdsArray" :key="index">满{{item2.fullLimit / 100}}减{{item2.subtract / 100}}<span v-show="index===item.pdsArray.length-1">></span><br/></a>
+                            <a v-if="item.type === 2" v-for="(item2, index) in item.pdsArray" :key="index">满{{item2.fullLimit / 100}}折{{item2.discount / 10}}<span v-show="index===item.pdsArray.length-1">></span><br/></a>
                             <a v-if="item.type === 3">打{{item.discount / 10}}折<span>></span></a>
                             <a v-if="item.type === 4">直降{{item.directAmount / 100}}<span>></span>元</a>
                           </p>
@@ -204,8 +204,8 @@
       cartScroll(){
         let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
         let clientHeight = document.documentElement.clientHeight
-        let offsetTop = document.getElementsByClassName('footer')[0].offsetTop - 80
-        console.log('this.offsetTop222222222',document.getElementsByClassName('footer')[0].offsetTop-80)
+        let offsetTop = document.getElementsByClassName('footer')[0].offsetTop - 71
+        // console.log('this.offsetTop222222222',document.getElementsByClassName('footer')[0].offsetTop-80)
         if ( scrollTop + clientHeight < offsetTop ) {
           this.fixedBottom = true
         }else {
@@ -329,11 +329,11 @@
           //   }
           // }
 
-          // let a=this.cloneCart[0].productItem, b=list[0].productItem,
-          // c = [...a, ...b],
-          // d = new Set(c),
-          // e = Array.from(d),
-          // f = [...e.filter(_=>!a.includes(_)),...e.filter(_=>!b.includes(_))]
+          let a=this.cloneCart[0].productItem, b=list[0].productItem,
+          c = [...a, ...b],
+          d = new Set(c),
+          e = Array.from(d),
+          f = [...e.filter(_=>!a.includes(_)),...e.filter(_=>!b.includes(_))]
           // console.log('ffffff',f)
 
           console.log('list[0].productItem',list[0].productItem)
@@ -1063,11 +1063,11 @@
         // height 440px
         width 100%
         // overflow auto
-        .borderNone
-          border none!important
+        // .borderNone
+        //   border none!important
         .shoppingCart-promotions
           // margin 20px 0
-          border-bottom:20px solid #ccc
+          // border-bottom:20px solid #ccc
           .promotion-info
             min-height 45px
             background #fafafa
@@ -1089,6 +1089,8 @@
               line-height 45px
               color #4a90e2
               $ml(20px)
+        .borderBottom
+          border-bottom:20px solid #fafafa
         .checkBackground
           background #eee8f9
         .shoppingCart-product
@@ -1170,12 +1172,12 @@
                 background #fff
                 $border(1,1px)
                 $border(border-left,4px)
-                padding 20px 0 20px 20px
+                padding 10px 0 20px 20px
                 p
                   text-align left
                   width 160px
                   border-bottom 1px solid #ccc
-                  height 36px
+                  min-height 36px
                   line-height 36px
                   cursor pointer
                   a
