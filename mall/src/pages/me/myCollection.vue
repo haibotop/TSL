@@ -1,6 +1,10 @@
 <template>
   <div id="myCollection">
     <x-header :left-options="{backText: ''}" title="全部宝贝"></x-header>
+    <div class="madeOrder" v-show="madeOrderStatus">
+      <span>您挑选的 99 件订制货品尚未付款发货。</span>
+      <a href="javascript:void(0);" class="lookMore">查看</a>
+    </div>
     <div v-show="datas.length === 0" class="noProduct-tips">
       <img src="../../assets/images/nullCollection.svg" alt="">
       <span>无收藏商品</span>
@@ -77,6 +81,7 @@
     components: { XHeader, Checker, CheckerItem, Scroller, CheckIcon, debounce, Group, XSwitch },
     data () {
       return {
+        madeOrderStatus: true,
         color: '#352665',
         // haveStock: '',
         haveStock: false,
@@ -308,6 +313,20 @@
   }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
+  .madeOrder{
+    position: relative;
+    margin-bottom: 10px;
+    padding: 8px 10px 8px 15px;
+    font-size: 14px;
+    color: #6A6A6A;
+    background-color: #FFF4E8;
+    .lookMore{
+      float: right;
+      margin-right: 5px;
+      color: #4A90E2;
+      cursor: pointer;
+    }
+  }
 .controll-bar {
   height: 36px;
   background-color: #fff;
@@ -329,8 +348,8 @@
   // }
   .edit-text, .ok-text {
     position: absolute;
-    right: 10px;
-    top: 52px;
+    right: 13px;
+    top: 90px;
   }
 }
 .edit-sub-bar {

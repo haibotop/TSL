@@ -6,6 +6,12 @@
       <!-- <loading v-if="showLoading" :scope=true></loading> -->
       <!-- <div class="detail-title"><div class="detail-t">珠宝类型 <span class="xiegang"></span> 戒指</div></div> -->
       <v-title :titleTpye="titleTpye"></v-title>
+        <div class="madeOrder" v-show="madeOrderStatus">
+            <img src="../../assets/icons/icon_info_b.png" alt="">
+            <span>您还收藏了99 件订制货品。</span>
+            <a href="javascript:void(0);" class="lookMore">查看</a>
+            <Icon type="ios-close" @click="madeOrderStatus = false"/>
+        </div>
       <div class="shoppingCart-content" >
         <loading v-if="showLoading"></loading>  
         <!-- 无数据内容 v-show="shoppingCarts.length === 0"-->
@@ -57,12 +63,12 @@
                       <div v-for="(specs,specIndex) in product.specs" :key="specIndex" style="float:left">
                         <span class="spec-name">{{toolFun('name', specs.specName)}}</span>
                         <Select :placeholder="specs.specValueName" not-found-text="读取中..." @on-open-change="onOpenChange(product,$event)" @on-change="onChange(specIndex,specs.specValueName,$event)"  :label-in-value="true" size="small" style="width:80px;margin-right:10px" >
-                          <Option v-for="(specs2, indexSpec) in sortSpecArray[specIndex]"
-                            :key="indexSpec" 
-                            :value="JSON.stringify(specs2)"
-                            :disabled="!specs2.specValueFlags"
-                            >{{ specs2.specValueName }}
-                          </Option>
+                          <!--<Option v-for="(specs2, indexSpec) in sortSpecArray[specIndex]"-->
+                            <!--:key="indexSpec" -->
+                            <!--:value="JSON.stringify(specs2)"-->
+                            <!--:disabled="!specs2.specValueFlags"-->
+                            <!--&gt;{{ specs2.specValueName }}-->
+                          <!--</Option>-->
                         </Select>
                       </div>
                     <!-- </div> -->
@@ -167,6 +173,7 @@
     components: { header1,header2,vFooter,vTitle,loading,inputNumber,XHeader, Scroller, XButton, CheckIcon, Popup, debounce, Checker, CheckerItem, Group, InlineXNumber },
     data () {
       return {
+        madeOrderStatus: true,
         cloneCart: '',//备份购物车产品
         offsetTop:0, //底部离顶部的距离
         fixedBottom: true,//滚动样式
@@ -1022,8 +1029,31 @@
 </style>
 <style lang="stylus" scoped>
 @import "~styles/common/common.styl";
-  #shoppingCart 
-    background #fafafa
+  #shoppingCart
+    .madeOrder
+        position: relative
+        margin 20px 0
+        padding 5px 10px 5px 50px
+        width 100%
+        border 1px solid  #4A8AE9
+        background-color #F2FAFE
+        img
+            position relative
+            top: 2px
+            $mr(5px)
+            width 15px
+            height 15px
+        .lookMore
+            $ml(20px)
+            color #4A90E2
+            cursor pointer
+        i
+            float: right;
+            font-size: 26px;
+            line-height: 22px;
+            color: #b4b4b4;
+            cursor pointer
+      background #fafafa
     // padding 0 100px 100px 100px 
     .shoppingCart-content
       min-height 500px

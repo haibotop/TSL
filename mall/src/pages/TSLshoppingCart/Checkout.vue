@@ -23,6 +23,10 @@
     </div>
     <!-- 付款成功 -->
     <div v-show="success && !waited">
+      <div class="madeOrder" v-show="madeOrderStatus">
+        <span>您挑选的99件订制货品尚未付款发货。</span>
+        <a href="javascript:void(0);" class="lookMore">查看</a>
+      </div>
       <div class="payState">
         <Group>
           <div class="paymsg">
@@ -80,6 +84,7 @@
     },
     data () {
       return {
+        madeOrderStatus: true,
         success: true,
         waited: false,
         productMsg: [],
@@ -183,29 +188,49 @@
     .sumFontColor {
       color: red;
     }
+    .madeOrder{
+      position: relative;
+      margin-bottom: 10px;
+      padding: 8px 10px 8px 15px;
+      font-size: 14px;
+      color: #6A6A6A;
+      background-color: #FFF4E8;
+      .lookMore{
+        float: right;
+        margin-right: 5px;
+        color: #4A90E2;
+        cursor: pointer;
+      }
+    }
     .payState{
       .weui-cells{
         background: #eee;
+        border-top: 0px !important;
         margin: 0 !important;
+      }
+      .weui-cells::before{
+        border-top: 0px !important;
       }
     }
     .paymsg {
       margin-top: 60px;
       color: #352665;
+      text-align: center;
       .payconfirm {
         height: 30px;
-        margin-left: 70px;
+        margin-left: 25px;
         line-height: 30px;
-        padding-top: 30px;
+        /*padding-top: 30px;*/
         font-size: 20px;
         .payIcon{
           position: absolute;
-          left: 36px;
+          left: 50%;
+          margin-left: -63px;
           fill: #ffffff;
         }
       }
       .payconfirmmsg{
-        margin-left: 70px;
+        /*margin-left: 70px;*/
         font-size: 14px;
         padding-bottom: 24px;
       }

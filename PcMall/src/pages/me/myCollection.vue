@@ -4,6 +4,12 @@
         <header2></header2>
         <div class="goods-content">
             <v-title :titleTpye="titleTpye"></v-title>
+            <div class="madeOrder" v-show="madeOrderStatus">
+                <img src="../../assets/icons/icon_info_b.png" alt="">
+                <span>您还收藏了99 件订制货品。</span>
+                <a href="javascript:void(0);" class="lookMore">查看</a>
+                <Icon type="ios-close" @click="madeOrderStatus = false"/>
+            </div>
             <div class="goods-items">
                 <!-- <div class="no-datas" v-if="(datas || []).length === 0">暂无数据</div> -->
                 <div class="no-data-mask" v-if="datas.length === 0">
@@ -83,6 +89,7 @@ import { debounce } from 'vux'
         },
         data () {
             return {
+                madeOrderStatus: true,
                 loading: true,
                 titleTpye: ['首页','我的','收藏'],//珠宝类型的头部
                 single: false,
@@ -304,6 +311,29 @@ import { debounce } from 'vux'
         color: #111;
         .goods-content
             padding: 0 60px;
+            .madeOrder
+                position: relative
+                margin 20px 0
+                padding 5px 10px 5px 15px
+                width calc(100% - 50px)
+                border 1px solid  #4A8AE9
+                background-color #F2FAFE
+                img
+                    position relative
+                    top: 2px
+                    $mr(5px)
+                    width 15px
+                    height 15px
+                .lookMore
+                    $ml(20px)
+                    color #4A90E2
+                    cursor pointer
+                i
+                    float: right;
+                    font-size: 26px;
+                    line-height: 22px;
+                    color: #b4b4b4;
+                    cursor pointer
             .goods-items
                 .select
                     $ml(10px)

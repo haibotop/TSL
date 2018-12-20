@@ -4,6 +4,10 @@
       <div slot="right" v-show="!editFlag && shoppingCarts.length !== 0" @click="editFlag = true;">编辑</div>
       <div slot="right" v-show="editFlag && shoppingCarts.length !== 0" @click="editFlag = false;">完成</div>
     </x-header>
+    <div class="madeOrder" v-show="madeOrderStatus">
+      <span>您挑选的 99 件订制货品尚未付款发货。</span>
+      <a href="javascript:void(0);" class="lookMore">查看</a>
+    </div>
     <Scroller lock-x height="-96" v-show="shoppingCarts">
       <div slot="default">
         <div class="merchant" v-for="item in shoppingCarts" :key="item.merchantInfo.id">
@@ -143,6 +147,7 @@
     components: { XHeader, Scroller, XButton, CheckIcon, Popup, debounce, Checker, CheckerItem, Group, InlineXNumber, MyInlineXNumber },
     data () {
       return {
+        madeOrderStatus: true,
         list: [], // 原数据
         shoppingCarts: [], // 处理后展示用的数据
         sum: 0, // 总计价格
@@ -753,6 +758,19 @@
 </script>
 <style lang="scss" rel="stylesheet/scss" scoped>
 // ----------
+.madeOrder{
+  position: relative;
+  padding: 8px 10px 8px 15px;
+  font-size: 14px;
+  color: #6A6A6A;
+  background-color: #FFF4E8;
+  .lookMore{
+    float: right;
+    margin-right: 5px;
+    color: #4A90E2;
+    cursor: pointer;
+  }
+}
 .promotion {
   margin: 10px 0;
   background-color: #fff;

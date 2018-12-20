@@ -27,6 +27,11 @@
             <p class="success-tb"></p>
             <p class="success-txt">付款成功</p>
             <p style="margin-top: 20px;text-align: center;">您的包裹正整装待发</p>
+            <div class="madeOrder" v-show="madeOrderStatus">
+                <img src="../../assets/icons/icon_info.png" alt="">
+                <span>您挑选的 99 件订制货品尚未付款发货。</span>
+                <a href="javascript:void(0);" class="lookMore">查看</a>
+            </div>
         </div>
         <div class="login-footer">
             <Button class="goto-home" @click.native="gotoMyOrders" >查看订单</Button>
@@ -75,6 +80,7 @@
     },
     data () {
       return {
+        madeOrderStatus: true,
         success: true,
         waited: false,
         productMsg: [],
@@ -169,7 +175,7 @@
     }
   }
 </script>
-<style lang="scss" rel="stylesheet/scss">
+<style lang="scss" rel="stylesheet/scss" scoped>
   #checkout {
     padding: 50px 0;
     background: #fafafa;
@@ -205,6 +211,26 @@
               width: 650px;
               margin: 0 auto;
               text-align: center;
+              .madeOrder{
+                  position: relative;
+                  top: 35px;
+                  margin: 20px auto;
+                  padding: 8px 10px 8px 15px;
+                  width: 435px;
+                  background-color: #FFF4E8;
+                  img{
+                      position: relative;
+                      top: 2px;
+                      margin-right: 5px;
+                      width: 15px;
+                      height: 15px;
+                  }
+                  .lookMore{
+                      margin-left: 20px;
+                      color: #4A90E2;
+                      cursor: pointer;
+                  }
+              }
               .success-tb{
                   position: relative;
                   margin: 0 auto;
