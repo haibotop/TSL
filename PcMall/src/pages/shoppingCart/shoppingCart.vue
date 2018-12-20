@@ -56,7 +56,7 @@
                       <p class="title">{{toolFun('name', product.name)}}</p><!-- @on-open-change="onOpenChange(product,$event)"-->
                       <div v-for="(specs,specIndex) in product.specs" :key="specIndex" style="float:left">
                         <span class="spec-name">{{toolFun('name', specs.specName)}}</span>
-                        <Select :placeholder="specs.specValueName" @on-open-change="onOpenChange(product,$event)" @on-change="onChange(specIndex,specs.specValueName,$event)"  :label-in-value="true" size="small" style="width:80px;margin-right:10px" >
+                        <Select :placeholder="specs.specValueName" not-found-text="读取中..." @on-open-change="onOpenChange(product,$event)" @on-change="onChange(specIndex,specs.specValueName,$event)"  :label-in-value="true" size="small" style="width:80px;margin-right:10px" >
                           <Option v-for="(specs2, indexSpec) in sortSpecArray[specIndex]"
                             :key="indexSpec" 
                             :value="JSON.stringify(specs2)"
@@ -142,7 +142,7 @@
   import header1 from '@/pages/homePages/header1'
   import header2 from '@/pages/homePages/header2'
   import vFooter from '@/pages/homePages/footer.vue'
-  import loading from '@/pages/homePages/loading.vue'
+  import loading from '@/components/loading.vue'
   import vTitle from '@/pages/homePages/title.vue'
   import inputNumber from '@/pages/shoppingCart/inputNumber.vue'
   import res from './data.es6'
@@ -295,28 +295,28 @@
         console.log('原来的list',list)
         if(this.cloneCart!=''){
           // let oldList = JSON.parse(localStorage.getItem('oldList')) //老的
-          console.log('oldList',this.cloneCart)
+          // console.log('oldList',this.cloneCart)
           // let spuId = JSON.parse(localStorage.getItem('spuId')) 
           // let shoppingspuId = localStorage.shoppingspuId
           // let pop = list.productItem.pop()
 
           // let obj = list[0].productItem
-          let length = list[0].productItem.length - 1
+          // let length = list[0].productItem.length - 1
           
-          console.log('list',list)
-          for (let i=0;i<list[0].productItem.length;i++){
-            if(list[0].productItem[i].id != this.cloneCart[0].productItem[i].id){
-              let pop = list[0].productItem.pop()
-              console.log('objobjobjobj',list[0].productItem)
-              // console.log('水电费水电费', i)
-              // [list[0].productItem[i], list[0].productItem[length]] = [list[0].productItem[length], list[0].productItem[i]]
-              list[0].productItem.splice(i,0,pop)
+          // console.log('list',list)
+          // for (let i=0;i<list[0].productItem.length;i++){
+          //   if(list[0].productItem[i].id != this.cloneCart[0].productItem[i].id){
+          //     let pop = list[0].productItem.pop()
+          //     console.log('objobjobjobj',list[0].productItem)
+          //     // console.log('水电费水电费', i)
+          //     // [list[0].productItem[i], list[0].productItem[length]] = [list[0].productItem[length], list[0].productItem[i]]
+          //     list[0].productItem.splice(i,0,pop)
 
-              console.log('调换位置的list',list)
-              break
-            }
+          //     console.log('调换位置的list',list)
+          //     break
+          //   }
             
-          }
+          // }
 
           // for (let i=0;i<this.cloneCart[0].productItem.length;i++){
           //   for(let k=0;k<list[0].productItem.length;k++){
@@ -329,15 +329,15 @@
           //   }
           // }
 
-          let a=this.cloneCart[0].productItem, b=list[0].productItem,
-          c = [...a, ...b],
-          d = new Set(c),
-          e = Array.from(d),
-          f = [...e.filter(_=>!a.includes(_)),...e.filter(_=>!b.includes(_))]
+          // let a=this.cloneCart[0].productItem, b=list[0].productItem,
+          // c = [...a, ...b],
+          // d = new Set(c),
+          // e = Array.from(d),
+          // f = [...e.filter(_=>!a.includes(_)),...e.filter(_=>!b.includes(_))]
           // console.log('ffffff',f)
 
-          console.log('list[0].productItem',list[0].productItem)
-          console.log('this.cloneCart[0].productItem',this.cloneCart[0].productItem)
+          // console.log('list[0].productItem',list[0].productItem)
+          // console.log('this.cloneCart[0].productItem',this.cloneCart[0].productItem)
           var result = []
           for(var i = 0; i < list[0].productItem.length; i++){
             var obj = list[0].productItem[i]
@@ -372,7 +372,6 @@
               result.push(obj)
             }
           }
-          console.log('sfasfasf220asdf',result)//1，新，2，旧
 
           if(result.length==2){
             for (let i=0;i<this.cloneCart[0].productItem.length;i++){

@@ -7,7 +7,7 @@
             <div class="goods-items">
                 <!-- <div class="no-datas" v-if="(datas || []).length === 0">暂无数据</div> -->
                 <div class="no-data-mask" v-if="datas.length === 0">
-                    <loading :scope=true v-if="loading"></loading>
+                    <loading  v-if="loading"></loading>
                     <img src="../../assets/images/nullShoppingCart.svg" alt="购物袋缺省">
                     <p>目前您没有任何收藏。</p>
                     <Button class="btn" @click.native="$router.push({path: '/home'})">继续购物</Button>
@@ -161,9 +161,6 @@ import { debounce } from 'vux'
                         this.total = res.data.pageInfo.total
                         this.pages = res.data.pageInfo.pages
                         this.datas = res.data.pageInfo.list
-                        setTimeout(() => {
-                            // this.$refs.scroller.donePulldown()
-                        }, 30)
                         this.$refs.scroller.reset({top: 0})
                     } else {
                         res.data.pageInfo.list.forEach(element => {
@@ -173,9 +170,6 @@ import { debounce } from 'vux'
                         this.total = res.data.pageInfo.total
                         this.pages = res.data.pageInfo.pages
                         this.datas = this.datas.concat(res.data.pageInfo.list)
-                        setTimeout(() => {
-                            // this.$refs.scroller.donePullup()
-                        }, 30)
                         this.$refs.scroller.reset()
                     }
                 }
@@ -200,21 +194,6 @@ import { debounce } from 'vux'
                 })
             }
         },
-            // ----------上拉
-            // onPullup () {
-            //     if (this.size >= this.total) {
-            //         setTimeout(() => {
-            //             // this.$refs.scroller.donePullup()
-            //         }, 30)
-            //         return
-            //     }
-            //     this.getCollection(++this.pageNum, this.pageSize)
-            // },
-            // ----------下拉
-            // onPulldown () {
-            //     this.pageNum = 1
-            //     this.getCollection(this.pageNum, this.pageSize)
-            // },
             removeCollections () {
                 if (this.flags.indexOf('1') === -1) {
                     // this.$vux.toast.show({text: '未选择商品', type: 'text', width: '200px'})
@@ -245,13 +224,6 @@ import { debounce } from 'vux'
                         }
                     })
                 }
-                // this.$vux.confirm.show({
-                //     content: '是否确认移除商品',
-                //     confirmText: '确认',
-                //     onConfirm: () => {
-                //         action()
-                //     }
-                // })
                 this.$Modal.confirm({
                     title: '',
                     content: '<p>是否确认移除商品 </p>',
@@ -286,63 +258,14 @@ import { debounce } from 'vux'
                 }
                 this.$http.post(...pdAPI.postCartItem(cartItemData), {certified: true}).then((response) => {
                     if (response.data.code === 200) {
-                        // this.$vux.toast.show({text: '加入购物袋成功', type: 'text', width: '200px'})
                         this.$Message.success({content:'加入购物袋成功',duration:3})
                     } else {
-                        // this.$vux.toast.show({text: response.data.message, type: 'text', width: '200px'})
                         this.$Message.error({content:response.data.message,duration:3})
                     }
                 })
             }
         },
         computed: {
-            // checkAll: {
-            //     get () {
-            //         let num = 0
-            //         this.flags.forEach(e => {
-            //             if (e === '1') {
-            //                 num++
-            //             }
-            //         })
-            //         alert(num === this.flags.length ? true : false)
-            //         return num === this.flags.length ? true : false
-            //     },
-            //     set (flag) {
-            //         let num = 0
-            //         if(flag){
-            //             console.log(5555555555555555)
-            //             this.datas.forEach(item=>{
-            //                 this.$set(item,"select",0)
-            //             })
-            //             for (let i in this.flags) {
-            //                 this.flags[i] = '1'
-            //             }
-            //         }else{console.log(43434)
-            //             this.datas.forEach(item=>{
-            //                 this.$set(item,"select",1)
-            //             })
-            //             for (let i in this.flags) {
-            //                 this.flags[i] = ''
-            //             }
-            //         }
-            //         this.datas = JSON.parse(JSON.stringify(this.datas))
-            //         // this.flags.forEach(e => {
-            //         //     if (e === '1') {
-            //         //         num++
-            //         //     }
-            //         // })
-            //         // if (num !== this.flags.length - 1) {
-            //         //     for (let i in this.flags) {
-            //         //         if(flag){
-            //         //             this.flags[i] = '1'
-            //         //         }else{
-            //         //             this.flags[i] = ''
-            //         //         }   
-            //         //     }
-            //         //     this.datas = JSON.parse(JSON.stringify(this.datas))
-            //         // }
-            //     }
-            // },
             listStyle () {
                 return this.status ? `min-height: ${document.body.clientHeight - 141}px;` : `min-height: ${document.body.clientHeight - 91}px;`
             }
@@ -379,131 +302,8 @@ import { debounce } from 'vux'
      #pl
         background: #fafafa;
         color: #111;
-        // .common-title{
-        //     padding: 40px 0;
-        //     text-align: center;
-        //     .common-t{
-        //         position: relative;
-        //         display: inline-block;
-        //         text-align: center;
-        //         font-size: 20px;
-        //         color: #0F0F0F;
-        //     }
-        //     .common-t:after{
-        //         content: '';
-        //         position: absolute;
-        //         bottom: -40px;
-        //         left: 50%;
-        //         margin-left: -20px;
-        //         display: inline-block;
-        //         width: 40px;
-        //         height: 2px;
-        //         background-color: #504379;
-        //     }
-        //     .xiegang:after{
-        //         content: '';
-        //         position: relative;
-        //         top: 8px;
-        //         margin: 0 20px;
-        //         display: inline-block;
-        //         width: 1px;
-        //         height: 30px;
-        //         background-color: #2E0F6E;
-        //         transform: rotate(30deg);
-        //     }
-        // }
         .goods-content
             padding: 0 60px;
-            // .filter-nav{
-            //     padding: 30px 30px 0;
-            //     font-size: 14px;
-            //     .ivu-dropdown{
-            //         a{
-            //             color: #111;
-            //         }
-            //         i{
-            //             margin-left: 5px;
-            //             color: #352665;
-            //         }
-            //     }
-            //     .sort-type{
-            //         text-align: center;
-            //         span{
-            //             position: relative;
-            //             padding: 0 30px;
-            //             display: inline-block;
-            //             width: 90px;
-            //             color: #333;
-            //             cursor: pointer;
-            //         }
-            //         span:after{
-            //             display: inline-block;
-            //             position: absolute;
-            //             top: 3px;
-            //             right: 0px;
-            //             content: '';
-            //             width: 1px;
-            //             height: 14px;
-            //             background-color: #c4c4c4;
-            //         }
-            //         span:last-child:after{
-            //             background-color: transparent;
-            //         }
-            //         .classblue{
-            //             color: #352665;
-            //         }
-            //         .arrowDown:before{
-            //             position: absolute;
-            //             top: 14px;
-            //             right: 19px;
-            //             content: '';
-            //             display: inline-block;
-            //             border: 4px solid transparent;
-            //             border-top-color: #c7c7c7;
-            //         }
-            //         .arrowDown:after{
-            //             position: absolute;
-            //             top: 4px;
-            //             right: 22px;
-            //             content: '';
-            //             display: inline-block;
-            //             width: 2px;
-            //             height: 11px;
-            //             background-color: #c7c7c7;
-            //         }
-            //         .arrowUp:before{
-            //             position: absolute;
-            //             top: 1px;
-            //             right: 19px;
-            //             content: '';
-            //             display: inline-block;
-            //             border: 4px solid transparent;
-            //             border-bottom-color: #c7c7c7;
-            //         }
-            //         .arrowUp:after{
-            //             position: absolute;
-            //             top: 7px;
-            //             right: 22px;
-            //             content: '';
-            //             display: inline-block;
-            //             width: 2px;
-            //             height: 11px;
-            //             background-color: #c7c7c7;
-            //         }
-            //         .arrowDownActive:before{
-            //             border-top-color: #352665;
-            //         }
-            //         .arrowDownActive:after{
-            //             background-color: #352665;
-            //         }
-            //         .arrowUpActive:before{
-            //             border-bottom-color: #352665;
-            //         }
-            //         .arrowUpActive:after{
-            //             background-color: #352665;
-            //         }
-            //     }
-            // }
             .goods-items
                 .select
                     $ml(10px)
@@ -549,7 +349,7 @@ import { debounce } from 'vux'
                     li
                         float left
                         width 240px
-                        margin 20px 10px 0
+                        margin 20px 15px 0
                         border 2px solid transparent
                         .pic
                             height 240px

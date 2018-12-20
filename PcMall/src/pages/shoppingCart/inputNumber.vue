@@ -100,5 +100,6 @@ export default {
       color #666
       text-align center
       float left
+      line-height 26px
     
 </style>

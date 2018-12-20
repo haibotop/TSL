@@ -8,7 +8,7 @@ import * as Ajax from './services/ajax.es6'
 import App from './App'
 
 import store from '@/store/index.js'
-
+import "babel-polyfill"
 
 //省市区三级联动
 // import 'vue-area-linkage/dist/index.css'; // v2 or higher

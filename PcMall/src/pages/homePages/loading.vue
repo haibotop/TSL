@@ -1,6 +1,10 @@
 <template>
     <div id="vueLoading" :class="{loading_:scope}" ref="vueLoading">
-        <vue-loading class="loading-pic" color="#fff" :size="{ width: '50px', height: '50px' }"></vue-loading>  
+        <!-- <vue-loading class="loading-pic" color="#fff" :size="{ width: '50px', height: '50px' }"></vue-loading>   -->
+        <Spin class="loading-pic" size="large">
+            <Icon type="ios-loading" size=38 color="#fff" class="demo-spin-icon-load"></Icon>
+            <!-- <div>Loading</div> -->
+        </Spin>
     </div>
 </template>
 
@@ -22,6 +26,14 @@
 </script>
 
 <style lang="stylus" scoped>
+    .demo-spin-icon-load{
+        animation: ani-demo-spin 1s linear infinite;
+    }
+    @keyframes ani-demo-spin {
+        from { transform: rotate(0deg);}
+        50%  { transform: rotate(180deg);}
+        to   { transform: rotate(360deg);}
+    }
     #vueLoading.loading_
         position absolute
         width 100%

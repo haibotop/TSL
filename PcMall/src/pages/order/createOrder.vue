@@ -87,6 +87,7 @@
                     p{
                         color: #352665;
                         line-height: 40px;
+                        display: inline-block;
                     }
                     input{
                         padding: 5px 10px;
@@ -205,12 +206,12 @@
           <div class="beizhu-left">
               <div>
                   <span class="bz-txt">备注</span>
-                  <span class="bz-num">0/50字</span>
+                  <span class="bz-num">{{memberRemark.length}}/50字</span>
               </div>
-              <textarea v-model="memberRemark" name="" id="" cols="50" rows="5 " placeholder="请输入"></textarea>
+              <textarea v-model="memberRemark" name="" id="" cols="50" rows="5 " maxlength="50" placeholder="请输入..."></textarea>
               <div class="member-num">
-                  <p>员工编号</p>
-                  <input v-model="memberNumber" type="text" placeholder="请输入为您服务的员工编号，如无则无需填写">
+                  <p>员工编号</p><span class="bz-num">{{memberNumber.length}}/15字</span>
+                  <input v-model="memberNumber" type="text" maxlength="15" placeholder="请输入为您服务的员工编号，如无则无需填写">
               </div>
           </div>
           <div class="total-right">

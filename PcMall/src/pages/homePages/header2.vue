@@ -67,7 +67,7 @@
 <style lang="stylus" scoped>
 @import "~styles/common/common.styl";
     .keng
-        height 120px
+        height 80px
     .header_
         position fixed
         z-index 99
@@ -75,13 +75,13 @@
         width 1200px
         .header
             position relative
-            height 120px
-            line-height 120px
+            height 80px
+            line-height 66px
             background-color #fff
             .header-logo
                 float left
                 width 35%
-                height 120px    
+                height 80px    
                 img 
                     height 44px
                     vertical-align middle
@@ -105,7 +105,7 @@
             .headertype
                 position absolute
                 background-color #fff
-                top 55.5%
+                top 50.5%
                 width 100%
                 z-index 999
                 float left

@@ -209,7 +209,7 @@
     <header2></header2>
     <div class="goods-content">
         <div class="common-title">
-            <div class="common-t">{{this.$route.query.type}} <span class="xiegang"></span> {{this.$route.query.typeName}}</div>
+            <div class="common-t">{{this.$route.query.type||'搜索结果'}} <span class="xiegang"></span> {{this.$route.query.typeName||'所有商品'}}</div>
         </div>
         <div class="filter-nav">
             <div class="filter-nav-t">

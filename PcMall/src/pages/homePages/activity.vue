@@ -1,18 +1,22 @@
 <template>
   <div id="activity">
-    <!-- <x-header :left-options="{backText: ''}" :title="title"></x-header> -->
+    <header1></header1>
+    <header2></header2>
     <h1 :title="title"></h1>
     <pageTemp :template="template"></pageTemp>
+    <v-footer :goTopIsShow = false></v-footer>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import * as pageAPI from '@/services/API/homePage.es6'
   import pageTemp from './pageTemp.vue'
-  // import { XHeader, Scroller } from 'vux'
+  import header1 from '@/pages/homePages/header1'
+  import header2 from '@/pages/homePages/header2'
+  import vFooter from '@/pages/homePages/footer.vue'
   let scrollerInterval 
   export default {
     name: 'activity',
-    components: { pageTemp },
+    components: { pageTemp, header1, header2, vFooter },
     data () {
       return {
         title: '',

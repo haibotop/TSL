@@ -5,7 +5,8 @@ const config = require('./webpack.config.js');
 
 const webpackConfig = {
   entry: {
-    main: './src/main',
+    // main: './src/main',
+    main: ["babel-polyfill", "./src/main"],
   },
   output: {
     path: path.join(__dirname, './dist')
