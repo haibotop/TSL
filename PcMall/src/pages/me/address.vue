@@ -6,24 +6,6 @@
         <v-title :titleTpye="titleTpye"></v-title>
         <address-list></address-list>
       </div>
-      <!-- <div class="account">
-            <span class="title">配送地址：</span>
-            <div >
-                <div v-if="address" class="address">
-                    <div class="address-bar1"><span class="receiverName">{{address.receiverName}}</span><span class="receiverMobile">{{address.receiverMobile}}</span></div>
-                    <div class="address-bar2"><p>{{address.receiverAddress}}</p></div>
-                    <span class="change-address" @click="showAddressModel">更换地址</span>
-                </div>
-                <div v-else class="no-address">
-                    <p style="padding-bottom:20px;color: #111;">目前您没有设置配送地址</p>
-                
-                    <p style="color: #4A90E2;cursor: pointer;" @click="showCreatAddressModel">
-                        <Icon type="ios-add-circle-outline" style="position: relative;top: -3px;margin-right: 5px;font-size: 20px;"/>
-                        增加配送地址
-                    </p>
-                </div>
-            </div>
-        </div> -->
       
       <v-footer></v-footer>
       <Modal v-model="listModal" footerHide :styles="{width: '1000px',top: '100px'}">

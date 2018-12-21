@@ -6,7 +6,7 @@
       <!-- <loading v-if="showLoading" :scope=true></loading> -->
       <!-- <div class="detail-title"><div class="detail-t">珠宝类型 <span class="xiegang"></span> 戒指</div></div> -->
       <v-title :titleTpye="titleTpye"></v-title>
-        <div class="madeOrder" v-show="madeOrderStatus">
+        <div class="madeOrder" v-show="madeOrderStatus" >
             <img src="../../assets/icons/icon_info_b.png" alt="">
             <span>您还收藏了99 件订制货品。</span>
             <a href="javascript:void(0);" class="lookMore">查看</a>
@@ -173,7 +173,7 @@
     components: { header1,header2,vFooter,vTitle,loading,inputNumber,XHeader, Scroller, XButton, CheckIcon, Popup, debounce, Checker, CheckerItem, Group, InlineXNumber },
     data () {
       return {
-        madeOrderStatus: true,
+        madeOrderStatus: false,
         cloneCart: '',//备份购物车产品
         offsetTop:0, //底部离顶部的距离
         fixedBottom: true,//滚动样式

@@ -174,7 +174,7 @@
                   <Input v-model="password" ref="pwdInput" type="password" placeholder="请输入您的密码" />
               </div>
               <div class="forget-password">
-                  <a href="/#/fgpsw" class="newPw-btn">忘记密码？</a>
+                  <router-link to="./fgpsw" class="newPw-btn">忘记密码？</router-link>
               </div>
               <div class="login-footer">
                   <Button class="sign" id="signup" @click.native="toSignup" >注册</Button>

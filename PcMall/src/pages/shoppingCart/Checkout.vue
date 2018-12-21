@@ -80,7 +80,7 @@
     },
     data () {
       return {
-        madeOrderStatus: true,
+        madeOrderStatus: false,
         success: true,
         waited: false,
         productMsg: [],

@@ -89,7 +89,7 @@ import { debounce } from 'vux'
         },
         data () {
             return {
-                madeOrderStatus: true,
+                madeOrderStatus: false,
                 loading: true,
                 titleTpye: ['首页','我的','收藏'],//珠宝类型的头部
                 single: false,
