@@ -315,7 +315,7 @@ import { debounce } from 'vux'
                 position: relative
                 margin 20px 0
                 padding 5px 10px 5px 15px
-                width calc(100% - 50px)
+                width 100%
                 border 1px solid  #4A8AE9
                 background-color #F2FAFE
                 img
@@ -329,14 +329,14 @@ import { debounce } from 'vux'
                     color #4A90E2
                     cursor pointer
                 i
-                    float: right;
-                    font-size: 26px;
-                    line-height: 22px;
-                    color: #b4b4b4;
+                    float right
+                    font-size 26px
+                    line-height 22px
+                    color #b4b4b4
                     cursor pointer
             .goods-items
                 .select
-                    $ml(10px)
+                    $ml(17px)
                     $mt(10px)
                     height 30px
                     span 
@@ -352,8 +352,7 @@ import { debounce } from 'vux'
                             $mr(4px)
                             vertical-align sub
                     .last
-                        $mr(50px)
-                        $ml(20px)
+                        $mr(17px)
                         padding 4px 20px
                     .right
                         float right

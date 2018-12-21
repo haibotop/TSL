@@ -73,12 +73,11 @@
                 </div>
               </span> -->
               <template>
-                <!-- <RadioGroup class="spec-check" v-model="xoxoxo"  type="button" @on-change="toOtherSpec($event,specArrayOn[index])">
+                <!-- <RadioGroup class="spec-check" type="button" @on-change="toOtherSpec($event,index)">
                   <div v-for="(item2, index2) in item.specValueArray" :key="index2">
                     <Radio
                     :label="item2.specValueName"
                     :disabled="!item.specValueFlags[index2]"
-                    @click.native="checkSpec(index,index2)"
                     :value="JSON.stringify(item2)"
                     >
                     </Radio>
@@ -89,7 +88,6 @@
                   </div>
                 </RadioGroup> -->
                 <Checker
-                  @on-change="onItemClick"
                   v-model="specArrayOn[index]"
                   type="radio"
                   radio-required
@@ -101,6 +99,7 @@
                     :key="index2"
                     :value="item2"
                     :disabled="!item.specValueFlags[index2]">{{item2.specValueName}}
+                    <i class="activeIcon" ></i>
                   </checker-item>
                 </Checker>
               </template>
@@ -366,7 +365,7 @@
   import vFooter from '@/pages/homePages/footer.vue'
   import vTitle from '@/pages/homePages/title.vue'
   import inputNumber from '@/pages/shoppingCart/inputNumber.vue'
-  import loading from '@/pages/homePages/loading.vue'
+  import loading from '@/components/loading.vue'
   import * as tool from '@/services/myTool.es6'
   import * as pdAPI from '@/services/API/pdServices.es6'
   import * as mkApi from '@/services/API/marketing.es6'
@@ -548,14 +547,11 @@
       }, 0)
     },
     methods: {
-      // toOtherSpec(name,to){
-      //   console.log(name)
-      //   // console.log(to.specValueId)
-      //   // this.handleSpecState()
-      //   // if(name==to.specValueName){
-      //     // this.$router.push({path: `/pd/${to.specValueId}`});
-      //   // }
-      //   this.xoxoxo = JSON.stringify(to)
+      // toOtherSpec($event,index){
+      //   console.log($event,index)
+        
+      //   this.specArrayOn[index] =  $event
+      //   console.log('this.specArrayOn[index]',this.specArrayOn[index])
       // },
       backGoodsArrayFuc(index){
         this.backGoodsArrayIndex = index
@@ -565,15 +561,6 @@
       },
       backGoodsArrayFuc2(index){
         this.backGoodsArrayIndex2 = index
-      },
-      onItemClick(){
-        let scrollTop = document.documentElement.scrollTop || window.pageYOffset || document.body.scrollTop
-        console.log(scrollTop)
-        document.documentElement.scrollTop = scrollTop;
-      },
-      checkSpec(index,index2){
-        this.xoxo = index
-        this.isShowCheckSpec = index2
       },
       handleOpen () {
         this.backGoodsArrayIndex = 0
@@ -1314,6 +1301,34 @@
             .selected-item-class
               $border(1,1px)
               color $blue
+              position relative
+              .activeIcon
+                position absolute
+                right 0
+                bottom 0
+                border 9px solid transparent
+                border-bottom-color #352665
+                border-right-color #352665
+                &::before
+                  position absolute
+                  top 3px
+                  left 0px
+                  content ''
+                  display inline-block
+                  width 2px
+                  height 5px
+                  background-color #fff
+                  transform rotate(-45deg)
+                &::after
+                  position absolute
+                  top -1px
+                  left 5px
+                  content ''
+                  display inline-block
+                  width 2px
+                  height 9px
+                  background-color #fff
+                  transform rotate(45deg)
             .spec-check
               .ivu-radio-wrapper-checked 
                 color #000
