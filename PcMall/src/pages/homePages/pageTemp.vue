@@ -1,5 +1,5 @@
 <template>
-  <div id="pageTemp">
+  <div id="pageTemp" :style="style">
     <div v-for="(item, index) in domData" :key="index">
       <template class="mrbt" v-if="item.type === 0"><cube :config="item.config"></cube></template>
       <richText class="mrbt" v-else-if="item.type === 1" :config="item.config"></richText>
@@ -19,7 +19,6 @@
   import productBlock from './productBlock.vue'
   import richText from './richText.vue'
   import cube from './cube.vue'
-  // import productBlock from './productBlock.vue'
   import imgBlock from './imgBlock.vue'
   import iviewswiper from './iviewswiper.vue'
   import emptySeat from './emptySeat.vue'
@@ -35,14 +34,31 @@
       iviewswiper,
       emptySeat,
       partingLine,
-      videoBlock
+      videoBlock,
+    },
+    data () {
+      return {
+        style:{}  
+      }
     },
     props: {
       template: String
     },
+    created () {
+      this.style = {
+        'height': document.documentElement.clientHeight - 339 + 'px',
+        'backgroundColor': '#eee'
+      }
+    },
     computed: {
       domData () {
-        return this.template ? JSON.parse(this.template) : []
+        // return this.template ? JSON.parse(this.template) : []
+        if ( this.template ) {
+          this.style = ''
+          return JSON.parse(this.template)
+        } else {
+          return []
+        }
       }
     }
   }

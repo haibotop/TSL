@@ -304,7 +304,7 @@
     .header
         position fixed
         top 0
-        z-index 222
+        z-index 999
         width 1200px
         height 40px
         line-height 40px

@@ -70,7 +70,7 @@
         height 80px
     .header_
         position fixed
-        z-index 99
+        z-index 998
         top 40px
         width 1200px
         .header
@@ -88,7 +88,7 @@
                     $ml(58px)
                     cursor pointer
                     position relative
-                    z-index 200
+                    z-index 400
             .header-left            
                 float left
                 a
@@ -107,7 +107,7 @@
                 background-color #fff
                 top 50.5%
                 width 100%
-                z-index 999
+                z-index 99
                 float left
 
 </style>
