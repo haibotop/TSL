@@ -4,7 +4,7 @@
       <template class="mrbt" v-if="item.type === 0"><cube :config="item.config"></cube></template>
       <richText class="mrbt" v-else-if="item.type === 1" :config="item.config"></richText>
       <!-- <productBlock class="mrbt pdl" v-else-if="item.type === 2 || item.type === 9" :config="item.config"></productBlock> -->
-      <imgBlock class="mrbt" v-else-if="item.type === 3" :config="item.config"></imgBlock>
+      <imgBlock class="mrbt" v-else-if="item.type === 3 && index != domData.length - 1" :config="item.config"></imgBlock>
       <iviewswiper class="mrbt" v-else-if="item.type === 4" :config="item.config"></iviewswiper>
       <!-- <vuxswiper v-else-if="item.type === 4" :config="item.config"></vuxswiper> -->
       <emptySeat class="mrbt" v-else-if="item.type === 5" :height="item.config"></emptySeat>

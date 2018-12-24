@@ -71,15 +71,12 @@
     methods: {
       getHome () {
         if (this.$store.state.home.templateStr !== "") {//eslint-disable-line
-          console.log(1)
           this.template = this.$store.state.home.templateStr
         } else {
           this.$http.get(...pageAPI.getHome()).then(res => {
             if (res.data.code === 200) {
               this.template = res.data.template.templateJson
-              console.log(res)
               this.$store.commit('setHomeTemp', this.template)
-              console.log('给到')
             }
           })
         }

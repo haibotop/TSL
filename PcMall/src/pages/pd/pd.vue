@@ -518,7 +518,6 @@
             } else {
               this.skuInfo.hasDiscount = false
             }
-            console.log('价格：', this.skuInfo.sku.price)
             this.getSkuCompeleted = true
             this.spuId = res.data.skuInfo.sku.spuId
             this.specArrayOn = res.data.skuInfo.spec
@@ -595,7 +594,7 @@
         params.push(skuId)
         this.$http.post(...mkApi.getOptimal(params)).then(res => {
           if (res.data.code === 200) {
-            console.log('getOptimal', res.data)
+            // console.log('getOptimal', res.data)
           } else {
           }
         }).catch(() => {})
@@ -603,7 +602,7 @@
        // ---计算促销后的价格
       getDiscountPrice (discountParams, price) {
         if (discountParams.type === 3) { // 单品折扣
-          console.log(discountParams.type)
+          // console.log(discountParams.type)
           price = parseInt(price * discountParams.discount * 0.01) + price % 100
           if (discountParams.typeAlone === 1) { // 元级取整
             price = tool.handlePrice(price)
@@ -613,11 +612,11 @@
             price = parseFloat(price).toFixed(1)
           }
         } else if (discountParams.type === 4) { // 直降
-          console.log(discountParams.type)
+          // console.log(discountParams.type)
           price = price - discountParams.directAmount
           price = tool.handlePrice(price)
         } else {
-          console.log(discountParams.type)
+          // console.log(discountParams.type)
           price = tool.handlePrice(price)
         }
         return price
@@ -626,7 +625,6 @@
       getSkuInfo (skuId, callback) {
         this.$http.get(...pdAPI.getSkuInfo(skuId)).then(res => {
           if (res.data.code === 200) {
-            console.log('getSkuInfo优惠', res.data)
             if (typeof callback === 'function') { callback(res) }
           } else {
           }
@@ -645,7 +643,7 @@
       getSkuCoupon (skuid) {
         this.$http.get(mkApi.getSkuCoupon(skuid)).then(res => {
           if (res.data.code === 200) {
-            console.log('获取了skuid对应的商品优惠券', res)
+            // console.log('获取了skuid对应的商品优惠券', res)
             this.couponList = res.data.proCouponInfos
             if (this.couponList.length < 1) {
               this.hasCoupon = false
@@ -655,7 +653,7 @@
               for (var i in this.couponList) {
                 couponArr.push(this.getDiscountPrice(this.couponList[i], this.skuInfo.sku.price))
               }
-              console.log('couponArr', couponArr)
+              // console.log('couponArr', couponArr)
             }
           }
         })
@@ -924,11 +922,9 @@
       },
       closeGetCoupon () {
         this.couponFlag = false
-        console.log('couponList',this.couponList)
       },
       // ---------- 直接购买 创建订单
       createOrder () {
-        console.log('直接购买')
         if (this.skuInfo.sku.stock === 0) { return }
         if (sessionStorage.getItem('userInfo')) {
           let cartItemData  = {
@@ -940,7 +936,6 @@
           }
           this.$http.post(...pdAPI.postCartItem(cartItemData), {certified: true}).then((response) => {
             if (response.data.code === 200) {
-              console.log('ddddddddddddddddddddd',this.$refs.pdPromotion)
               sessionStorage.setItem('settlementProductItems',`[{"promotionId":"${this.$refs.pdPromotion.selected ? this.$refs.pdPromotion.selected.id : ''}","productItem":[{"productId":"${this.skuId}","quantity":${this.num}}]}]`)
               this.$router.push({path: `/createOrder`})
                this.specFlag = true
@@ -1077,9 +1072,7 @@
           }
         }
 
-        console.log('arr1')
         // debugger
-         console.log(arr)
         return arr
       },
       specValueNameStr () {

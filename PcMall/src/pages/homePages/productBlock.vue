@@ -1,6 +1,6 @@
 <template>
      <div id="productBlock">
-        <h3>相关商品</h3>
+        <h3>人气推荐</h3>
         <div class="carousel">
             <!-- <Carousel  :radius-dot=true :height="380">
                 <CarouselItem> -->

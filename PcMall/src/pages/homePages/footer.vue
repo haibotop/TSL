@@ -18,9 +18,9 @@
                 <li><a href="javascript:void()" onclick="qimoChatClick()">客服中心</a></li>
             </ul>
             <ul>
-                <li class="first">珠宝</li>
-                <li><router-link href="#" to="/pl/戒指?type=珠宝类型&typeName=戒指">珠宝类型</router-link></li>
-                <li><router-link href="#" to="/pl/The%2012%20treasures?type=珠宝系列&typeName=The%2012%20treasures">珠宝系列</router-link></li>
+                <li class="first">品牌系列</li>
+                <li><router-link href="#" to="/pl/The%2012%20treasures?type=珠宝系列&typeName=The%2012%20treasures">THE 12 TREASURES</router-link></li>
+                <li><router-link href="#" to="/pl/Raindrop%20&%20Eernity?type=珠宝系列&typeName=Raindrop%20%26%20Eernity">RAINDROP & ETERNITY</router-link></li>
             </ul>
             <ul>
                 <li class="first">关注我们</li>

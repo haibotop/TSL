@@ -1,6 +1,6 @@
 <template>
   <div id="iviewSwiper">
-    <Carousel autoplay loop >
+    <Carousel autoplay loop :autoplay-speed='5000'>
       <CarouselItem v-for="(item, index) in list" :key='index'>
         <div class="swiper-img">
             <router-link tag="a" :to="item.url">

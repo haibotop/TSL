@@ -79,7 +79,7 @@
       
     </div>
     <!-- 修改个人信息 -->
-    <Modal v-model="baseInfoModel" footerHide class="baseinfo-modal" :z-index="400" :mask-closable="false">
+    <Modal v-model="baseInfoModel" footerHide class="baseinfo-modal" :mask-closable="false">
       <p solt="header" style="font-size: 24px;color: #352665;text-align: left;margin-left: 30px;">修改个人信息</p>
       <Form ref="baseInfoFormItem" :model="baseInfoFormItem" :label-width="80" class="edit-form">
         <Row>

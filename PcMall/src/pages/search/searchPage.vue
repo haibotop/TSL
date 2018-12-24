@@ -13,7 +13,6 @@
 
 <script type="text/ecmascript-6">
  
-//   import { Search } from 'vux'
   let interval
   export default {
     name: 'search',
@@ -24,21 +23,21 @@
       return {
         keyword: '',
         // pl replace到 search 带上的keyword，用于'取消'replace到pl
-        pl2searchKeyword: ''
+        // pl2searchKeyword: ''
       }
     },
     mounted: function () {
     //   this.setFocus()
-      this.getParamsFromUrl()
+      // this.getParamsFromUrl()
     },
     methods: {
-      getParamsFromUrl () {
-        if (this.$route.params.keyword) {
-          this.keyword = this.$route.params.keyword
-          this.pl2searchKeyword = this.$route.params.keyword
-        }
-        console.log(this.keyword)
-      },
+      // getParamsFromUrl () {
+      //   if (this.$route.params.keyword) {
+      //     this.keyword = this.$route.params.keyword
+      //     // this.pl2searchKeyword = this.$route.params.keyword
+      //   }
+      //   console.log(this.keyword)
+      // },
     //   setFocus () {
     //     clearInterval(interval)
     //     interval = setInterval(() => {
@@ -79,11 +78,10 @@
         this.$router.replace({path: path,query: {type: "搜索结果",typeName:this.keyword}})
         
       },
-      onCancel () {
-        // this.setBlur()
-        this.pl2searchKeyword ? this.$router.replace({path: `/pl/${this.pl2searchKeyword}`}) : this.$router.go(-1)
-      },
-      onResultClick () {}
+      // onCancel () {
+      //   // this.setBlur()
+      //   this.pl2searchKeyword ? this.$router.replace({path: `/pl/${this.pl2searchKeyword}`}) : this.$router.go(-1)
+      // },
       
     },
     computed: {

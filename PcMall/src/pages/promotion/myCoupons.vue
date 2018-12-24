@@ -100,7 +100,8 @@ let interval
                     this.loading = false
                     if (res.data.code === 200) {
                         if (res.data.pageInfo) {
-                            this.Couponlist = this.Couponlist.concat(res.data.pageInfo.list)
+                            // this.Couponlist = this.Couponlist.concat(res.data.pageInfo.list)
+                            this.Couponlist = res.data.pageInfo.list
                             if (typeof (callback) === 'function' && res.data.pageInfo !== null) {
                                 callback()
                             }   

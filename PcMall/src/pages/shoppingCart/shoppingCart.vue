@@ -63,12 +63,12 @@
                       <div v-for="(specs,specIndex) in product.specs" :key="specIndex" style="float:left">
                         <span class="spec-name">{{toolFun('name', specs.specName)}}</span>
                         <Select :placeholder="specs.specValueName" not-found-text="读取中..." @on-open-change="onOpenChange(product,$event)" @on-change="onChange(specIndex,specs.specValueName,$event)"  :label-in-value="true" size="small" style="width:80px;margin-right:10px" >
-                          <!--<Option v-for="(specs2, indexSpec) in sortSpecArray[specIndex]"-->
-                            <!--:key="indexSpec" -->
-                            <!--:value="JSON.stringify(specs2)"-->
-                            <!--:disabled="!specs2.specValueFlags"-->
-                            <!--&gt;{{ specs2.specValueName }}-->
-                          <!--</Option>-->
+                          <Option v-for="(specs2, indexSpec) in sortSpecArray[specIndex]"
+                            :key="indexSpec"
+                            :value="JSON.stringify(specs2)"
+                            :disabled="!specs2.specValueFlags"
+                            >{{ specs2.specValueName }}
+                          </Option>
                         </Select>
                       </div>
                     <!-- </div> -->
@@ -290,16 +290,13 @@
           if (res.data.code === 200) {
             this.showLoading = false
             if (res.data.list) {
-              console.log('过来 ',res.data.list)
               this.list = res.data.list
               this.handleRes(...[res.data.list])
-              // console.log('=====',this.list)
             }
           }
         })
       },
       handleRes (list = []) {
-        console.log('原来的list',list)
         if(this.cloneCart!=''){
           // let oldList = JSON.parse(localStorage.getItem('oldList')) //老的
           // console.log('oldList',this.cloneCart)
@@ -401,9 +398,10 @@
 
         }
 
-        // localStorage.setItem('oldList',JSON.stringify(list))
-        this.cloneCart = [...list]
-        console.log('this.cloneCart',this.cloneCart)
+        if(sessionStorage.getItem('userInfo')){
+          this.cloneCart = [...list]
+        }
+        // console.log('this.cloneCart',this.cloneCart)
 
         let datas = []
         list.forEach(e => {
@@ -566,19 +564,8 @@
           }
         }
         if (checked.length === 0) {
-          // this.$vux.toast.show({
-          //   text: '未选择删除商品',
-          //   type: 'text',
-          //   width: '200px'
-          // })
           this.$Message.error({content:'未选择删除商品',duration:3})
         } else {
-          // this.$vux.confirm.show({
-          //   content: '确认删除该商品?',
-          //   onConfirm: () => {
-          //     this.deleteProduct(checked)
-          //   }
-          // })
           this.$Modal.confirm({
             title: '',
             content: '<p>确认删除该商品 </p>',
@@ -600,11 +587,6 @@
         if (sessionStorage.getItem('userInfo')) {
           this.$http.post(...scAPI.deleteCartItems(checked)).then((response) => {
             if (response.data.code === 200) {
-              // this.$vux.toast.show({
-              //   text: '删除成功',
-              //   type: 'text',
-              //   width: '200px'
-              // })
               this.$Message.error({content:'删除成功',duration:3});
               this.getCartData()
               location.reload()
@@ -693,14 +675,6 @@
             sessionStorage.setItem('settlementProductItems', JSON.stringify(params))
             this.$router.push({path: '/createOrder'})
           } else {
-            // this.$vux.confirm.show({
-            //   content: '用户未登录',
-            //   confirmText: '去登录',
-            //   onConfirm: () => {
-            //     sessionStorage.setItem('settlementProductItems', JSON.stringify(params))
-            //     this.$router.push({path: '/signin'})
-            //   }
-            // })
             this.$Modal.confirm({
               title: '',
               content: '<p>用户未登录</p>',
@@ -849,7 +823,6 @@
             
           })
         })).then((response) => {
-          console.log('safasasdasdada',response)
           if (response.data.code === 200) {
             let skuInfo = response.data.skuInfo
             this.specsPopupData = Object.assign(skuInfo.sku, {specs: skuInfo.spec})
@@ -878,7 +851,7 @@
       },
       // 修改商品规格接口
       putSku (obj) {
-        console.log('obj',obj)
+        // console.log('obj',obj)
         if (sessionStorage.getItem('userInfo')) {
           // console.log('545454545454545',this.specsPopupData_bs)
           let params = {
@@ -920,7 +893,6 @@
     },
     mounted: function () {  
       this.offsetTop = document.getElementsByClassName('footer')[0].offsetTop - 80
-      console.log('this.offsetTop',this.offsetTop)
       window.addEventListener('scroll', this.cartScroll)
       let userInfo = sessionStorage.getItem('userInfo')
       if (userInfo) {

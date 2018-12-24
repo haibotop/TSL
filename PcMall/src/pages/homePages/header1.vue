@@ -9,7 +9,7 @@
                         <Icon :type="type" size="16"></Icon>
                     </a>  
                     <DropdownMenu  slot="list" class="dayprice" >
-                        <iframe src="http://goldprice.tslj.cn/goldPrice/html/sc/gold_price_hk.php" width="100%" height="100%"></iframe>
+                        <iframe  src="http://goldprice.tslj.cn/goldPrice/html/sc/gold_price_cn.php" width="100%" height="100%"></iframe>
                             <!-- <h3>香港金价（每两）</h3>
                             <table>
                                 <tr>
@@ -60,24 +60,28 @@
             </div>     
             <div class="header-right">
                 <a href="javascript:void()" onclick="qimoChatClick()">     
-                    <i><img src="../../assets/icons/icon_call.png" width="24" style="vertical-align:middle"></i>
+                    <i><img src="../../assets/icons/icon_call.png" ></i>
                     <span>在线客服</span>
                 </a>
 
                 <router-link tag="a" to="/login" v-if="!userInfoSession">     
-                    <Icon type="ios-contact-outline" size="20"/>
+                    <!-- <Icon type="ios-contact-outline" size="20"/> -->
+                    <i><img src="../../assets/icons/icon_user.png" ></i>
                     <span>{{nickName}}</span>
                 </router-link>
                 <router-link tag="a" to="/mine" v-else>     
-                    <Icon type="ios-contact-outline" size="20"/>
+                    <!-- <Icon type="ios-contact-outline" size="20"/> -->
+                    <i><img src="../../assets/icons/icon_user.png" ></i>
                     <span>{{nickName}}</span>
                 </router-link>
                 <router-link tag="a" to="/myCollection" >              
-                    <Icon type="md-heart-outline" size="20"/>
+                    <!-- <Icon type="md-heart-outline" size="20"/> -->
+                    <i><img src="../../assets/icons/icon_fav.png" ></i>
                     <span>我的收藏</span>
                 </router-link>
                 <router-link tag="a" to="/shoppingCart">              
-                    <Icon  type="ios-lock-outline" size="20"/>
+                    <!-- <Icon  type="ios-lock-outline" size="20"/> -->
+                    <i><img src="../../assets/icons/icon_bag.png" width="24" style="vertical-align:middle"></i>
                     <span>购物袋</span>
                 </router-link>  
                 <!-- <Dropdown  @mouseenter.native="handleClick" @mouseleave.native="handleClick" trigger="custom" :visible="visible2" style="margin-left: -10px;padding-left:10px" :class="{bgColor:bgColor2}" >
@@ -325,7 +329,7 @@
                     position absolute
                     padding-left 10px     
                     width 350px
-                    height 550px
+                    height 473px
                     $border(b,1px)
                     padding 0
                     text-align center
@@ -399,6 +403,8 @@
 
             a
                 $mr(20px)
-                i 
-                    color $blue
+                i
+                    img
+                        width 24px
+                        vertical-align middle
 </style>

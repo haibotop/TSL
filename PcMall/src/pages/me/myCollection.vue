@@ -102,7 +102,7 @@ import { debounce } from 'vux'
                 flags: [],
                 listLayout: 'row-layout',
                 pageNum: 1,
-                pageSize: 6,
+                pageSize: 500,
                 size: 0,
                 total: 0,
                 pages: 0,
@@ -159,26 +159,34 @@ import { debounce } from 'vux'
                 let thenCallback = (res) => {
                 if (res.data.code === 200) {
                     this.loading = false 
-                    if (this.pageNum === 1) {
-                        this.flags = []
-                        res.data.pageInfo.list.forEach(element => {
-                            this.flags.push('')
-                        })
-                        this.size = res.data.pageInfo.size
-                        this.total = res.data.pageInfo.total
-                        this.pages = res.data.pageInfo.pages
-                        this.datas = res.data.pageInfo.list
-                        this.$refs.scroller.reset({top: 0})
-                    } else {
-                        res.data.pageInfo.list.forEach(element => {
-                            this.flags.push('')
-                        })
-                        this.size += res.data.pageInfo.size
-                        this.total = res.data.pageInfo.total
-                        this.pages = res.data.pageInfo.pages
-                        this.datas = this.datas.concat(res.data.pageInfo.list)
-                        this.$refs.scroller.reset()
-                    }
+                    this.flags = []
+                    res.data.pageInfo.list.forEach(element => {
+                        this.flags.push('')
+                    })
+                    this.total = res.data.pageInfo.total
+                    this.pages = res.data.pageInfo.pages
+                    this.datas = res.data.pageInfo.list
+
+                    // if (this.pageNum === 1) {
+                    //     this.flags = []
+                    //     res.data.pageInfo.list.forEach(element => {
+                    //         this.flags.push('')
+                    //     })
+                    //     this.size = res.data.pageInfo.size
+                    //     this.total = res.data.pageInfo.total
+                    //     this.pages = res.data.pageInfo.pages
+                    //     this.datas = res.data.pageInfo.list
+                    //     this.$refs.scroller.reset({top: 0})
+                    // } else {
+                    //     res.data.pageInfo.list.forEach(element => {
+                    //         this.flags.push('')
+                    //     })
+                    //     this.size += res.data.pageInfo.size
+                    //     this.total = res.data.pageInfo.total
+                    //     this.pages = res.data.pageInfo.pages
+                    //     this.datas = this.datas.concat(res.data.pageInfo.list)
+                    //     this.$refs.scroller.reset()
+                    // }
                 }
             }
             let catchCallback = () => {
