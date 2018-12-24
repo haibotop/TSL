@@ -41,7 +41,7 @@
               </div>
               <div class="order-control">
                 <p class="amount">实付:<span>￥{{handleAmount(item)}}</span></p>
-                <!--<div >{{countDown}}</div>-->
+                <!--<div >{{getCountDown(item.timeDifference)}}</div>-->
                 <div class="status">{{statusText[item.status]}}</div>
                 <div class="btns-default" @click="goDetail(item.number)" :class="{'btns':statusText[item.status] === '已关闭'}">订单详情</div>
                 <div v-if="item.status === 1" class="btns" @click="goPay(item)">立即付款</div>
@@ -208,8 +208,12 @@
               this.loading = false
               if (this.pageNum === 1) {
                 this.list = res.data.orderItems.list || []
-                  let timeDifference = 2000
-                  this.getCountDown(timeDifference)
+                  // let timeDifference = this.list.
+                  // this.getCountDown(timeDifference)
+                  //   for(let i in this.list){
+                  //       console.log('5555',this.list[i].timeDifference)
+                  //       this.getCountDown(this.list[i].timeDifference)
+                  //   }
                 // this.$refs.scroller.donePulldown()
                 // this.$refs.scroller.reset({top: 0})
               } else {

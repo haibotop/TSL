@@ -314,10 +314,10 @@
         }
       },
       detailAddress () {
-        let a = this.sessionAddress.receiverAddress
-        console.log('a',a)
+        let a = this.sessionAddress.receiverAddress.replace(/,/g,'')
+        // console.log('a',a)
         let b = this.addressData
-       console.log('bbbbbb',b)
+       // console.log('bbbbbb',b)
         let arr = []
         let str
         for (let i = 0; i < b.length; i++) {
@@ -335,7 +335,8 @@
           arr.push('--')
           str = `${arr[0]}${arr[1]}`
         }
-        console.log('arrrrrrrrr',arr)
+        // console.log('arrrrrrrrr',arr)
+        // console.log('str',str)
         this.readProvince = arr
         this.personalInfo.province.str = arr
         //初始化省市区数据
@@ -350,16 +351,18 @@
                 this.areaList = this.cities[i].areaList;
             }
         }
-        console.log('this.readProvince', this.readProvince)
+        // console.log('this.readProvince', this.readProvince)
         // console.log('test', arr)
         // console.log(a)
         // 判断存在?
         // console.log(a.indexOf(str))
         let detailaddress = a.slice(str.length)
-        console.log('detailaddress',detailaddress)
         this.personalInfo.province.ids = arr
+        this.provinceItem = arr
 //        this.personalInfo.province.names = arr
         this.personalInfo.street = detailaddress
+          // console.log('detailaddress',detailaddress)
+          // console.log('sssss',arr)
       },
       // 删除地址
       deleteAddress () {
@@ -386,7 +389,7 @@
                   //   this.$router.go(-1)
                   // }, 500)
                 }
-                console.log(response)
+                // console.log(response)
               })
           }
         })
@@ -406,8 +409,8 @@
       },
       onShadowChange (ids, names) {
         this.personalInfo.province.names = names
-        console.log(names)
-        console.log(ids)
+        // console.log(names)
+        // console.log(ids)
       }
     }
   }

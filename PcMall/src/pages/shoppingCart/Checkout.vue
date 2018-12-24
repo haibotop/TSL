@@ -81,7 +81,7 @@
     data () {
       return {
         madeOrderStatus: false,
-        success: false,
+        success: true,
         waited: false,
         productMsg: [],
         outTradeNo: '',
