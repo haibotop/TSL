@@ -328,10 +328,11 @@ export default {
                   this.$router.replace({path: localStorage.getItem('pormission')})
               } else {
                   // this.$router.replace({path: 'home'})
-                  this.$router.replace({path: '/loginSuccess'})
+                  // this.$router.replace({path: '/loginSuccess'})
               }
             // sessionStorage.setItem('userInfo', JSON.stringify(response.data.userInfo))
             //   this.$router.replace({path: '/loginSuccess'})
+              this.$Message.success({content:"登录成功！",duration:3,top:50})
           } else {
               if(response.data.code == 6002){
                   this.model1 = true;
@@ -405,6 +406,7 @@ export default {
     let code = this.getUrlParam().code
     if (sessionStorage.getItem('fromPath')) {
       let pormission = sessionStorage.getItem('fromPath')
+        // console.log('0000',pormission)
       if (pormission === '/fgpsw3' || pormission === '/signin') {
         localStorage.setItem('pormission', '/home')
       } else if (pormission === '/fgpsw' || pormission === '/fgpsw2' || pormission === '/fgpsw3' || pormission === '/signup2' || pormission === '/signup3' || pormission === '/signup' || pormission === '/myPassword' || pormission === '/myAccount' || pormission === '/mySet' || pormission === '/setPsw') {

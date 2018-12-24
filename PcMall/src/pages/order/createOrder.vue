@@ -682,8 +682,8 @@
         return quantity
       },
       order: debounce(function () {
-        if (!this.address.id) {
-          // this.$vux.toast.show({type: 'text', text: '请选择收货地址', width: '200px'})
+        if (!this.address) {
+          this.$Modal.error({title: '提示', content: '请选择收货地址'})
           return
         }
         sessionStorage.removeItem('memberRemark')

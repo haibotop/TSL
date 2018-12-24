@@ -300,11 +300,11 @@ export default {
       this.orderNum = order.number
       // this.cashierPrice = parseInt(this.calcSum())
       if (this.orderItem) {
-        let sum = 0
-        for (let i of this.orderItem.orderProductItems) {
-          
-          sum += i.sum
-        }
+        let sum = this.orderItem.amount
+        // for (let i of this.orderItem.orderProductItems) {
+        //
+        //   sum += i.sum
+        // }
         this.cashierPrice = sum
       }
 

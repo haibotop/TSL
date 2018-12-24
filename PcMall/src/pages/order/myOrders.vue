@@ -41,6 +41,7 @@
               </div>
               <div class="order-control">
                 <p class="amount">实付:<span>￥{{handleAmount(item)}}</span></p>
+                <!--<div >{{countDown}}</div>-->
                 <div class="status">{{statusText[item.status]}}</div>
                 <div class="btns-default" @click="goDetail(item.number)" :class="{'btns':statusText[item.status] === '已关闭'}">订单详情</div>
                 <div v-if="item.status === 1" class="btns" @click="goPay(item)">立即付款</div>
@@ -117,7 +118,8 @@
                   {src:require('../../assets/icons/odr_transfer.png'),content:'待收货'},
                   {src:require('../../assets/icons/odr_done.png'), content:'已完成'}
               ],
-        liIndex: 0
+        liIndex: 0,
+        countDown: '' //倒计时
       }
     },
     mounted: function () {
@@ -125,6 +127,26 @@
         this.liIndex = this.$route.params.status
     },
     methods: {
+        getCountDown (timeDifference) { // 倒计时
+            var myMinute, mySecond, myTime, myDay, myHour
+            if (timeDifference) {
+                myTime = Math.abs(parseInt(timeDifference))
+                setInterval(() => {
+                    myTime -= 1
+                    myDay = Math.floor(myTime/3600/24)
+                    myHour = Math.floor((myTime/3600) % 24)
+                    myMinute = Math.floor((myTime / 60) % 60)
+                    mySecond = myTime % 60
+
+                    if (false) { //确认收货
+                        this.countDown = `剩 ${myDay < 10 ? '0'+myDay : myDay} 天 ${myHour < 10 ? '0'+myHour : myHour} 小时 ${myMinute < 10 ? '0'+myMinute : myMinute} 分 ${mySecond < 10 ? '0'+mySecond : mySecond} 秒自动关闭`
+                    } else {
+                        this.countDown = `剩 ${myMinute < 10 ? '0'+myMinute : myMinute} 分 ${mySecond < 10 ? '0'+mySecond : mySecond} 秒自动关闭`
+                    }
+
+                }, 1000)
+            }
+        },
       // ----------跳转商品详情
       goPd (skuId) {
         this.$router.push({path: `../pd/${skuId}`})
@@ -186,6 +208,8 @@
               this.loading = false
               if (this.pageNum === 1) {
                 this.list = res.data.orderItems.list || []
+                  let timeDifference = 2000
+                  this.getCountDown(timeDifference)
                 // this.$refs.scroller.donePulldown()
                 // this.$refs.scroller.reset({top: 0})
               } else {

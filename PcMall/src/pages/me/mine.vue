@@ -34,27 +34,27 @@
         <div class="myOrder" @click="goOrders(0)"><span style="vertical-align: middle;">查看全部订单</span> <Icon type="ios-arrow-forward" /></div>
         <div class="order-status-tab clearfix">
           <div @click="goOrders(1)">
-              <span>{{unpayOrderNum}}</span>
+              <span v-show="unpayOrderNum != 0">{{unpayOrderNum}}</span>
               <img src="../../assets/icons/odr_pay.png" style="display:block;margin:5px auto;width:50px;" alt="" >
               <p>待付款 </p>
           </div>
           <div @click="goOrders(2)">
-              <span>{{pendingDeliveryNum}}</span>
+              <span v-show="pendingDeliveryNum != 0">{{pendingDeliveryNum}}</span>
               <img src="../../assets/icons/odr_process.png" style="display:block;margin:5px auto;width:50px;" alt="" >
               <p>待发货</p>
           </div>
           <div @click="goOrders(3)">
-              <span>{{pendingReceiveNum}}</span>
+              <span v-show="pendingReceiveNum != 0">{{pendingReceiveNum}}</span>
               <img src="../../assets/icons/odr_transfer.png" style="display:block;margin:5px auto;width:50px;" alt="" >
               <p>待收货</p>
           </div>
           <div @click="goOrders(4)">
-              <span>{{finishedNum}}</span>
+              <span v-show="finishedNum != 0">{{finishedNum}}</span>
               <img src="../../assets/icons/odr_done.png" style="display:block;margin:5px auto;width:50px;" alt="" >
               <p>已完成 </p>
           </div>
           <div @click="goOrders(-1)">
-              <span>{{asOrderNum}}</span>
+              <span v-show="asOrderNum != 0">{{asOrderNum}}</span>
               <img src="../../assets/icons/odr_repair.png" style="display:block;margin:5px auto;width:50px;" alt="" >
               <p>售后</p>
           </div>
