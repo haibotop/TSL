@@ -46,7 +46,7 @@
           </div>
           <div class="account">
               <span class="discount">详细地址：</span>
-              <Input v-model="personalInfo.street" :maxlength="50" ref="addressXx" placeholder="请填写详细地址，不少于五个字"/>
+              <input v-model="personalInfo.street" :maxlength="50" class="telephone" ref="addressXx" placeholder="请填写详细地址，不少于五个字"/>
           </div>
           <div class="defaultPlace">
               <div class="defaultPosition">
@@ -305,31 +305,6 @@
               // }, 1000)
             }
           })
-        //   .catch((error) => {
-        //       console.log(this.$parent.$parent.getSettlementDate(), '-----')
-        //     //   console.error(error)
-               
-        //     if (error.response.data.status === 500) {
-        //         this.$Modal.warning({
-        //             title: '提示',
-        //             content: '服务器错误,请重试'
-        //         });
-        //       setTimeout(() => {
-        //         window.location.reload()
-        //       }, 500)
-        //     }
-        //     if (error.response.status === 404) {
-        //         this.$Modal.show({
-        //             title: '提示',
-        //             content: '添加失败请重试'
-        //         });
-        //     } else {
-        //         this.$Modal.show({
-        //             title: '提示',
-        //             content: error.response.data.message
-        //         });
-        //     }
-        //   })
       },
       // 手机号码规则处理
       handlePhone (val) {
@@ -372,6 +347,9 @@
                 width: 400px;
                 height: 40px;
             }
+        }
+        .addressPlace .ivu-select-placeholder{
+            color: #757575;
         }
         .phoneNum,.addressPlace,.discount{
             margin-top: 30px;
