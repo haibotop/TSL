@@ -793,7 +793,7 @@ export default {
 }
 .myInfo-div {
   .vux-popup-dialog {
-    z-index: 1000;
+    z-index: 1007;  
     padding: 30px;
     left: 50%;
     top: 50%;

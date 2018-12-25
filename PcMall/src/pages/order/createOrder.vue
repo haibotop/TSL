@@ -473,16 +473,16 @@
           this.statements()
         } else {
           this.orderAble = false
-          setTimeout(() => {
-            this.$Modal.warning({
-              title: '提示',
-              content: '您未选择商品或所选商品已下单',
-              onShow: () => {},
-              onOk: () => {
-                this.$router.replace({path: '/myOrders/0'})
-              }
-            })
-          }, 500)
+          // setTimeout(() => {
+          //   this.$Modal.warning({
+          //     title: '提示',
+          //     content: '您未选择商品或所选商品已下单',
+          //     onShow: () => {},
+          //     onOk: () => {
+          //       this.$router.replace({path: '/myOrders/0'})
+          //     }
+          //   })
+          // }, 500)
         }
       },
       statements () {
