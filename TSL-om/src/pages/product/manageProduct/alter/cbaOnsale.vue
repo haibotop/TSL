@@ -299,6 +299,7 @@
         skuColumn: [
           {
             title: 'SKU组合',
+            width: '108px',
             render: (h, params) => {
               let arr = params.row.name.split(' ')
               let arr2 = []
@@ -316,11 +317,12 @@
           },
           {
             title: 'SKU编码',
-            key: 'id'
+            key: 'id',
+            width: '109px'
           },
           {
             title: '手工费',
-            width: '100px',
+            width: '116px',
             render: (h, params) => {
               return h('Input', {
                 style: {width: '80px'},
@@ -359,7 +361,7 @@
           },
           {
             title: '售价',
-            width: '100px',
+            width: '116px',
             render: (h, params) => {
               let dom
               if (this.priceWay === 2) {
@@ -400,7 +402,7 @@
           },
           {
             title: '展示库存',
-            width: '100px',
+            width: '116px',
             render: (h, params) => {
               return h('Input', {
                 style: {width: '80px'},
@@ -416,7 +418,7 @@
           },
           {
             title: 'SKU图集',
-            width: '220px',
+            width: '202px',
             render: (h, params) => {
               let imgs = []
               for (let i of params.row.images) {
@@ -441,7 +443,7 @@
           },
           {
             title: '操作',
-            width: '150px',
+            width: '140px',
             render: (h, params) => {
               return h('div', {}, [
                 h('a', {

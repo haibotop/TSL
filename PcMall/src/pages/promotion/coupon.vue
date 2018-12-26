@@ -12,6 +12,7 @@
             <!-- <p>查看使用说明<Icon type="ios-arrow-down" size="18"/></p> -->
         </div>
         <div class="coupons-footer" >
+            <div></div>
             <span v-show="status === 0 && !check" @click="receiveCoupon(coupon)">立即领取</span>
             <span v-show="status === 1 && !check" @click="receiveCoupon(coupon)">去使用</span>
             <p v-show="status === 2">已使用</p>
@@ -135,6 +136,13 @@
             display table-cell
             vertical-align middle
             position relative
+            div
+                width 1px
+                height 40px
+                position absolute
+                background: #fff
+                right -1px
+                top -20px
             span
                 display inline-block
                 text-align center
@@ -173,7 +181,6 @@
             top 0
             background-color #ccc
             opacity 0.5
-            z-index 999999
 
 
 </style>

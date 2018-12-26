@@ -97,6 +97,13 @@
         <Button @click="getAfterSaleList" type="primary" class="btn-w">查询</Button>
         <Button @click="resetButton" type="primary" class="btn-w">重置</Button>
       </FormItem>
+      <formItem label="历史订单：" style="width:100%;">
+        <!--<Button :disabled="canExport" class="btn-w" @click="exportOrder">-->
+          <!--导出-->
+        <!--</Button>-->
+        <Button :disabled="outputBtnStatus" @click.native="outputHandler">导出</Button>
+        <a href="javascript:;" class="export-btn" style="display:none" id="export-table">导出</a>
+      </formItem>
     </Form>
 
     <Tabs type="card" v-model="local.status" @on-click="queryStatus">
@@ -108,7 +115,7 @@
     </Tabs>
 
     <div class="tableBox">
-      <Table :columns="column1" :data="data1" height="500"></Table>
+      <Table :columns="column1" :data="data1" height="500" @on-selection-change="selectItem"></Table>
     </div>
 
     <Page :total="page.total" :current="page.pageNum" :page-size="page.pageSize" show-total class="marginPage" @on-change="pageChange"></Page>
@@ -190,12 +197,14 @@
       </div>
     </Modal>
     <Loading :isload="loading"></Loading>
+    <iframe style="display:none;" ref="buyerListIframe" id="buyerListIframe" name="buyerListIframe"></iframe>
   </div>
 </template>
 <script type="text/ecmascript-6">
   import * as omAPI from '../../services/afterSale.es6'
   import Loading from '../../components/loading.vue'
   import cryptoJs from 'crypto-js'
+  import * as config from '../../services/config.es6'
   import * as extendTool from '../../services/tool.es6'
   export default {
     name: 'orderManager',
@@ -204,6 +213,8 @@
     },
     data () {
       return {
+        selectedOputeOrders: [],
+        outputBtnStatus: false,
         page: {
           total: 0,
           pageNum: 1,
@@ -605,8 +616,73 @@
       this.getAfterSaleList()
     },
     methods: {
+      selectItem(val){
+        console.log('选中:',val)
+        this.selectedOputeOrders = val
+      },
+      //导出
+      outputHandler: function () {
+          // status: 0,
+          // afterSaleNo: null,
+          // orderNo: null,
+          // payNo: null,
+          // receiverPhone: null,
+          // refundAmountFrom: null,
+          // refundAmountTo: null,
+          // afterSaleDateFrom: null,
+          // afterSaleDateTo: null
+        let params
+        if(this.selectedOputeOrders.length){
+          params = {}
+          let query = ''
+          this.selectedOputeOrders.forEach(item=>{
+            query += `${item.orderNo},`
+          })
+          query = query.substring(0,query.length - 1)
+          // params.status = 0
+          params.afterSaleNumbers = query
+        }else{
+          params = {}
+          if (!this.validFormat()) {
+            this.loading = false
+            return
+          }
+          // 转换时间赋值
+          // this.local.createDateFrom = this.formatDateYMD(this.local.createDateFrom)
+          // this.local.createDateTo = this.formatDateYMD(this.local.createDateTo)
+          this.local.afterSaleDateFrom = this.formatDateYMD(this.local.afterSaleDateFrom)
+          this.local.afterSaleDateTo = this.formatDateYMD(this.local.afterSaleDateTo)
+          if (this.local.status != null) {
+            this.tabStatus = this.local.status.toString()
+          }
+          for (let key in this.local) {
+            if (this.local[key] !== null && this.local[key] !== '') {
+              params[key] = this.local[key]
+            }
+          }
+          // if (params.amountFrom) {
+          //   params.amountFrom = this.convertFen(params.amountFrom)
+          // }
+          // if (params.amountTo) {
+          //   params.amountTo = this.convertFen(params.amountTo)
+          // }
+        }
+        
+        console.log(params)
+
+        let formhtml = `<form id="buyerListForm2" target="buyerListIframe" method="get" action="/${config.SERVER_PATH}${omAPI.exportExcel()}">`
+        for (let key in params) {
+          formhtml += `<input type="hidden" name="${key}" value="${params[key]}" />`
+        }
+        formhtml += '</form>'
+        this.$refs.buyerListIframe.contentWindow.document.getElementsByTagName('body')[0].innerHTML = formhtml
+        const formelm = this.$refs.buyerListIframe.contentWindow.document.getElementById('buyerListForm2')
+        formelm.submit()
+        formelm.parentNode.removeChild(formelm)
+      },
       // 获取退货订单列表
       getAfterSaleList () {
+        this.selectedOputeOrders = []
         let that = this
         that.page.total = 0
         if (!this.validFormat()) {

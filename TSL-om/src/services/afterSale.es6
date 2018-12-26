@@ -47,3 +47,9 @@ export function refundSuccess (afterSaleOrderNo, operator) {
     `/afterSales/afterSalesOrder/v1/refundOrder/${afterSaleOrderNo}/${operator}`
   ]
 }
+// 订单导出
+export function exportExcel (params) {
+  let url = `/merchantCenter/merchantcenter/v1/afterSaleOrderExcelUtils`
+  url += (url.includes('?') ? '&' : '?') + params
+  return url
+}

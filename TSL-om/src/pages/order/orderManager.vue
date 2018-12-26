@@ -143,7 +143,7 @@
     <Button class="margin-0-10" :disabled="disModal1" @click="modal1 = true">批量出库</Button>
     <Button class="margin-0-10" :disabled="disModal2" @click="remark">批量备注</Button>
     <div class="tableBox">
-      <Table :columns="column1" :data="data1" @on-selection-change="selectItem" height="500"></Table>
+      <Table :columns="column1" :data="data1"  @on-selection-change="selectItem" height="500"></Table>
     </div>
 
     <Page :total="total" :current="pageNum" :page-size="pageSize" show-total @on-change="pageChange" class="marginPage"></Page>
@@ -201,6 +201,7 @@
     },
     data () {
       return {
+        selectedOputeOrders: [],
         total: 0,
         pageNum: 1,
         pageSize: 20,
@@ -678,6 +679,7 @@
 // -----------------数据处理-----------
       // get list data
       orderStatus (name) {
+        this.selectedOputeOrders = []
         this.disModal1 = true
         this.disModal2 = true
         this.revertSearch()
@@ -814,6 +816,7 @@
       },
       // 搜索查询
       orderSearch (first) {
+        this.selectedOputeOrders = []
         this.loading = true
         let that = this
         let params = {}
@@ -914,6 +917,8 @@
         this.returnDisabled = bool
       },
       selectItem (val) {
+        console.log('选中:',val)
+        this.selectedOputeOrders = val
         this.remarkAmount = val.length
         if (val.length > 1) {
           this.disModal1 = false
@@ -1319,31 +1324,45 @@
       },
       outputHandler: function () {
 //        let params = this.param(params)
-        let params = {}
-        if (!this.validFormat()) {
-          this.loading = false
-          return
-        }
-        // 转换时间赋值
-        this.local.createDateFrom = this.formatDateYMD(this.local.createDateFrom)
-        this.local.createDateTo = this.formatDateYMD(this.local.createDateTo)
-        this.local.payDateFrom = this.formatDateYMD(this.local.payDateFrom)
-        this.local.payDateTo = this.formatDateYMD(this.local.payDateTo)
-        if (this.local.status != null) {
-          this.tabStatus = this.local.status.toString()
-        }
-        for (let key in this.local) {
-          if (this.local[key] !== null && this.local[key] !== '') {
-            params[key] = this.local[key]
+        let params
+        if(this.selectedOputeOrders.length){
+          params = {}
+          let query = ''
+          this.selectedOputeOrders.forEach(item=>{
+            query += `${item.orderId},`
+          })
+          query = query.substring(0,query.length - 1)
+          // params.status = 0
+          params.orderIds = query
+        }else{
+          params = {}
+          if (!this.validFormat()) {
+            this.loading = false
+            return
+          }
+          // 转换时间赋值
+          this.local.createDateFrom = this.formatDateYMD(this.local.createDateFrom)
+          this.local.createDateTo = this.formatDateYMD(this.local.createDateTo)
+          this.local.payDateFrom = this.formatDateYMD(this.local.payDateFrom)
+          this.local.payDateTo = this.formatDateYMD(this.local.payDateTo)
+          if (this.local.status != null) {
+            this.tabStatus = this.local.status.toString()
+          }
+          for (let key in this.local) {
+            if (this.local[key] !== null && this.local[key] !== '') {
+              params[key] = this.local[key]
+            }
+          }
+          if (params.amountFrom) {
+            params.amountFrom = this.convertFen(params.amountFrom)
+          }
+          if (params.amountTo) {
+            params.amountTo = this.convertFen(params.amountTo)
           }
         }
-        if (params.amountFrom) {
-          params.amountFrom = this.convertFen(params.amountFrom)
-        }
-        if (params.amountTo) {
-          params.amountTo = this.convertFen(params.amountTo)
-        }
+        
         console.log(params)
+
         let formhtml = `<form id="buyerListForm2" target="buyerListIframe" method="get" action="/${config.SERVER_PATH}${omAPI.exportExcel()}">`
         for (let key in params) {
           formhtml += `<input type="hidden" name="${key}" value="${params[key]}" />`

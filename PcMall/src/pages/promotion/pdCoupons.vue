@@ -104,8 +104,6 @@
       // },
       // 领取优惠券事件
       receiveCoupon (coupon) {
-        console.log('coupon', this.list0)
-        console.log('couponCode', coupon)
         this.loading = true
         // this.disabledMouseWheel()
         this.$http.get(mkApi.receiveCoupon(coupon.id, coupon.couponCode))
@@ -118,7 +116,6 @@
           })
       },
       listTrye(){
-        console.log('this.couponList',this.couponList)
         for (let i of this.couponList) {
           if (i.mstatus === 0) {
             this.list0.push(i)

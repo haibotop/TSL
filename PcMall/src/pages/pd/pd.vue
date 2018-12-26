@@ -116,12 +116,12 @@
             <div class="cost">
               <span>运费：免运费</span>
               <!-- <span style="margin-left:250px">配送及退换</span> -->
-              <div @mouseenter="handleOpen" @mouseleave="handleOpen" class="cost-title" :class="{bgColor:bgColor}" >
+              <Dropdown @mouseenter.native="handleOpen" @mouseleave.native="handleOpen" trigger="custom" :visible="visible" class="cost-title" :class="{bgColor:bgColor}" >
                 <a href="javascript:void(0)" >
                     <span>配送及退换</span>
                     <Icon :type="type" size="16"></Icon>
                 </a>
-                <DropdownMenu  slot="list" class="cost-detail" :class="{'cost-detail-active':backGoodsArrayIndex==5,'cost-detail-active_':bgColor}">
+                <DropdownMenu  slot="list" class="cost-detail" :class="{'cost-detail-active':backGoodsArrayIndex==5}">
                   <div class="cost-detail-content" >
                     <div class="right">
                       <ul>
@@ -309,7 +309,7 @@
                     </div>
                   </div>
                 </DropdownMenu>
-              </div>
+              </Dropdown>
             </div>
             <!-- 领券 按钮-->
             <!-- <Cell is-link v-show="specStr.length > 0" @click.native="openGetCoupon" v-if="hasCoupon">
@@ -402,7 +402,7 @@
         titleTpye: [],//珠宝类型的头部
         backGoodsArray:['前言','发货时间','快递配送服务','门店自提服务（仅限中国大陆地区）','商品包装','退换货政策'],
         backGoodsArray2:['1. 前言','2. 定义','3. 退货','4. 更换','5. 购物优惠','6. 特别说明','7. 温馨提示'],
-        backGoodsArrayIndex: 0,
+        backGoodsArrayIndex: 0,//对应的内容
         backGoodsArrayIndex2: 0,
         loading: true,
         xoxo:0,
@@ -562,6 +562,7 @@
         this.backGoodsArrayIndex2 = index
       },
       handleOpen () {
+        this.visible =  !this.visible
         this.backGoodsArrayIndex = 0
         this.backGoodsArrayIndex2 = 0
         this.bgColor = !this.bgColor
@@ -1178,7 +1179,7 @@
   #detail .cost .ivu-select-dropdown{
       padding: 0;
       margin: 0;
-      /* left: 100px!important */
+      right: 0
   }
 </style>
 
@@ -1437,15 +1438,16 @@
               padding-right 6px
               .cost-detail-active
                 width 1090px!important
-              .cost-detail-active_
-                height 350px!important
-                $border(b,1px)
+              // .cost-detail-active_
+              //   height 350px!important
+              //   $border(b,1px)
+              //   opacity 1!important
               .cost-detail 
                 padding-left 10px     
-                // width 1093px
                 width 710px
-                height 0
+                height 350px
                 overflow hidden
+                $border(b,1px)
                 $border(border-left,8px)
                 padding 0
                 margin-top -2px  
@@ -1453,7 +1455,7 @@
                 z-index 90
                 right 0
                 background-color #fff
-                transition all .4s
+                transition width .5s
                 .cost-detail-content
                   height inherit
                   .left-left,.left,.right
@@ -1492,10 +1494,7 @@
                         text-indent 10px
                         cursor pointer
                       .spanBorder
-                        border-color $blue
-                          
-                      
-                    
+                        border-color $blue  
           .cart
             $mt(12px)
             .btn1

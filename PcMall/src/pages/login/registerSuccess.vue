@@ -126,7 +126,7 @@
 <header2></header2>
   <div id="registerSuccess">
       <div class="login-title">
-          <div class="login-t">普通用户 <span class="xiegang"></span> 注册</div>
+          <div class="login-t">会员 <span class="xiegang"></span> 注册</div>
       </div>
       <div class="login-content">
           <div class="login-cont">

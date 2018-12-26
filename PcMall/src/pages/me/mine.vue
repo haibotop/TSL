@@ -108,8 +108,8 @@
       </div>
     </Modal>
 
-    <!-- 设置 -->
-    <Modal v-model="pwdModal" footerHide class="baseinfo-modal" :z-index="400" :mask-closable="false">
+    <!-- 设置 -->d
+    <Modal v-model="pwdModal" footerHide class="baseinfo-modal" :mask-closable="false">
       <p solt="header" style="font-size: 24px;color: #352665;text-align: left;margin-left: 30px;">设置</p>
       <Form ref="pwdItem" :model="pwdItem" :label-width="80" class="edit-form">
         <FormItem label="当前密码">
@@ -132,7 +132,7 @@
           <Button @click.native="updatePw" :disabled="isLoad" style="width: 200px;height: 50px;font-size: 16px; background-color: #352665;color: #fff;">确认修改</Button>
       </div>
     </Modal>
-    <div v-transfer-dom class="myInfo-div">
+    <div class="myInfo-div">
       <popup v-model="show" position="top" :hide-on-blur="false">
         <div class="select-img">
           <croppa v-model="myCroppa"
@@ -145,7 +145,7 @@
             class="croppa-cls"
           >
           </croppa>
-          <div>
+          <div style="text-align:center">
             <x-button class="custom-btn" mini @click.native="updateAvatar">确定</x-button>
             <x-button class="custom-btn" mini @click.native="myCroppa.remove()">重选</x-button>
             <x-button class="custom-btn" mini @click.native="show = false">取消</x-button>
@@ -278,6 +278,9 @@ export default {
       this.getOrders(4);
       this.getOrders(0);
       this.getAsOrders();
+    }else{
+      this.$router.push({path: '/login'})
+
     }
   },
   computed: {
@@ -460,7 +463,7 @@ export default {
                   // this.$vux.loading.hide();
                 });
             }
-          });
+          })
         });
       }
     },
@@ -550,6 +553,16 @@ export default {
   }
 }
 </script>
+
+<style>
+  .vux-popup-mask.vux-popup-show{
+    z-index: 1000!important
+  }
+  /* .v-transfer-dom .ivu-modal-wrap{
+    z-index: 2000!important
+  } */
+</style>
+
 <style rel="stylesheet/scss" lang="scss" scoped>
 #mine {
   position: relative;
@@ -793,7 +806,7 @@ export default {
 }
 .myInfo-div {
   .vux-popup-dialog {
-    z-index: 1007;  
+    z-index: 10120;  
     padding: 30px;
     left: 50%;
     top: 50%;

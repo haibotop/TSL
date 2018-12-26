@@ -3,7 +3,7 @@
         <div class="keng"></div>
         <div class="header">
             <div class="header-left">
-                <Dropdown @mouseenter.native="handleOpen" @mouseleave.native="handleOpen" trigger="custom"  :visible="visible" style="margin-left: 6px;padding-left:10px" :class="{bgColor:bgColor}" >
+                <Dropdown @mouseenter.native="handleOpen" @mouseleave.native="handleOpen" trigger="custom"  :visible="visible" style="margin-left: 6px;padding-left:10px" class="header-left-day" :class="{bgColor:bgColor}" >
                     <a href="javascript:void(0)" >
                         <span>每日金价</span>
                         <Icon :type="type" size="16"></Icon>
@@ -256,9 +256,9 @@
             // }
         },
         watch: {
-            visible2(){
-                console.log('sfasfsafas')
-            }
+            // visible2(){
+            //     console.log('sfasfsafas')
+            // }
         }
     }
 </script>
@@ -318,13 +318,12 @@
             float left
             i 
                 color $blue
-            .bgColor              
+            .bgColor
                 background-color $blue
+                span,i 
+                    color #fff
+            .header-left-day              
                 position relative
-                span 
-                    color #fff
-                i 
-                    color #fff
                 .dayprice
                     position absolute
                     padding-left 10px     
@@ -365,42 +364,6 @@
             margin-right 10px
         .header-right
             float right
-            .bgColor              
-                background-color $blue
-                a 
-                    i,span 
-                        color #fff   
-                .shopCart    
-                    width 550px
-                    height 330px
-                    $border(b,1px)
-                    $border(border-left,8px)
-                    padding 0
-                    text-align center    
-                .checkAll
-                    float left
-                    margin-left 45px
-                    line-height 78px
-                    $mr(20px)
-                .allPrice
-                    color $blue
-                    line-height 78px
-                    float left 
-                button
-                    height 60px
-                    width 130px
-                    color #000
-                    $mr(10px)
-                    $mt(9px)
-                    i
-                        font-size 16px
-                        vertical-align text-bottom
-                        $ml(6px)
-                        // $ml(10px)
-                .btn2
-                    background-color $blue
-                    color #fff
-
             a
                 $mr(20px)
                 i

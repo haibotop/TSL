@@ -98,7 +98,7 @@
 <header2></header2>
   <div id="newPw3">
       <div class="login-title">
-          <div class="login-t">普通用户 <span class="xiegang"></span> 忘记密码</div>
+          <div class="login-t">会员 <span class="xiegang"></span> 忘记密码</div>
       </div>
       <div class="login-content">
           <div class="login-cont">
